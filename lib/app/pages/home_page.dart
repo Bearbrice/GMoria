@@ -16,7 +16,7 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 context.read<AuthenticationService>().signOut();
               },
-              child: Text(AppLocalizations.of(context).translate('signIn_button')),
+              child: Text(AppLocalizations.of(context).translate('home_signOut')),
             ),
           ],
         ),

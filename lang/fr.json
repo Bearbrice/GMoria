@@ -1,0 +1,7 @@
+{
+  "title": "GMoria",
+  "signIn_email": "Email",
+  "signIn_password": "Mot de passe",
+  "signIn_button" : "Se connecter",
+  "home_signOut" : "Se déconnecter"
+}

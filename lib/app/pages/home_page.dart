@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gmoria/app/utils/app_localizations.dart';
 import 'package:gmoria/data/firebase/authentication_service.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +16,7 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 context.read<AuthenticationService>().signOut();
               },
-              child: Text("Sign out"),
+              child: Text(AppLocalizations.of(context).translate('signIn_button')),
             ),
           ],
         ),

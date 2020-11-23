@@ -33,7 +33,7 @@ class SignInPage extends StatelessWidget {
                   password: passwordController.text.trim(),
                 );
               },
-              child: Text(AppLocalizations.of(context).translate('home_signOut')),
+              child: Text(AppLocalizations.of(context).translate('signIn_button')),
             )
           ],
       ),

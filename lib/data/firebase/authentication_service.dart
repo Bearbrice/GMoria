@@ -42,4 +42,8 @@ class AuthenticationService {
       return e.message;
     }
   }
+
+  User getUser() {
+    return _firebaseAuth.currentUser;
+  }
 }

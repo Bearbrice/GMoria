@@ -51,7 +51,7 @@ class LearnPage extends StatelessWidget {
           },
           viewportFraction: 0.8,
           scale: 0.9,
-          layout: SwiperLayout.STACK,
+          layout: SwiperLayout.TINDER,
           itemWidth: 350.0,
           itemHeight: 400.0,
           loop: false,

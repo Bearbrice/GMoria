@@ -1,27 +1,131 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:gmoria/app/utils/app_localizations.dart';
+import 'package:gmoria/domain/blocs/UserListBloc.dart';
+import 'package:gmoria/domain/blocs/UserListState.dart';
+import 'package:gmoria/domain/models/UserList.dart';
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
+class MyHomePage extends StatelessWidget {
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context).translate('title')),
+      ),
+      body: Center(
+        child: MyUserLists(),
+        //   OrientationBuilder(
+        //   builder: (context, orientation) => _buildList(
+        //       context,
+        //       orientation == Orientation.portrait
+        //           ? Axis.vertical
+        //           : Axis.horizontal),
+        // ),
+      ),
+      /** Add button */
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.blue,
+        onPressed: () {
+          //
+
+        },
+          child: Icon(Icons.add),
+        ),
+      );
+  }
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+
+
+class VerticalListItem extends StatelessWidget {
+  VerticalListItem(this.item);
+
+  final UserList item;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Scaffold.of(context)
+          .showSnackBar(SnackBar(content: Text('Define what to do here'))),
+      //     Slidable.of(context)?.renderingMode == SlidableRenderingMode.none
+      //         ? Slidable.of(context)?.open()
+      //         : Slidable.of(context)?.close(),
+      child: Container(
+        color: Colors.white,
+        child: ListTile(
+          leading: CircleAvatar(
+            backgroundColor: Colors.red,
+            //child: Text('${item.index}'),
+            foregroundColor: Colors.white,
+          ),
+          title: Text(item.listName),
+        ),
+      ),
+    );
+  }
+}
+
+// class _HomeItem {
+//   const _HomeItem(
+//     this.index,
+//     this.title,
+//     this.subtitle,
+//     this.color,
+//   );
+//
+//   final int index;
+//   final String title;
+//   final String subtitle;
+//   final Color color;
+// }
+
+class MyUserLists extends StatelessWidget{
+  MyUserLists({Key key}) : super(key:key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<UserListBloc,UserListState>(
+        builder: (context,state){
+          if(state is UserListLoading){
+            return Text("Loading !");
+          }else if (state is UserListLoaded){
+             //return Text(state.userList.toString());
+            final userLists = state.userList;
+            return WidgetListElement(list :userLists);
+          }else{
+            return Text("FUCK YOU");
+          }
+        });
+  }
+
+}
+
+class WidgetListElement extends StatefulWidget{
+  final List<UserList> list;
+  WidgetListElement({Key key, this.list}) : super(key: key);
+
+
+
+  @override
+  _WidgetListElementState createState() => _WidgetListElementState();
+
+}
+
+class _WidgetListElementState extends State<WidgetListElement> {
   SlidableController slidableController;
-  final List<_HomeItem> items = List.generate(
-    20,
-    (i) => _HomeItem(
-      i,
-      'Tile n°$i',
-      'SlidableScrollActionPane', //subtitle
-      _getAvatarColor(i), //color
-    ),
-  );
+  List<UserList> userlists;
+  // List<_HomeItem> items = List.generate(
+  // 3,
+  // (i) => _HomeItem(
+  // i,
+  // 'title',
+  // 'SlidableScrollActionPane', //subtitle
+  // _getAvatarColor(i), //color
+  // ),
+  // );
 
   @protected
   void initState() {
@@ -47,45 +151,18 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: OrientationBuilder(
-          builder: (context, orientation) => _buildList(
-              context,
-              orientation == Orientation.portrait
-                  ? Axis.vertical
-                  : Axis.horizontal),
-        ),
-      ),
-      /** Add button */
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: _fabColor,
-        onPressed: null,
-        child: _rotationAnimation == null
-            ? Icon(Icons.add)
-            : RotationTransition(
-                turns: _rotationAnimation,
-                child: Icon(Icons.add),
-              ),
-      ),
-    );
-  }
+
 
   Widget _buildList(BuildContext context, Axis direction) {
     return ListView.builder(
       scrollDirection: direction,
       itemBuilder: (context, index) {
         final Axis slidableDirection =
-            direction == Axis.horizontal ? Axis.vertical : Axis.horizontal;
+        direction == Axis.horizontal ? Axis.vertical : Axis.horizontal;
 
         return _getSlidableWithDelegates(context, index, slidableDirection);
       },
-      itemCount: items.length,
+      itemCount: widget.list.length,
     );
   }
 
@@ -93,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _getSlidableWithDelegates(
       BuildContext context, int index, Axis direction) {
-    final _HomeItem item = items[index];
+    final UserList item = userlists[index];
 
     deleteDialog() {
       return showDialog<bool>(
@@ -118,7 +195,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     return Slidable.builder(
-      key: Key(item.title),
+      key: Key(item.listName),
       controller: slidableController,
       direction: direction,
       dismissal: SlidableDismissal(
@@ -131,8 +208,8 @@ class _MyHomePageState extends State<MyHomePage> {
         onWillDismiss: (item == null)
             ? null
             : (actionType) {
-                return deleteDialog();
-              },
+          return deleteDialog();
+        },
 
         onDismissed: (actionType) {
           _showSnackBar(
@@ -141,15 +218,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   ? 'Dismiss Archive'
                   : 'Dismiss Delete');
           setState(() {
-            items.removeAt(index);
+            userlists.removeAt(index);
           });
         },
       ),
       actionPane: SlidableScrollActionPane(),
       actionExtentRatio: 0.25,
       child: direction == Axis.horizontal
-          ? VerticalListItem(items[index])
-          : HorizontalListItem(items[index]),
+          ? VerticalListItem(userlists[index])
+          : HorizontalListItem(userlists[index]),
       actionDelegate: SlideActionBuilderDelegate(
           actionCount: 2,
           builder: (context, index, animation, renderingMode) {
@@ -206,12 +283,24 @@ class _MyHomePageState extends State<MyHomePage> {
   void _showSnackBar(BuildContext context, String text) {
     Scaffold.of(context).showSnackBar(SnackBar(content: Text(text)));
   }
+
+  @override
+  Widget build(BuildContext context) {
+      userlists = widget.list;
+      return OrientationBuilder(
+      builder: (context, orientation) => _buildList(
+          context,
+          orientation == Orientation.portrait
+              ? Axis.vertical
+              : Axis.horizontal),
+    );
+  }
 }
 
 class HorizontalListItem extends StatelessWidget {
   HorizontalListItem(this.item);
 
-  final _HomeItem item;
+  final UserList item;
 
   @override
   Widget build(BuildContext context) {
@@ -223,15 +312,15 @@ class HorizontalListItem extends StatelessWidget {
         children: <Widget>[
           Expanded(
             child: CircleAvatar(
-              backgroundColor: item.color,
-              child: Text('${item.index}'),
+              backgroundColor: Colors.blue,
+              //child: Text('${item.index}'),
               foregroundColor: Colors.white,
             ),
           ),
           Expanded(
             child: Center(
               child: Text(
-                item.subtitle,
+                item.listName,
               ),
             ),
           ),
@@ -239,47 +328,4 @@ class HorizontalListItem extends StatelessWidget {
       ),
     );
   }
-}
-
-class VerticalListItem extends StatelessWidget {
-  VerticalListItem(this.item);
-
-  final _HomeItem item;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => Scaffold.of(context)
-          .showSnackBar(SnackBar(content: Text('Define what to do here'))),
-      //     Slidable.of(context)?.renderingMode == SlidableRenderingMode.none
-      //         ? Slidable.of(context)?.open()
-      //         : Slidable.of(context)?.close(),
-      child: Container(
-        color: Colors.white,
-        child: ListTile(
-          leading: CircleAvatar(
-            backgroundColor: item.color,
-            child: Text('${item.index}'),
-            foregroundColor: Colors.white,
-          ),
-          title: Text(item.title),
-          subtitle: Text(item.subtitle),
-        ),
-      ),
-    );
-  }
-}
-
-class _HomeItem {
-  const _HomeItem(
-    this.index,
-    this.title,
-    this.subtitle,
-    this.color,
-  );
-
-  final int index;
-  final String title;
-  final String subtitle;
-  final Color color;
 }

@@ -1,6 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gmoria/domain/blocs/UserListBloc.dart';
+import 'package:gmoria/domain/blocs/UserListEvent.dart';
+import 'package:gmoria/domain/repositories/UserListRepository.dart';
 import 'app/pages/home_page.dart';
 import 'app/pages/learn_page.dart';
 import 'app/pages/sign_in_page.dart';
@@ -9,8 +13,12 @@ import 'package:provider/provider.dart';
 import 'app/utils/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'data/repositories/DataUserListRepository.dart';
+import 'domain/blocs/simple_bloc_observer.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Bloc.observer = SimpleBlocObserver();
   await Firebase.initializeApp();
   runApp(MyApp());
 }
@@ -18,7 +26,16 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<UserListBloc>(
+          create: (context) {
+            return UserListBloc(userListRepository: DataUserListRepository(),
+            )..add(LoadUserList());
+          },
+        )
+      ],
+     child:MultiProvider(
       providers: [
         Provider<AuthenticationService>(
           create: (_) => AuthenticationService(FirebaseAuth.instance),
@@ -64,6 +81,7 @@ class MyApp extends StatelessWidget {
           return supportedLocales.first;
         },
       ),
+    )
     );
   }
 }
@@ -75,7 +93,7 @@ class AuthenticationWrapper extends StatelessWidget {
     final firebaseUser = context.watch<AuthenticationService>().getUser();
 
     if (firebaseUser != null) {
-      return MyHomePage(title: 'GMoria');
+      return MyHomePage();
     }
     return SignInPage();
   }

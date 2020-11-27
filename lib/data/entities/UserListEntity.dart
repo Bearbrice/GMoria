@@ -1,13 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
-class UserListEntity extends Equatable{
+class UserListEntity extends Equatable {
   final String listName;
   final int bestScore;
   final Timestamp creation_date;
   final List persons;
 
-  UserListEntity(this.listName,this.bestScore,this.creation_date,this.persons);
+  UserListEntity(
+      this.listName, this.bestScore, this.creation_date, this.persons);
 
   static UserListEntity fromSnapshot(DocumentSnapshot snap) {
     return UserListEntity(
@@ -28,7 +29,7 @@ class UserListEntity extends Equatable{
   }
 
   @override
-  List<Object> get props => [listName,bestScore,creation_date,persons];
+  List<Object> get props => [listName, bestScore, creation_date, persons];
 
   Map<String, Object> toDocument() {
     return {
@@ -47,5 +48,4 @@ class UserListEntity extends Equatable{
       'persons': persons,
     };
   }
-
 }

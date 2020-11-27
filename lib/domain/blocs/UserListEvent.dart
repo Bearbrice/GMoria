@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:gmoria/domain/models/UserList.dart';
 
-abstract class UserListEvent extends Equatable{
+abstract class UserListEvent extends Equatable {
   const UserListEvent();
 
   @override
@@ -46,10 +46,11 @@ class DeleteUserList extends UserListEvent {
   String toString() => 'UserListDeleted { userList: $userList }';
 }
 
-
 class UserListUpdated extends UserListEvent {
   final List<UserList> userList;
+
   const UserListUpdated(this.userList);
+
   @override
   List<Object> get props => [userList];
 }

@@ -15,7 +15,7 @@ class SignInPage extends StatelessWidget {
     return Scaffold(
       body: Container(
         padding: const EdgeInsets.all(25.0),
-        child : Column(
+        child: Column(
           children: [
             TextField(
               controller: emailController,
@@ -32,14 +32,14 @@ class SignInPage extends StatelessWidget {
             RaisedButton(
               onPressed: () {
                 context.read<AuthenticationService>().signIn(
-                  email: emailController.text.trim(),
-                  password: passwordController.text.trim(),
-                );
+                      email: emailController.text.trim(),
+                      password: passwordController.text.trim(),
+                    );
               },
               child: Text(AppContext.translate('signIn_button')),
             )
           ],
-      ),
+        ),
       ),
     );
   }

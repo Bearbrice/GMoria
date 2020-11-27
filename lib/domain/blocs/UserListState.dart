@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:gmoria/domain/models/UserList.dart';
 
-abstract class UserListState extends Equatable{
+abstract class UserListState extends Equatable {
   const UserListState();
 
   @override
@@ -13,7 +13,8 @@ class UserListLoading extends UserListState {}
 class UserListLoaded extends UserListState {
   final List<UserList> userList;
 
-  const UserListLoaded([this.userList = const[]]);
+  const UserListLoaded([this.userList = const []]);
+
   @override
   List<Object> get props => [userList];
 

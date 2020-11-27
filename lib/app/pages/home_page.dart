@@ -7,10 +7,43 @@ import 'package:gmoria/domain/blocs/UserListBloc.dart';
 import 'package:gmoria/domain/blocs/UserListState.dart';
 import 'package:gmoria/domain/models/UserList.dart';
 
+/// Page with all the lists of the user
 class MyHomePage extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
+    _showDialog() async {
+      await showDialog<String>(
+        context: context,
+        child: new AlertDialog(
+          contentPadding: const EdgeInsets.all(16.0),
+          content: new Row(
+            children: <Widget>[
+              new Expanded(
+                child: new TextField(
+                  autofocus: true,
+                  decoration: new InputDecoration(
+                      labelText: 'List name', hintText: 'eg. Football team'),
+                ),
+              )
+            ],
+          ),
+          actions: <Widget>[
+            new FlatButton(
+                child: const Text('Cancel'),
+                onPressed: () {
+                  Navigator.pop(context);
+                }),
+            new FlatButton(
+                child: const Text('Add'),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/list');
+                  // Navigator.pop(context);
+                })
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).translate('title')),
@@ -28,145 +61,63 @@ class MyHomePage extends StatelessWidget {
       /** Add button */
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
-        onPressed: () {
-          //
-
-        },
-          child: Icon(Icons.add),
-        ),
-      );
-  }
-}
-
-
-
-class VerticalListItem extends StatelessWidget {
-  VerticalListItem(this.item);
-
-  final UserList item;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => Scaffold.of(context)
-          .showSnackBar(SnackBar(content: Text('Define what to do here'))),
-      //     Slidable.of(context)?.renderingMode == SlidableRenderingMode.none
-      //         ? Slidable.of(context)?.open()
-      //         : Slidable.of(context)?.close(),
-      child: Container(
-        color: Colors.white,
-        child: ListTile(
-          leading: CircleAvatar(
-            backgroundColor: Colors.red,
-            //child: Text('${item.index}'),
-            foregroundColor: Colors.white,
-          ),
-          title: Text(item.listName),
-        ),
+        onPressed: _showDialog,
+        child: Icon(Icons.add),
       ),
     );
   }
 }
 
-// class _HomeItem {
-//   const _HomeItem(
-//     this.index,
-//     this.title,
-//     this.subtitle,
-//     this.color,
-//   );
-//
-//   final int index;
-//   final String title;
-//   final String subtitle;
-//   final Color color;
-// }
-
-class MyUserLists extends StatelessWidget{
-  MyUserLists({Key key}) : super(key:key);
+class MyUserLists extends StatelessWidget {
+  MyUserLists({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserListBloc,UserListState>(
-        builder: (context,state){
-          if(state is UserListLoading){
-            return Text("Loading !");
-          }else if (state is UserListLoaded){
-             //return Text(state.userList.toString());
-            final userLists = state.userList;
-            return WidgetListElement(list :userLists);
-          }else{
-            return Text("FUCK YOU");
-          }
-        });
+    return BlocBuilder<UserListBloc, UserListState>(builder: (context, state) {
+      if (state is UserListLoading) {
+        return Text("Loading !");
+      } else if (state is UserListLoaded) {
+        //return Text(state.userList.toString());
+        final userLists = state.userList;
+        return WidgetListElement(list: userLists);
+      } else {
+        return Text("FUCK YOU");
+      }
+    });
   }
-
 }
 
-class WidgetListElement extends StatefulWidget{
+class WidgetListElement extends StatefulWidget {
   final List<UserList> list;
+
   WidgetListElement({Key key, this.list}) : super(key: key);
-
-
 
   @override
   _WidgetListElementState createState() => _WidgetListElementState();
-
 }
 
 class _WidgetListElementState extends State<WidgetListElement> {
   SlidableController slidableController;
   List<UserList> userlists;
-  // List<_HomeItem> items = List.generate(
-  // 3,
-  // (i) => _HomeItem(
-  // i,
-  // 'title',
-  // 'SlidableScrollActionPane', //subtitle
-  // _getAvatarColor(i), //color
-  // ),
-  // );
 
   @protected
   void initState() {
-    slidableController = SlidableController(
-      onSlideAnimationChanged: handleSlideAnimationChanged,
-      onSlideIsOpenChanged: handleSlideIsOpenChanged,
-    );
+    slidableController = SlidableController();
     super.initState();
   }
-
-  Animation<double> _rotationAnimation;
-  Color _fabColor = Colors.blue;
-
-  void handleSlideAnimationChanged(Animation<double> slideAnimation) {
-    setState(() {
-      _rotationAnimation = slideAnimation;
-    });
-  }
-
-  void handleSlideIsOpenChanged(bool isOpen) {
-    setState(() {
-      _fabColor = isOpen ? Colors.green : Colors.blue;
-    });
-  }
-
-
 
   Widget _buildList(BuildContext context, Axis direction) {
     return ListView.builder(
       scrollDirection: direction,
       itemBuilder: (context, index) {
         final Axis slidableDirection =
-        direction == Axis.horizontal ? Axis.vertical : Axis.horizontal;
+            direction == Axis.horizontal ? Axis.vertical : Axis.horizontal;
 
         return _getSlidableWithDelegates(context, index, slidableDirection);
       },
       itemCount: widget.list.length,
     );
   }
-
-
 
   Widget _getSlidableWithDelegates(
       BuildContext context, int index, Axis direction) {
@@ -201,6 +152,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
       dismissal: SlidableDismissal(
         child: SlidableDrawerDismissal(),
         closeOnCanceled: true,
+
         // Allow only right side (delete) to be full slided
         dismissThresholds: <SlideActionType, double>{
           SlideActionType.primary: 1.0
@@ -208,8 +160,8 @@ class _WidgetListElementState extends State<WidgetListElement> {
         onWillDismiss: (item == null)
             ? null
             : (actionType) {
-          return deleteDialog();
-        },
+                return deleteDialog();
+              },
 
         onDismissed: (actionType) {
           _showSnackBar(
@@ -266,6 +218,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
   }
 
   static Color _getAvatarColor(int index) {
+    return Colors.red;
     switch (index % 4) {
       case 0:
         return Colors.red;
@@ -286,13 +239,37 @@ class _WidgetListElementState extends State<WidgetListElement> {
 
   @override
   Widget build(BuildContext context) {
-      userlists = widget.list;
-      return OrientationBuilder(
+    userlists = widget.list;
+    return OrientationBuilder(
       builder: (context, orientation) => _buildList(
           context,
           orientation == Orientation.portrait
               ? Axis.vertical
               : Axis.horizontal),
+    );
+  }
+}
+
+class VerticalListItem extends StatelessWidget {
+  VerticalListItem(this.item);
+
+  final UserList item;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, '/list'),
+      child: Container(
+        color: Colors.white,
+        child: ListTile(
+          leading: CircleAvatar(
+            backgroundColor: Colors.red,
+            //child: Text('${item.index}'),
+            foregroundColor: Colors.white,
+          ),
+          title: Text(item.listName),
+        ),
+      ),
     );
   }
 }

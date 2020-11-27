@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:gmoria/domain/repositories/UserListRepository.dart';
 import 'package:meta/meta.dart';
@@ -34,7 +35,7 @@ class UserListBloc extends Bloc<UserListEvent, UserListState> {
     _userListSubscription?.cancel();
     _userListSubscription = _userListRepository.getUserLists().listen(
           (userList) => add(UserListUpdated(userList)),
-    );
+        );
   }
 
   Stream<UserListState> _mapAddUserListToState(AddUserList event) async* {
@@ -49,8 +50,8 @@ class UserListBloc extends Bloc<UserListEvent, UserListState> {
     _userListRepository.deleteUserList(event.userList);
   }
 
-
-  Stream<UserListState> _mapUserListUpdateToState(UserListUpdated event) async* {
+  Stream<UserListState> _mapUserListUpdateToState(
+      UserListUpdated event) async* {
     yield UserListLoaded(event.userList);
   }
 
@@ -59,5 +60,4 @@ class UserListBloc extends Bloc<UserListEvent, UserListState> {
     _userListSubscription?.cancel();
     return super.close();
   }
-  
 }

@@ -7,8 +7,11 @@ class SignInPage extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  var AppContext;
+
   @override
   Widget build(BuildContext context) {
+    AppContext = AppLocalizations.of(context);
     return Scaffold(
       body: Container(
         padding: const EdgeInsets.all(25.0),
@@ -17,13 +20,13 @@ class SignInPage extends StatelessWidget {
             TextField(
               controller: emailController,
               decoration: InputDecoration(
-                labelText: AppLocalizations.of(context).translate('signIn_email'),
+                labelText: AppContext.translate('signIn_email'),
               ),
             ),
             TextField(
               controller: passwordController,
               decoration: InputDecoration(
-                labelText: AppLocalizations.of(context).translate('signIn_password'),
+                labelText: AppContext.translate('signIn_password'),
               ),
             ),
             RaisedButton(
@@ -33,7 +36,7 @@ class SignInPage extends StatelessWidget {
                   password: passwordController.text.trim(),
                 );
               },
-              child: Text(AppLocalizations.of(context).translate('signIn_button')),
+              child: Text(AppContext.translate('signIn_button')),
             )
           ],
       ),

@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:gmoria/app/pages/learn_page.dart';
 
-class HomePage extends StatelessWidget {
+/*class HomePage extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      initialRoute: '/',
+      routes: {
+        '/': (context) => MyHomePage(title: 'GMoria'),
+        '/learn': (context) => LearnPage(),
+      },
       title: 'Flutter Slidable Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Slidable Demo'),
     );
   }
-}
+}*/
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -133,10 +138,10 @@ class _MyHomePageState extends State<MyHomePage> {
           : HorizontalListItem(items[index]),
       actions: <Widget>[
         IconSlideAction(
-          caption: 'Archive',
+          caption: 'Learn',
           color: Colors.blue,
-          icon: Icons.archive,
-          onTap: () => _showSnackBar(context, 'Archive'),
+          icon: Icons.school,
+          onTap: () => Navigator.pushNamed(context, '/learn'),
         ),
         IconSlideAction(
           caption: 'Share',

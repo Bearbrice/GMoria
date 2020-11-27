@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'app/pages/home_page.dart';
+import 'app/pages/learn_page.dart';
 import 'app/pages/sign_in_page.dart';
 import 'package:gmoria/data/firebase/authentication_service.dart';
 import 'package:provider/provider.dart';
@@ -28,7 +29,11 @@ class MyApp extends StatelessWidget {
         )
       ],
       child: MaterialApp(
-        title: 'Flutter Demo',
+        title: 'GMoria',
+        initialRoute: '/',
+        routes: {
+          '/learn': (context) => LearnPage(),
+        },
         theme: ThemeData(
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -66,11 +71,11 @@ class MyApp extends StatelessWidget {
 class AuthenticationWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final firebaseUser = context.watch<User>();
-    // final firebaseUser = context.watch<AuthenticationService>().getUser();
+    //final firebaseUser = context.watch<User>();
+    final firebaseUser = context.watch<AuthenticationService>().getUser();
 
     if (firebaseUser != null) {
-      return HomePage();
+      return MyHomePage(title: 'GMoria');
     }
     return SignInPage();
   }

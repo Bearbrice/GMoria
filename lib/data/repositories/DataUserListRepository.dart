@@ -24,49 +24,19 @@ class DataUserListRepository implements UserListRepository {
 
   @override
   Future<void> addNewUserList(UserList userList) {
-    // TODO: implement addNewUserList
-    throw UnimplementedError();
+    return userListCollection.add(userList.toEntity().toDocument());
   }
 
   @override
   Future<void> deleteUserList(UserList userList) {
-    // TODO: implement deleteUserList
-    throw UnimplementedError();
+    return userListCollection.doc(userList.id).delete();
   }
 
   @override
   Future<void> updateUserList(UserList userList) {
-    // TODO: implement updateUserList
-    throw UnimplementedError();
+    return userListCollection
+        .doc(userList.id)
+        .update(userList.toEntity().toDocument());
   }
-
-//   Stream<List<UserList>> getUsersLists() {
-//     firestore.collection("lists").where('fk_user_id', isEqualTo: user.uid).get().then((querySnapshot) {
-//       querySnapshot.docs.forEach((result) {
-//         print(result.data());
-//       });
-//     });
-//   }
-
-//VERSION 2
-// @override
-// Future<List<UserList>> getUserLists() async {
-//   List<UserList> lists = new List();
-//    await firestore.collection("lists").where('fk_user_id', isEqualTo: user.uid).get()
-//       .then((QuerySnapshot querySnapshot) => {
-//         querySnapshot.docs.forEach((element) {
-//           UserList list = new UserList(element["listname"], element["bestscore"],
-//               element["creation_date"], element["persons"]);
-//           lists.add(list);
-//           print(lists.length);
-//         })
-//   });
-//
-//   print(" LONGUEUR ");
-//   print(lists.length);
-//
-//   return lists;
-//
-// }
 
 }

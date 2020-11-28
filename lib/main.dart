@@ -6,8 +6,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:gmoria/app/pages/list_page.dart';
 import 'package:gmoria/app/pages/person_form_page.dart';
 import 'package:gmoria/data/firebase/authentication_service.dart';
-import 'package:gmoria/domain/blocs/UserListBloc.dart';
-import 'package:gmoria/domain/blocs/UserListEvent.dart';
 import 'package:provider/provider.dart';
 
 import 'app/pages/home_page.dart';
@@ -16,6 +14,8 @@ import 'app/pages/sign_in_page.dart';
 import 'app/utils/app_localizations.dart';
 import 'data/repositories/DataUserListRepository.dart';
 import 'domain/blocs/simple_bloc_observer.dart';
+import 'domain/blocs/userlist/UserListBloc.dart';
+import 'domain/blocs/userlist/UserListEvent.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

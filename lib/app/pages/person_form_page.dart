@@ -1,10 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:gmoria/domain/models/PersonFormModel.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-
-import 'file:///C:/Users/brice/AndroidStudioProjects/gmoria/lib/domain/models/PersonFormModel.dart';
 
 class PersonForm extends StatelessWidget {
   @override

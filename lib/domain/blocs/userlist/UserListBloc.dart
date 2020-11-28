@@ -7,6 +7,7 @@ import 'package:meta/meta.dart';
 import 'UserListEvent.dart';
 import 'UserListState.dart';
 
+
 class UserListBloc extends Bloc<UserListEvent, UserListState> {
   final UserListRepository _userListRepository;
   StreamSubscription _userListSubscription;

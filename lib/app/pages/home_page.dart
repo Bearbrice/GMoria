@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
-import 'package:gmoria/domain/blocs/UserListBloc.dart';
-import 'package:gmoria/domain/blocs/UserListState.dart';
+import 'package:gmoria/domain/blocs/userlist/UserListState.dart';
+import 'package:gmoria/domain/blocs/userlist/UserListBloc.dart';
 import 'package:gmoria/domain/models/UserList.dart';
 
 /// Page with all the lists of the user
@@ -81,7 +81,7 @@ class MyUserLists extends StatelessWidget {
         final userLists = state.userList;
         return WidgetListElement(list: userLists);
       } else {
-        return Text("FUCK YOU");
+        return Text("Problem :D");
       }
     });
   }
@@ -137,7 +137,9 @@ class _WidgetListElementState extends State<WidgetListElement> {
               ),
               FlatButton(
                 child: Text('Ok'),
-                onPressed: () => Navigator.of(context).pop(true),
+                onPressed: () => {
+                  Navigator.of(context).pop(true)
+                },
               ),
             ],
           );

@@ -21,6 +21,8 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
   Stream<PersonState> mapEventToState(PersonEvent event) async* {
     if (event is LoadPerson) {
       yield* _mapLoadPersonToState();
+    } else if (event is LoadUserListPersons) {
+      yield* _mapLoadUserListPersonsToState(event);
     } else if (event is AddPerson) {
       yield* _mapAddPersonToState(event);
     } else if (event is UpdatePerson) {
@@ -37,6 +39,13 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
     _personSubscription = _personRepository.getPersons().listen(
           (person) => add(PersonUpdated(person)),
         );
+  }
+
+  Stream<PersonState> _mapLoadUserListPersonsToState(LoadUserListPersons event) async* {
+    _personSubscription?.cancel();
+    _personSubscription = _personRepository.getUserListPersons(event.personsIdList).listen(
+          (person) => add(PersonUpdated(person)),
+    );
   }
 
   Stream<PersonState> _mapAddPersonToState(AddPerson event) async* {

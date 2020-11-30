@@ -200,7 +200,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
                     ? Colors.green.withOpacity(animation.value)
                     : Colors.green,
                 icon: Icons.school,
-                onTap: () => Navigator.pushNamed(context, '/learn'),
+                onTap: () => Navigator.pushNamed(context, '/learn', arguments: item),
               );
             }
           }),

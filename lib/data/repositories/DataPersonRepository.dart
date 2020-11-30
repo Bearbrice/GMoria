@@ -22,6 +22,18 @@ class DataPersonRepository implements PersonRepository {
   }
 
   @override
+  Stream<List<Person>> getUserListPersons(List<String> personsIdList) {
+    return personCollection
+        .where(FieldPath.documentId, whereIn: personsIdList)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs
+          .map((doc) => Person.fromEntity(PersonEntity.fromSnapshot(doc)))
+          .toList();
+    });
+  }
+
+  @override
   Future<void> addNewPerson(Person person) {
     return personCollection.add(person.toEntity().toDocument());
   }

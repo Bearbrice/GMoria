@@ -10,6 +10,15 @@ abstract class PersonEvent extends Equatable {
 
 class LoadPerson extends PersonEvent {}
 
+class LoadUserListPersons extends PersonEvent {
+  final List<String> personsIdList;
+
+  const LoadUserListPersons(this.personsIdList);
+
+  @override
+  List<Object> get props => [personsIdList];
+}
+
 class AddPerson extends PersonEvent {
   final Person person;
 

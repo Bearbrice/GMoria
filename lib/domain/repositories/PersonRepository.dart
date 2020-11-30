@@ -8,4 +8,6 @@ abstract class PersonRepository {
   Future<void> updatePerson(Person userList);
 
   Stream<List<Person>> getPersons();
+
+  Stream<List<Person>> getUserListPersons(List<String> personsIdList);
 }

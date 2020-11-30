@@ -41,8 +41,12 @@ class MyHomePage extends StatelessWidget {
                 onPressed: () {
                   var item = UserList(listController.text);
                   BlocProvider.of<UserListBloc>(context).add(AddUserList(item));
+                  // Reset the TextField input
+                  listController = new TextEditingController();
+                  // Do not display the dialog anymore
+                  Navigator.pop(context);
+                  // Push the screen to created list
                   Navigator.pushNamed(context, '/list', arguments: item);
-                  // Navigator.pop(context);
                 })
           ],
         ),
@@ -155,6 +159,19 @@ class _WidgetListElementState extends State<WidgetListElement> {
       );
     }
 
+    /// Prevent learn and game to launch if the list is empty
+    handleEmpty(action) {
+      if (item.persons == null) {
+        return _showSnackBar(context, 'The list is empty');
+      }
+
+      if (action == 'Game') {
+        _showSnackBar(context, 'Game');
+      } else {
+        Navigator.pushNamed(context, '/learn', arguments: item);
+      }
+    }
+
     return Slidable.builder(
       key: Key(item.listName),
       controller: slidableController,
@@ -199,7 +216,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
                     ? Colors.indigo.withOpacity(animation.value)
                     : Colors.indigo,
                 icon: Icons.videogame_asset,
-                onTap: () => _showSnackBar(context, 'Game'),
+                onTap: () => handleEmpty('Game'),
               );
             } else {
               return IconSlideAction(
@@ -208,8 +225,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
                     ? Colors.green.withOpacity(animation.value)
                     : Colors.green,
                 icon: Icons.school,
-                onTap: () =>
-                    Navigator.pushNamed(context, '/learn', arguments: item),
+                onTap: () => handleEmpty('Learn'),
               );
             }
           }),

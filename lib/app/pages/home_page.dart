@@ -268,7 +268,7 @@ class VerticalListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, '/list'),
+      onTap: () => Navigator.pushNamed(context, '/list', arguments: item),
       child: Container(
         color: Colors.white,
         child: ListTile(

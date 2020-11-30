@@ -4,5 +4,6 @@
   "signIn_password": "Password",
   "signIn_button" : "Sign in",
   "home_signOut" : "Sign out",
-  "learn_title" : "Learn"
+  "learn_title" : "Learn: ",
+  "list_title" : "List: "
 }

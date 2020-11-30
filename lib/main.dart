@@ -7,6 +7,7 @@ import 'package:gmoria/app/pages/list_page.dart';
 import 'package:gmoria/app/pages/person_form_page.dart';
 import 'package:gmoria/data/firebase/authentication_service.dart';
 import 'package:provider/provider.dart';
+
 import 'app/pages/home_page.dart';
 import 'app/pages/learn_page.dart';
 import 'app/pages/sign_in_page.dart';
@@ -51,9 +52,8 @@ class MyApp extends StatelessWidget {
             initialRoute: '/',
             routes: {
               '/learn': (context) => LearnPage(),
-              '/list': (context) =>
-                  ListPage(title: context.hashCode.toString()),
-              '/personForm': (context) => PersonForm(),
+              '/list': (context) => ListPage(),
+              '/personForm': (context) => PersonForm()
             },
             theme: ThemeData(
               primarySwatch: Colors.blue,

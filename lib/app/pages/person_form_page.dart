@@ -1,19 +1,32 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:gmoria/domain/models/Person.dart';
 import 'package:gmoria/domain/models/PersonFormModel.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 class PersonForm extends StatelessWidget {
+  Person person;
+
   @override
   Widget build(BuildContext context) {
+    person = ModalRoute.of(context).settings.arguments;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Create new person'),
       ),
-      body: TestForm(),
+      body: getFunction(),
     );
+  }
+
+  StatefulWidget getFunction() {
+    if (person == null) {
+      return TestForm();
+    } else {
+
+    }
   }
 }
 
@@ -24,7 +37,7 @@ class TestForm extends StatefulWidget {
 
 class _TestFormState extends State<TestForm> {
   final _formKey = GlobalKey<FormState>();
-  Person model = Person();
+  PersonM model = PersonM();
 
   File _image;
   final picker = ImagePicker();

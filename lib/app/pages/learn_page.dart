@@ -9,10 +9,8 @@ import 'package:gmoria/domain/blocs/person/PersonBloc.dart';
 import 'package:gmoria/domain/blocs/person/PersonEvent.dart';
 import 'package:gmoria/domain/blocs/person/PersonState.dart';
 import 'package:gmoria/domain/models/UserList.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class LearnPage extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     final UserList userList = ModalRoute.of(context).settings.arguments;
@@ -31,8 +29,12 @@ class LearnPage extends StatelessWidget {
               width: cardWidth,
               child: PersonCard("1 person")));
     } else {
-      List<String> personsIdList = userList.persons.map((personId)=> personId as String).toList();
-      elementToRender = PersonsList(personsIdList: personsIdList, cardHeight: cardHeight, cardWidth: cardWidth);
+      List<String> personsIdList =
+          userList.persons.map((personId) => personId as String).toList();
+      elementToRender = PersonsList(
+          personsIdList: personsIdList,
+          cardHeight: cardHeight,
+          cardWidth: cardWidth);
     }
     return Scaffold(
       backgroundColor: Colors.white,
@@ -40,7 +42,6 @@ class LearnPage extends StatelessWidget {
         backgroundColor: Colors.blue,
         title: Text(
           AppLocalizations.of(context).translate('learn_title') +
-              " : " +
               userList.listName,
           style: TextStyle(color: Colors.white),
         ),
@@ -57,7 +58,8 @@ class PersonsList extends StatelessWidget {
   final cardWidth;
   final cardHeight;
 
-  PersonsList({Key key, this.personsIdList, this.cardWidth, this.cardHeight}) : super(key: key);
+  PersonsList({Key key, this.personsIdList, this.cardWidth, this.cardHeight})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -98,10 +100,11 @@ class PersonsList extends StatelessWidget {
 
 class PersonCard extends StatelessWidget {
   final person;
-  PersonCard(this.person);
-  var user = FirebaseAuth.instance.currentUser;
-  Image image ;
 
+  PersonCard(this.person);
+
+  var user = FirebaseAuth.instance.currentUser;
+  Image image;
 
   @override
   Widget build(BuildContext context) {
@@ -121,9 +124,9 @@ class PersonCard extends StatelessWidget {
             child: Text(
           person.description,
           style: TextStyle(color: Colors.white, fontSize: 20),
-          )
-          //image
-        ),
+        )
+            //image
+            ),
       ),
       back: Container(
         child: Center(

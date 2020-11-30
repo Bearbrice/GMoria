@@ -1,4 +1,4 @@
-class Person {
+class PersonM {
   String firstname;
   String lastname;
 
@@ -8,5 +8,5 @@ class Person {
 
   // String is_known;
 
-  Person({this.firstname, this.lastname, this.job, this.description});
+  PersonM({this.firstname, this.lastname, this.job, this.description});
 }

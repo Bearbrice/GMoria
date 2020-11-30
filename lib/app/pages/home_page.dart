@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
+import 'package:gmoria/domain/blocs/userlist/UserListBloc.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListEvent.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListState.dart';
-import 'package:gmoria/domain/blocs/userlist/UserListBloc.dart';
 import 'package:gmoria/domain/models/UserList.dart';
 
 /// Page with all the lists of the user
@@ -39,9 +39,9 @@ class MyHomePage extends StatelessWidget {
             new FlatButton(
                 child: const Text('Add'),
                 onPressed: () {
-                  BlocProvider.of<UserListBloc>(context).add(
-                      AddUserList(UserList(listController.text )));
-                  Navigator.pushNamed(context, '/list');
+                  var item = UserList(listController.text);
+                  BlocProvider.of<UserListBloc>(context).add(AddUserList(item));
+                  Navigator.pushNamed(context, '/list', arguments: item);
                   // Navigator.pop(context);
                 })
           ],
@@ -145,7 +145,8 @@ class _WidgetListElementState extends State<WidgetListElement> {
                 onPressed: () => {
                   Navigator.of(context).pop(true),
                   print("NOM : " + item.listName),
-                  BlocProvider.of<UserListBloc>(context).add(DeleteUserList(item)),
+                  BlocProvider.of<UserListBloc>(context)
+                      .add(DeleteUserList(item)),
                 },
               ),
             ],
@@ -207,7 +208,8 @@ class _WidgetListElementState extends State<WidgetListElement> {
                     ? Colors.green.withOpacity(animation.value)
                     : Colors.green,
                 icon: Icons.school,
-                onTap: () => Navigator.pushNamed(context, '/learn', arguments: item),
+                onTap: () =>
+                    Navigator.pushNamed(context, '/learn', arguments: item),
               );
             }
           }),

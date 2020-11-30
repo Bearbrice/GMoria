@@ -52,7 +52,7 @@ class TestForm extends StatefulWidget {
 class _TestFormState extends State<TestForm> {
   final _formKey = GlobalKey<FormState>();
 
-  Person person;
+  var person;
 
   PersonM model = PersonM();
 
@@ -130,6 +130,10 @@ class _TestFormState extends State<TestForm> {
   Widget build(BuildContext context) {
     final halfMediaWidth = MediaQuery.of(context).size.width / 2.0;
     person = widget.person;
+
+    if (person == null) {
+      person = new PersonM();
+    }
 
     return Form(
       key: _formKey,

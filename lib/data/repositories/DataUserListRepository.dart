@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gmoria/data/entities/UserListEntity.dart';
@@ -7,7 +9,10 @@ import 'package:gmoria/domain/repositories/UserListRepository.dart';
 var user = FirebaseAuth.instance.currentUser;
 
 class DataUserListRepository implements UserListRepository {
+  final db = FirebaseFirestore.instance;
   final userListCollection = FirebaseFirestore.instance.collection('lists');
+  final personCollection = FirebaseFirestore.instance.collection('persons');
+
   List<UserList> currentUserLists = new List<UserList>();
 
   @override
@@ -24,11 +29,29 @@ class DataUserListRepository implements UserListRepository {
 
   @override
   Future<void> addNewUserList(UserList userList) {
-    return userListCollection.add(userList.toEntity().toDocument());
+    Map<String,Object> newList = {
+      'listname':userList.listName,
+      'bestscore': userList.bestScore,
+      'creation_date': userList.creation_date,
+      'persons': userList.persons,
+      'fk_user_id':user.uid
+    };
+    return userListCollection.add(newList);
   }
 
   @override
   Future<void> deleteUserList(UserList userList) {
+    //Get a new batch
+    var batch = db.batch();
+    //Delete each person of UserList
+    if(userList.persons != null) {
+      for (int i = 0; i < userList.persons.length; i++) {
+        DocumentReference documentReference = personCollection.doc(
+            userList.persons[i]);
+        batch.delete(documentReference);
+      }
+      batch.commit();
+    }
     return userListCollection.doc(userList.id).delete();
   }
 

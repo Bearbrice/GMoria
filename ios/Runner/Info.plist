@@ -26,12 +26,12 @@
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
-	<key>NSNSPhotoLibraryUsageDescription</key>
-	<string>Need to access in order to add a picture profile</string>
-	<key>NSCameraUsageDescription</key>
-    <string>Need to access in order to take and add a picture profile</string>
-    <key>NSMicrophoneUsageDescription</key>
-     <string>Need to access microphone in order to play the game without typing</string>
+	  <key>NSPhotoLibraryUsageDescription</key>
+      <string>Upload images for screen background</string>
+      <key>NSCameraUsageDescription</key>
+      <string>Upload image from camera for screen background</string>
+      <key>NSMicrophoneUsageDescription</key>
+      <string>Post videos to profile</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

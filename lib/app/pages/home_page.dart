@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
+import 'package:gmoria/domain/blocs/userlist/UserListEvent.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListState.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListBloc.dart';
 import 'package:gmoria/domain/models/UserList.dart';
@@ -11,6 +12,8 @@ import 'package:gmoria/domain/models/UserList.dart';
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    TextEditingController listController = new TextEditingController();
+    String name;
     _showDialog() async {
       await showDialog<String>(
         context: context,
@@ -20,6 +23,7 @@ class MyHomePage extends StatelessWidget {
             children: <Widget>[
               new Expanded(
                 child: new TextField(
+                  controller: listController,
                   autofocus: true,
                   decoration: new InputDecoration(
                       labelText: 'List name', hintText: 'eg. Football team'),
@@ -36,6 +40,8 @@ class MyHomePage extends StatelessWidget {
             new FlatButton(
                 child: const Text('Add'),
                 onPressed: () {
+                  BlocProvider.of<UserListBloc>(context).add(
+                      AddUserList(UserList(listController.text )));
                   Navigator.pushNamed(context, '/list');
                   // Navigator.pop(context);
                 })
@@ -138,7 +144,9 @@ class _WidgetListElementState extends State<WidgetListElement> {
               FlatButton(
                 child: Text('Ok'),
                 onPressed: () => {
-                  Navigator.of(context).pop(true)
+                  Navigator.of(context).pop(true),
+                  print("NOM : " + item.listName),
+                  BlocProvider.of<UserListBloc>(context).add(DeleteUserList(item)),
                 },
               ),
             ],

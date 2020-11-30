@@ -41,10 +41,10 @@ class MyHomePage extends StatelessWidget {
                 onPressed: () {
                   var item = UserList(listController.text);
                   BlocProvider.of<UserListBloc>(context).add(AddUserList(item));
-                  // Reset the TextField input
-                  listController = new TextEditingController();
                   // Do not display the dialog anymore
                   Navigator.pop(context);
+                  // Reset the TextField input
+                  listController.text = "";
                   // Push the screen to created list
                   Navigator.pushNamed(context, '/list', arguments: item);
                 })

@@ -5,5 +5,6 @@
   "signIn_button" : "Sign in",
   "home_signOut" : "Sign out",
   "learn_title" : "Learn: ",
-  "list_title" : "List: "
+  "list_title" : "List: ",
+  "save": "Save"
 }

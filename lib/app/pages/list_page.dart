@@ -15,6 +15,7 @@ class ListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final UserList userList = ModalRoute.of(context).settings.arguments;
+    final _scaffoldKey = GlobalKey<ScaffoldState>();
 
     conditionalRendering() {
       if (userList.persons == null) {
@@ -27,32 +28,90 @@ class ListPage extends StatelessWidget {
       }
     }
 
+    void _showSnackBar(BuildContext context, String text) {
+      final snackBar = SnackBar(content: Text(text));
+      _scaffoldKey.currentState.showSnackBar(snackBar); // edited line
+    }
+
+    /// Prevent learn and game to launch if the list is empty
+    handleEmpty(action) {
+      if (userList.persons == null) {
+        return _showSnackBar(context, 'The list is empty');
+      }
+
+      if (action == 'Game') {
+        _showSnackBar(context, 'Game');
+      } else {
+        Navigator.pushNamed(context, '/learn', arguments: userList);
+      }
+    }
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          AppLocalizations.of(context).translate('list_title') +
-              userList.listName,
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-      body: Center(child: conditionalRendering()
-          //   OrientationBuilder(
-          //   builder: (context, orientation) => _buildList(
-          //       context,
-          //       orientation == Orientation.portrait
-          //           ? Axis.vertical
-          //           : Axis.horizontal),
-          // ),
+        key: _scaffoldKey,
+        appBar: AppBar(
+          title: Text(
+            AppLocalizations.of(context).translate('list_title') +
+                userList.listName,
+            style: TextStyle(color: Colors.white),
           ),
-      /** Add button */
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
-        onPressed: () {
-          Navigator.pushNamed(context, '/personForm');
-        },
-        child: Icon(Icons.add),
-      ),
-    );
+        ),
+        body: Center(child: conditionalRendering()
+            //   OrientationBuilder(
+            //   builder: (context, orientation) => _buildList(
+            //       context,
+            //       orientation == Orientation.portrait
+            //           ? Axis.vertical
+            //           : Axis.horizontal),
+            // ),
+            ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              FloatingActionButton(
+                backgroundColor: Colors.indigo,
+                heroTag: null,
+                onPressed: () {
+                  handleEmpty('Game');
+                  // Navigator.pushNamed(context, '/personForm');
+                },
+                child: Icon(Icons.videogame_asset),
+              ),
+              FloatingActionButton(
+                backgroundColor: Colors.green,
+                heroTag: null,
+                onPressed: () {
+                  handleEmpty('Learn');
+                  // Navigator.pushNamed(context, '/personForm');
+                },
+                child: Icon(Icons.school),
+              ),
+              FloatingActionButton.extended(
+                  heroTag: null,
+                  backgroundColor: Colors.blue,
+                  label: Text('Add'),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/personForm');
+                  },
+                  hoverColor: Colors.cyan,
+                  icon: Icon(Icons.add)
+                  // child: Icon(Icons.add),
+                  )
+            ],
+          ),
+        )
+        //   /** Add button */
+        //   floatingActionButton: FloatingActionButton(
+        //   backgroundColor: Colors.blue,
+        //   onPressed: () {
+        //     Navigator.pushNamed(context, '/personForm');
+        //   },
+        //   child: Icon(Icons.add),
+        // ),
+
+        );
   }
 }
 
@@ -251,7 +310,7 @@ class VerticalListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, '/personForm', arguments: item),
+      onTap: () => Navigator.pushNamed(context, '/personView', arguments: item),
       child: Container(
         color: Colors.white,
         child: ListTile(

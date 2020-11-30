@@ -6,37 +6,54 @@ import 'package:gmoria/domain/models/PersonFormModel.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
+bool editMode = false;
+
 class PersonForm extends StatelessWidget {
   Person person;
+  String title = "Add a new person";
 
   @override
   Widget build(BuildContext context) {
     person = ModalRoute.of(context).settings.arguments;
 
+    // print("-------------->" + person.toString());
+
+    if (person != null) {
+      editMode = true;
+      title = "Edit: " + person.firstname + " " + person.lastname;
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create new person'),
+        title: Text(title),
       ),
-      body: getFunction(),
+      body: TestForm(person: person),
     );
   }
 
-  StatefulWidget getFunction() {
-    if (person == null) {
-      return TestForm();
-    } else {
-
-    }
-  }
+// StatefulWidget getFunction() {
+//   if (person == null) {
+//     return TestForm();
+//   } else {
+//     return TestForm(person);
+//   }
+// }
 }
 
 class TestForm extends StatefulWidget {
+  final Person person;
+
+  TestForm({Key key, this.person}) : super(key: key);
+
   @override
   _TestFormState createState() => _TestFormState();
 }
 
 class _TestFormState extends State<TestForm> {
   final _formKey = GlobalKey<FormState>();
+
+  Person person;
+
   PersonM model = PersonM();
 
   File _image;
@@ -104,9 +121,15 @@ class _TestFormState extends State<TestForm> {
     });
   }
 
+  // TextEditingController firstname;
+  // TextEditingController lastname;
+  // TextEditingController job;
+  // TextEditingController description;
+
   @override
   Widget build(BuildContext context) {
     final halfMediaWidth = MediaQuery.of(context).size.width / 2.0;
+    person = widget.person;
 
     return Form(
       key: _formKey,
@@ -116,7 +139,8 @@ class _TestFormState extends State<TestForm> {
             Container(
               child: Center(
                 child: _image == null
-                    ? Text('No image selected.')
+                    ? Text(
+                        editMode ? 'No image available' : 'No image selected.')
                     : Image.file(_image, width: 280.0, height: 280.0),
               ),
             ),
@@ -129,7 +153,9 @@ class _TestFormState extends State<TestForm> {
                     alignment: Alignment.topCenter,
                     width: halfMediaWidth,
                     child: MyTextFormField(
+                      initialValue: person.firstname,
                       hintText: 'First Name',
+                      // controller: firstname,
                       validator: (String value) {
                         if (value.isEmpty) {
                           return 'Enter the first name';
@@ -146,6 +172,8 @@ class _TestFormState extends State<TestForm> {
                     width: halfMediaWidth,
                     child: MyTextFormField(
                       hintText: 'Last Name',
+                      initialValue: person.lastname,
+                      // controller: lastname,
                       validator: (String value) {
                         if (value.isEmpty) {
                           return 'Enter the last name';
@@ -162,7 +190,9 @@ class _TestFormState extends State<TestForm> {
             ),
             MyTextFormField(
               hintText: 'Job (optional)',
-              isEmail: true,
+              initialValue: person.job,
+              // controller: job,
+              isEmail: false,
               // validator: (String value) {
               //   // if (value.isEmpty) {
               //   //   return 'Please enter a valid email';
@@ -175,7 +205,10 @@ class _TestFormState extends State<TestForm> {
             ),
             MyTextFormField(
               hintText: 'Description (optional)',
-              isEmail: true,
+              initialValue: person.description,
+              isEmail: false,
+              // controller: description,
+
               // validator: (String value) {
               //   if (value.isEmpty) {
               //     return 'Please enter a valid email';
@@ -192,7 +225,7 @@ class _TestFormState extends State<TestForm> {
             //   textColor: Colors.lightGreenAccent,
             // ),
             RaisedButton(
-              child: Text("Get image"),
+              child: Text("From gallery"),
               onPressed: getImage,
               // textColor: Colors.lightGreenAccent,
             ),
@@ -202,7 +235,7 @@ class _TestFormState extends State<TestForm> {
               // textColor: Colors.lightGreenAccent,
             ),
             RaisedButton(
-              child: Text("Test"),
+              child: Text("Native gallery crop"),
               onPressed: native,
               // textColor: Colors.lightGreenAccent,
             ),
@@ -211,7 +244,8 @@ class _TestFormState extends State<TestForm> {
               onPressed: () {
                 if (_formKey.currentState.validate()) {
                   _formKey.currentState.save();
-                  Navigator.pushNamed(context, '/list');
+                  // Navigator.pushNamed(context, '/list');
+                  print(this.model.firstname);
                   // Navigator.push(
                   //     context,
                   //     MaterialPageRoute(
@@ -219,7 +253,7 @@ class _TestFormState extends State<TestForm> {
                 }
               },
               child: Text(
-                'Sign Up',
+                'Save',
                 style: TextStyle(
                   color: Colors.white,
                 ),
@@ -234,12 +268,16 @@ class _TestFormState extends State<TestForm> {
 
 class MyTextFormField extends StatelessWidget {
   final String hintText;
+  final String initialValue;
   final Function validator;
+  final TextEditingController controller;
   final Function onSaved;
   final bool isPassword;
   final bool isEmail;
 
   MyTextFormField({
+    this.initialValue,
+    this.controller,
     this.hintText,
     this.validator,
     this.onSaved,
@@ -259,9 +297,11 @@ class MyTextFormField extends StatelessWidget {
           filled: true,
           fillColor: Colors.grey[200],
         ),
+        controller: controller,
         obscureText: isPassword ? true : false,
         validator: validator,
         onSaved: onSaved,
+        initialValue: initialValue,
         keyboardType: isEmail ? TextInputType.emailAddress : TextInputType.text,
       ),
     );

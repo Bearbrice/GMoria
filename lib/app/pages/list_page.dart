@@ -10,13 +10,22 @@ import 'package:gmoria/domain/blocs/person/PersonState.dart';
 import 'package:gmoria/domain/models/Person.dart';
 import 'package:gmoria/domain/models/UserList.dart';
 
-/// Page with all the lists of the user
+/// Page that display a specific list
 class ListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final UserList userList = ModalRoute.of(context).settings.arguments;
-    List<String> personsIdList =
-    userList.persons.map((personId) => personId as String).toList();
+
+    conditionalRendering() {
+      if (userList.persons == null) {
+        return Center(
+            child: Text("Your list is empty", style: TextStyle(fontSize: 20)));
+      } else {
+        List<String> personsIdList =
+            userList.persons.map((personId) => personId as String).toList();
+        return MyUserPeople(personsIdList: personsIdList);
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -26,16 +35,15 @@ class ListPage extends StatelessWidget {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: Center(
-        child: MyUserPeople(personsIdList: personsIdList),
-        //   OrientationBuilder(
-        //   builder: (context, orientation) => _buildList(
-        //       context,
-        //       orientation == Orientation.portrait
-        //           ? Axis.vertical
-        //           : Axis.horizontal),
-        // ),
-      ),
+      body: Center(child: conditionalRendering()
+          //   OrientationBuilder(
+          //   builder: (context, orientation) => _buildList(
+          //       context,
+          //       orientation == Orientation.portrait
+          //           ? Axis.vertical
+          //           : Axis.horizontal),
+          // ),
+          ),
       /** Add button */
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
@@ -59,7 +67,6 @@ class MyUserPeople extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return MultiBlocProvider(
         providers: [
           BlocProvider<PersonBloc>(

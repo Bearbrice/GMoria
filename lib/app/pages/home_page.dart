@@ -13,7 +13,6 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TextEditingController listController = new TextEditingController();
-    String name;
     _showDialog() async {
       await showDialog<String>(
         context: context,

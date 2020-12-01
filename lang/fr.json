@@ -3,5 +3,8 @@
   "signIn_email": "Email",
   "signIn_password": "Mot de passe",
   "signIn_button" : "Se connecter",
-  "home_signOut" : "Se déconnecter"
+  "home_signOut" : "Se déconnecter",
+  "learn_title" : "Learn: ",
+  "list_title" : "List: ",
+  "save": "Save"
 }

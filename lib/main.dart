@@ -3,11 +3,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:gmoria/app/pages/Person/person_form_page.dart';
 import 'package:gmoria/app/pages/list_page.dart';
-import 'app/pages/Person/person_view.dart';
 import 'package:gmoria/data/firebase/authentication_service.dart';
 import 'package:provider/provider.dart';
-import 'package:gmoria/app/pages/Person/person_form_page.dart';
+
+import 'app/pages/Person/person_view.dart';
 import 'app/pages/home_page.dart';
 import 'app/pages/learn_page.dart';
 import 'app/pages/sign_in_page.dart';
@@ -93,8 +94,8 @@ class MyApp extends StatelessWidget {
 class AuthenticationWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    //final firebaseUser = context.watch<User>();
-    final firebaseUser = context.watch<AuthenticationService>().getUser();
+    final firebaseUser = context.watch<User>();
+    // final firebaseUser = context.watch<AuthenticationService>().getUser();
 
     if (firebaseUser != null) {
       return MyHomePage();

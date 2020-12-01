@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gmoria/domain/models/UserList.dart';
 
 abstract class UserListRepository {
@@ -8,4 +9,5 @@ abstract class UserListRepository {
   Future<void> updateUserList(UserList userList);
 
   Stream<List<UserList>> getUserLists();
+
 }

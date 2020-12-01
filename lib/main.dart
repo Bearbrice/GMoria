@@ -5,10 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:gmoria/app/pages/list_page.dart';
 import 'app/pages/Person/person_view.dart';
-import 'file:///C:/Users/brice/AndroidStudioProjects/gmoria/lib/app/pages/Person/person_form_page.dart';
 import 'package:gmoria/data/firebase/authentication_service.dart';
 import 'package:provider/provider.dart';
-
+import 'package:gmoria/app/pages/Person/person_form_page.dart';
 import 'app/pages/home_page.dart';
 import 'app/pages/learn_page.dart';
 import 'app/pages/sign_in_page.dart';

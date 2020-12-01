@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.gmoria">
+    package="com.g5.gmoria">
    <application
-        android:label="gmoria"
+        android:label="Gmoria (G5)"
         android:icon="@mipmap/ic_launcher">
        <activity
            android:name="com.yalantis.ucrop.UCropActivity"
@@ -42,4 +42,5 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+    <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>

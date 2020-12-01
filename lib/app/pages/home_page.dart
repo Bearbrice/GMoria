@@ -46,7 +46,7 @@ class MyHomePage extends StatelessWidget {
                   // Reset the TextField input
                   listController.text = "";
                   // Push the screen to created list
-                  Navigator.pushNamed(context, '/list', arguments: item);
+                  //Navigator.pushNamed(context, '/list', arguments: item);
                 })
           ],
         ),

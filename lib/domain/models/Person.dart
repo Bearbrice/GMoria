@@ -15,7 +15,7 @@ class Person {
 
   Person(
       this.firstname, this.lastname, this.job, this.description,this.image_url,{this.imported_from = 'App', this.is_known = false, String id})
-      : this.id = id;
+      : this.id = id ?? null;
 
   Person copyWith(
       {String id, String firstname, String lastname, String job, String description, String imported_from,  bool is_known, String image_url}) {

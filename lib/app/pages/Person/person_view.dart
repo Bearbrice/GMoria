@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gmoria/app/utils/ScreenArguments.dart';
@@ -48,13 +49,14 @@ class _PersonInfoState extends State<PersonInfo> {
   PersonM model = PersonM();
 
   //TODO: Load image from firebase
-  File _image = null;
+  Image _image;
 
   @override
   Widget build(BuildContext context) {
     final halfMediaWidth = MediaQuery.of(context).size.width / 2.0;
     person = widget.person;
     idUserList = widget.idUserList;
+    _image = Image.network(person.image_url);
     return Container(
       child: SingleChildScrollView(
         child: Column(
@@ -63,7 +65,11 @@ class _PersonInfoState extends State<PersonInfo> {
               child: Center(
                 child: _image == null
                     ? Text('Error, could not load image or a problem occured.')
-                    : Image.file(_image, width: 280.0, height: 280.0),
+                    : Container (
+                  child : ExtendedImage.network(person.image_url,fit: BoxFit.fill),
+                  width: 300,
+                  height: 300,
+            ),
               ),
             ),
             Container(

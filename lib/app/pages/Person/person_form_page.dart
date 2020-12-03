@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:extended_image/extended_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,6 +33,8 @@ class PersonForm extends StatelessWidget {
     if (person != null) {
       editMode = true;
       title = "Edit: " + person.firstname + " " + person.lastname;
+    }else{
+      editMode = false;
     }
     return BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
       return Scaffold(
@@ -157,17 +160,18 @@ class _TestFormState extends State<TestForm> {
           children: <Widget>[
             Container(
               child: Center(
-                child: _image == null
-                    ? Image.asset('assets/picture/unknown.jpg',
-                        width: 200.0, height: 200.0)
+                child: !editMode
+                    ? _image == null ? Image.asset('assets/picture/unknown.jpg',
+                        width: 200.0, height: 200.0) : Image.file(_image,width: 280,height: 280)
                     // Text(
                     //         editMode ? 'No image available' : 'No image selected.')
-                    : Image.file(_image, width: 280.0, height: 280.0),
+                    : _image == null ? ExtendedImage.network(person.image_url,fit: BoxFit.fill,width: 280,height: 280)
+                : Image.file(_image,width: 280,height: 280),
               ),
             ),
             Container(
                 child: Center(
-                    child: _image == null
+                    child: _image == null && !editMode
                         ? Text(
                             'Please provide an image',
                             style: TextStyle(
@@ -274,7 +278,7 @@ class _TestFormState extends State<TestForm> {
               color: Colors.blueAccent,
               onPressed: () async {
                 if (_formKey.currentState.validate()) {
-                  if (_image == null) {
+                  if (_image == null && !editMode) {
                     print('No image stop');
                     imageError = true;
                     return;
@@ -282,11 +286,31 @@ class _TestFormState extends State<TestForm> {
                   print('Image OK - GO');
                   _formKey.currentState.save();
                   print(this.model.firstname);
-                  String imageURL =await getImageURL();
-                  Person p = new Person(model.firstname, model.lastname,
-                      model.job, model.description, imageURL);
 
-                  BlocProvider.of<PersonBloc>(context).add(AddPerson(p, idUserList));
+
+                  if(editMode){
+                    String imageURL;
+                    if(_image != null){
+                      Reference photoRef = FirebaseStorage.instance.ref().storage.refFromURL(person.image_url);
+                      photoRef.delete();
+                      imageURL = await getImageURL();
+
+                    }else{
+                      imageURL =  person.image_url;
+                    }
+
+                    Person p = new Person(model.firstname, model.lastname,
+                        model.job, model.description,imageURL,
+                        is_known: person.is_known,imported_from: person.imported_from,id: person.id);
+                    print("FIRSTNAME");
+                    BlocProvider.of<PersonBloc>(context).add(UpdatePerson(p));
+                  }else{
+                    String imageURL =await getImageURL();
+                    Person p = new Person(model.firstname, model.lastname,
+                        model.job, model.description, imageURL);
+                    BlocProvider.of<PersonBloc>(context).add(AddPerson(p, idUserList));
+                  }
+
                   //Navigator.pop(context);
                   // Navigator.push(
                   //     context,

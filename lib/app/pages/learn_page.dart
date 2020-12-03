@@ -1,5 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:math';
 import 'package:flip_card/flip_card.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
@@ -8,7 +9,9 @@ import 'package:gmoria/data/repositories/DataPersonRepository.dart';
 import 'package:gmoria/domain/blocs/person/PersonBloc.dart';
 import 'package:gmoria/domain/blocs/person/PersonEvent.dart';
 import 'package:gmoria/domain/blocs/person/PersonState.dart';
+import 'package:gmoria/domain/models/Person.dart';
 import 'package:gmoria/domain/models/UserList.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class LearnPage extends StatelessWidget {
   @override
@@ -16,7 +19,7 @@ class LearnPage extends StatelessWidget {
     final UserList userList = ModalRoute.of(context).settings.arguments;
     var elementToRender;
     final cardHeight = 400.0;
-    final cardWidth = 350.0;
+    final cardWidth = 400.0;
 
     //Check the size of the person list and manage exceptions
     if (userList.persons == null) {
@@ -25,12 +28,10 @@ class LearnPage extends StatelessWidget {
     } else if (userList.persons.length == 1) {
       elementToRender = Center(
           child: Container(
-              height: cardHeight,
-              width: cardWidth,
-              child: PersonCard("1 person")));
+              height: cardHeight, width: cardWidth, child: Text("1 person")));
     } else {
       List<String> personsIdList =
-          userList.persons.map((personId) => personId as String).toList();
+      userList.persons.map((personId) => personId as String).toList();
       elementToRender = PersonsList(
           personsIdList: personsIdList,
           cardHeight: cardHeight,
@@ -77,58 +78,121 @@ class PersonsList extends StatelessWidget {
           if (state is PersonLoading) {
             return Text("Loading !");
           } else if (state is PersonLoaded) {
-            final personsList = state.person;
-            return Swiper(
-              index: 1,
-              itemCount: personsList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return PersonCard(personsList[index]);
-              },
-              viewportFraction: 0.8,
-              scale: 0.9,
-              layout: SwiperLayout.TINDER,
-              itemWidth: cardWidth,
-              itemHeight: cardHeight,
-              loop: false,
-            );
+            final personsList = shuffle(state.person);
+
+            return PeopleSwiper(personsList);
           } else {
             return Text("Problem :D");
           }
         }));
   }
+
+  List shuffle(List items) {
+    var random = new Random();
+
+    // Go through all elements.
+    for (var i = items.length - 1; i > 0; i--) {
+
+      // Pick a pseudorandom number according to the list length
+      var n = random.nextInt(i + 1);
+
+      var temp = items[i];
+      items[i] = items[n];
+      items[n] = temp;
+    }
+
+    return items;
+  }
+
 }
 
-class PersonCard extends StatelessWidget {
-  final person;
+class PeopleSwiper extends StatefulWidget{
+  final List<Person> personsList;
 
-  PersonCard(this.person);
+  const PeopleSwiper(this.personsList, {Key key}) : super(key: key);
 
-  var user = FirebaseAuth.instance.currentUser;
-  Image image;
+  @override
+  State<StatefulWidget> createState() => _PeopleSwiperState();
+
+}
+
+class _PeopleSwiperState extends State<PeopleSwiper>{
+  bool _loop = true;
+  int _currentIndex = 0 ;
 
   @override
   Widget build(BuildContext context) {
-    /*final imageLink = firebase_storage.FirebaseStorage.instance
+    return Column(children: [
+      Text(_currentIndex.toString()+"/"+widget.personsList.length.toString()),
+      Swiper(
+      layout: SwiperLayout.TINDER,
+      viewportFraction: 0.8,
+      itemCount: widget.personsList.length,
+      itemHeight: 400.0,
+      itemWidth: 400.0,
+      loop: _loop,
+      onIndexChanged: (value) {
+        _setCurrentIndex(value+1);
+        if(value==1){
+          print("toggleLoop");
+          _toggleLoop();
+        }
+      },
+      itemBuilder: (BuildContext context, int index) {
+        //Load shown card, 2 previous cards and 2 next cards
+        //getDownloadUrl(personsList[index].id);
+        return PersonCard(widget.personsList[index]);
+      },
+    )],);
+  }
+  void _toggleLoop() {
+    setState(() {
+      _loop = false;
+    });
+  }
+
+  void _setCurrentIndex(value){
+    setState(() {
+      _currentIndex += value;
+    });
+  }
+
+/*
+  Future<String> getDownloadUrl(String id) async{
+    var url = await firebase_storage.FirebaseStorage.instance
         .ref()
         .child('persons')
-        .child(user.uid)
-        .child('lZBLynkQHxPP2nDISkva.jpg');
-    final imageUrl = imageLink.getDownloadURL().then((url) => image = Image.network(url));*/
+        .child(FirebaseAuth.instance.currentUser.uid)
+        .child(id+'.jpg')
+        .getDownloadURL();
+    print(id+"------------------------------------------------"+url);
+    return url;
+  }*/
+
+}
+
+class PersonCard extends StatelessWidget {
+  final Person person;
+
+  PersonCard(this.person);
+
+  @override
+  Widget build(BuildContext context) {
     return FlipCard(
       direction: FlipDirection.HORIZONTAL, // default
       front: Container(
-        decoration: BoxDecoration(
-            color: Colors.lightBlue,
-            borderRadius: BorderRadius.all(Radius.circular(20.0))),
-        child: Center(
-            child: Text(
-          person.description,
-          style: TextStyle(color: Colors.white, fontSize: 20),
-        )
-            //image
-            ),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(20.0)),
+          ),
+          child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(20.0)),
+              child: Image.network(person.image_url, fit: BoxFit.fill)
+          )
       ),
       back: Container(
+        height: 400.0,
+        width: 400.0,
         child: Center(
           child: Text(
             person.firstname + " " + person.lastname,
@@ -136,7 +200,7 @@ class PersonCard extends StatelessWidget {
           ),
         ),
         decoration: BoxDecoration(
-          color: Colors.lightBlue,
+          color: Colors.redAccent,
           borderRadius: BorderRadius.all(Radius.circular(20.0)),
         ),
       ),

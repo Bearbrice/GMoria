@@ -1,9 +1,7 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:gmoria/domain/repositories/PersonRepository.dart';
 import 'package:meta/meta.dart';
-
 import 'PersonEvent.dart';
 import 'PersonState.dart';
 

@@ -47,7 +47,7 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
   }
 
   Stream<PersonState> _mapAddPersonToState(AddPerson event) async* {
-    _personRepository.addNewPerson(event.person);
+    await _personRepository.addNewPerson(event.person,event.idList);
   }
 
   Stream<PersonState> _mapUpdatePersonToState(UpdatePerson event) async* {

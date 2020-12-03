@@ -2,15 +2,19 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gmoria/app/utils/ScreenArguments.dart';
 import 'package:gmoria/domain/models/Person.dart';
 import 'package:gmoria/domain/models/PersonFormModel.dart';
 
 class PersonView extends StatelessWidget {
   Person person;
-
+  String idUserList;
+  ScreenArguments args;
   @override
   Widget build(BuildContext context) {
-    person = ModalRoute.of(context).settings.arguments;
+    args = ModalRoute.of(context).settings.arguments;
+    person = args.person;
+    idUserList = args.idUserList;
 
     // print("-------------->" + person.toString());
 
@@ -20,6 +24,7 @@ class PersonView extends StatelessWidget {
       ),
       body: PersonInfo(
         person: person,
+        idUserList:idUserList,
       ),
     );
   }
@@ -27,8 +32,9 @@ class PersonView extends StatelessWidget {
 
 class PersonInfo extends StatefulWidget {
   final Person person;
+  final String idUserList;
 
-  PersonInfo({Key key, this.person}) : super(key: key);
+  PersonInfo({Key key, this.person,this.idUserList}) : super(key: key);
 
   @override
   _PersonInfoState createState() => _PersonInfoState();
@@ -36,7 +42,7 @@ class PersonInfo extends StatefulWidget {
 
 class _PersonInfoState extends State<PersonInfo> {
   Person person;
-
+  String idUserList;
   // _PersonInfoState({Key key, this.person}) : super(key: key);
 
   PersonM model = PersonM();
@@ -48,7 +54,7 @@ class _PersonInfoState extends State<PersonInfo> {
   Widget build(BuildContext context) {
     final halfMediaWidth = MediaQuery.of(context).size.width / 2.0;
     person = widget.person;
-
+    idUserList = widget.idUserList;
     return Container(
       child: SingleChildScrollView(
         child: Column(
@@ -84,7 +90,7 @@ class _PersonInfoState extends State<PersonInfo> {
               color: Colors.blueAccent,
               child: Text("Edit", style: TextStyle(color: Colors.white)),
               onPressed: () => Navigator.pushNamed(context, '/personForm',
-                  arguments: person),
+                  arguments:  new ScreenArguments(person, idUserList)),
 
               // textColor: Colors.lightGreenAccent,
             ),

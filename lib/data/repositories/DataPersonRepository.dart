@@ -1,12 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:gmoria/data/entities/PersonEntity.dart';
 import 'package:gmoria/domain/models/Person.dart';
 import 'package:gmoria/domain/repositories/PersonRepository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class DataPersonRepository implements PersonRepository {
   final personCollection = FirebaseFirestore.instance.collection('persons');
+  final listsCollection = FirebaseFirestore.instance.collection('lists');
   List<Person> currentPersons = new List<Person>();
 
   //TODO method to get only 1 person or get from the array of UserList
@@ -34,13 +37,22 @@ class DataPersonRepository implements PersonRepository {
   }
 
   @override
-  Future<void> addNewPerson(Person person) {
+  Future<void> addNewPerson(Person person,String idUserList) async {
+    return personCollection.add(person.toEntity().toDocument()).then((value) => {
+      listsCollection.doc(idUserList).update({'persons': FieldValue.arrayUnion([value.id])})
+    });
+  }
+
+  Future<void> addNewPerson2(Person person) {
     return personCollection.add(person.toEntity().toDocument());
   }
 
   @override
   Future<void> deletePerson(Person person) {
+    Reference photoRef = FirebaseStorage.instance.ref().storage.refFromURL(person.image_url);
+    photoRef.delete();
     return personCollection.doc(person.id).delete();
+
   }
 
   @override

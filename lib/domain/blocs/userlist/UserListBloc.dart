@@ -11,6 +11,7 @@ import 'UserListState.dart';
 class UserListBloc extends Bloc<UserListEvent, UserListState> {
   final UserListRepository _userListRepository;
   StreamSubscription _userListSubscription;
+  StreamSubscription _userListSubscriptionById;
 
   UserListBloc({@required UserListRepository userListRepository})
       : assert(userListRepository != null),
@@ -29,6 +30,10 @@ class UserListBloc extends Bloc<UserListEvent, UserListState> {
       yield* _mapDeleteUserListToState(event);
     } else if (event is UserListUpdated) {
       yield* _mapUserListUpdateToState(event);
+    } else if(event is LoadUserListById){
+      yield* _mapUserListByIdToState(event);
+    } else if(event is UserListUpdatedById){
+      yield* _mapUserListByIdUpdatedToState(event);
     }
   }
 
@@ -55,6 +60,20 @@ class UserListBloc extends Bloc<UserListEvent, UserListState> {
       UserListUpdated event) async* {
     yield UserListLoaded(event.userList);
   }
+
+  Stream<UserListState> _mapUserListByIdToState(LoadUserListById event) async* {
+    _userListSubscriptionById?.cancel();
+    _userListSubscriptionById = _userListRepository.getUserListById(event.userListId).listen(
+          (userList) => add(UserListUpdatedById(userList)),
+    );
+  }
+
+  Stream<UserListState> _mapUserListByIdUpdatedToState(
+      UserListUpdatedById event) async* {
+    yield UserListLoadedById(event.userList);
+  }
+
+
 
   @override
   Future<void> close() {

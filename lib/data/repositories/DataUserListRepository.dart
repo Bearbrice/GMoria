@@ -29,12 +29,12 @@ class DataUserListRepository implements UserListRepository {
 
   @override
   Future<void> addNewUserList(UserList userList) {
-    Map<String,Object> newList = {
-      'listname':userList.listName,
+    Map<String, Object> newList = {
+      'listname': userList.listName,
       'bestscore': userList.bestScore,
       'creation_date': userList.creation_date,
       'persons': userList.persons,
-      'fk_user_id':user.uid
+      'fk_user_id': user.uid
     };
     return userListCollection.add(newList);
   }
@@ -44,10 +44,10 @@ class DataUserListRepository implements UserListRepository {
     //Get a new batch
     var batch = db.batch();
     //Delete each person of UserList
-    if(userList.persons != null) {
+    if (userList.persons != null) {
       for (int i = 0; i < userList.persons.length; i++) {
-        DocumentReference documentReference = personCollection.doc(
-            userList.persons[i]);
+        DocumentReference documentReference =
+            personCollection.doc(userList.persons[i]);
         batch.delete(documentReference);
       }
       batch.commit();
@@ -62,4 +62,10 @@ class DataUserListRepository implements UserListRepository {
         .update(userList.toEntity().toDocument());
   }
 
+  @override
+  Stream<UserList> getUserListById(String userListId) {
+    return userListCollection.doc(userListId).snapshots().map((snapshot) {
+      return UserList.fromEntity(UserListEntity.fromSnapshot(snapshot));
+    });
+  }
 }

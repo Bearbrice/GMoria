@@ -22,4 +22,16 @@ class UserListLoaded extends UserListState {
   String toString() => 'UserListLoaded { userList: $userList }';
 }
 
+class UserListLoadedById extends UserListState {
+  final UserList userList;
+
+  const UserListLoadedById(this.userList);
+
+  @override
+  List<Object> get props => [userList];
+
+  @override
+  String toString() => 'UserListLoaded { userList: $userList }';
+}
+
 class UserListLoadNotLoaded extends UserListState {}

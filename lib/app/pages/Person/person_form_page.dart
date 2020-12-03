@@ -1,34 +1,46 @@
 import 'dart:io';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gmoria/app/utils/ScreenArguments.dart';
+import 'package:gmoria/data/repositories/DataUserListRepository.dart';
+import 'package:gmoria/domain/blocs/person/PersonBloc.dart';
+import 'package:gmoria/domain/blocs/person/PersonEvent.dart';
+import 'package:gmoria/domain/blocs/person/PersonState.dart';
 import 'package:gmoria/domain/models/Person.dart';
 import 'package:gmoria/domain/models/PersonFormModel.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
 
 bool editMode = false;
 
 class PersonForm extends StatelessWidget {
   Person person;
+  String idUserList;
   String title = "Add a new person";
-
+  ScreenArguments args;
   @override
   Widget build(BuildContext context) {
-    person = ModalRoute.of(context).settings.arguments;
+    //person = ModalRoute.of(context).settings.arguments;
+    args = ModalRoute.of(context).settings.arguments;
+    person = args.person;
+    idUserList = args.idUserList;
 
     // print("-------------->" + person.toString());
-
     if (person != null) {
       editMode = true;
       title = "Edit: " + person.firstname + " " + person.lastname;
     }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
-      body: TestForm(person: person),
-    );
+    return BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(title),
+        ),
+        body: TestForm(idUserList:idUserList, person: person),
+      );
+    });
   }
 
 // StatefulWidget getFunction() {
@@ -38,12 +50,13 @@ class PersonForm extends StatelessWidget {
 //     return TestForm(person);
 //   }
 // }
+
 }
 
 class TestForm extends StatefulWidget {
   final Person person;
-
-  TestForm({Key key, this.person}) : super(key: key);
+  final String idUserList;
+  TestForm({Key key, this.person,this.idUserList}) : super(key: key);
 
   @override
   _TestFormState createState() => _TestFormState();
@@ -51,8 +64,8 @@ class TestForm extends StatefulWidget {
 
 class _TestFormState extends State<TestForm> {
   final _formKey = GlobalKey<FormState>();
-
   var person;
+  String idUserList;
 
   PersonM model = PersonM();
 
@@ -121,6 +134,22 @@ class _TestFormState extends State<TestForm> {
     });
   }
 
+  getImageURL() async {
+    Reference storageReference = FirebaseStorage.instance
+        .ref()
+        .child('persons/${user.uid}/${basename(_image.path)}');
+    print("PATHHHHHHHHHHHHHH");
+    print(basename(_image.path));
+    UploadTask uploadTask = storageReference.putFile(_image);
+    await uploadTask.whenComplete(() =>  {
+      print('File Uploaded')});
+    String returnURL;
+    await storageReference.getDownloadURL().then((fileURL) {
+      returnURL = fileURL;
+    });
+    return returnURL;
+  }
+
   // TextEditingController firstname;
   // TextEditingController lastname;
   // TextEditingController job;
@@ -130,7 +159,7 @@ class _TestFormState extends State<TestForm> {
   Widget build(BuildContext context) {
     final halfMediaWidth = MediaQuery.of(context).size.width / 2.0;
     person = widget.person;
-
+    idUserList = widget.idUserList;
     if (person == null) {
       person = new PersonM();
     }
@@ -245,11 +274,16 @@ class _TestFormState extends State<TestForm> {
             ),
             RaisedButton(
               color: Colors.blueAccent,
-              onPressed: () {
+              onPressed: () async {
                 if (_formKey.currentState.validate()) {
                   _formKey.currentState.save();
-                  // Navigator.pushNamed(context, '/list');
                   print(this.model.firstname);
+                  String imageURL =await getImageURL();
+                  Person p = new Person(model.firstname, model.lastname,
+                      model.job, model.description, imageURL);
+
+                  BlocProvider.of<PersonBloc>(context).add(AddPerson(p, idUserList));
+                  //Navigator.pop(context);
                   // Navigator.push(
                   //     context,
                   //     MaterialPageRoute(

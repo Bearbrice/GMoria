@@ -2,11 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:gmoria/app/utils/ScreenArguments.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
 import 'package:gmoria/data/repositories/DataPersonRepository.dart';
+import 'package:gmoria/data/repositories/DataUserListRepository.dart';
 import 'package:gmoria/domain/blocs/person/PersonBloc.dart';
 import 'package:gmoria/domain/blocs/person/PersonEvent.dart';
 import 'package:gmoria/domain/blocs/person/PersonState.dart';
+import 'package:gmoria/domain/blocs/userlist/UserListBloc.dart';
+import 'package:gmoria/domain/blocs/userlist/UserListEvent.dart';
+import 'package:gmoria/domain/blocs/userlist/UserListState.dart';
 import 'package:gmoria/domain/models/Person.dart';
 import 'package:gmoria/domain/models/UserList.dart';
 
@@ -18,13 +23,13 @@ class ListPage extends StatelessWidget {
     final _scaffoldKey = GlobalKey<ScaffoldState>();
 
     conditionalRendering() {
-      if (userList.persons == null) {
+      if (userList.persons.isEmpty) {
         return Center(
             child: Text("Your list is empty", style: TextStyle(fontSize: 20)));
       } else {
         List<String> personsIdList =
             userList.persons.map((personId) => personId as String).toList();
-        return MyUserPeople(personsIdList: personsIdList);
+        return MyUserPeople(userList.id, personsIdList: personsIdList);
       }
     }
 
@@ -93,7 +98,8 @@ class ListPage extends StatelessWidget {
                   backgroundColor: Colors.blue,
                   label: Text('Add'),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/personForm');
+                    Navigator.pushNamed(context, '/personForm',
+                        arguments: new ScreenArguments(null, userList.id));
                   },
                   hoverColor: Colors.cyan,
                   icon: Icon(Icons.add)
@@ -117,55 +123,46 @@ class ListPage extends StatelessWidget {
 
 class MyUserPeople extends StatelessWidget {
   // MyUserPeople({Key key}) : super(key: key);
-
-  final personsIdList;
-
+  final List<String> personsIdList;
+  final String userListId;
   // MyUserPeople({Key key, this.userList}) : super(key: key);
-
-  MyUserPeople({Key key, this.personsIdList}) : super(key: key);
-
+  MyUserPeople(this.userListId,{Key key, this.personsIdList}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider<PersonBloc>(
-            create: (context) {
-              return PersonBloc(
-                personRepository: DataPersonRepository(),
-              )..add(LoadUserListPersons(personsIdList));
-            },
-          )
-        ],
-        child: BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
-          if (state is PersonLoading) {
-            return Text("Loading !");
-          } else if (state is PersonLoaded) {
-            final personsList = state.person;
-            return WidgetListElement(list: personsList);
-            // return Swiper(
-            //   index: 1,
-            //   itemCount: personsList.length,
-            //   itemBuilder: (BuildContext context, int index) {
-            //     return PersonCard(personsList[index]);
-            //   },
-            //   viewportFraction: 0.8,
-            //   scale: 0.9,
-            //   layout: SwiperLayout.TINDER,
-            //   itemWidth: cardWidth,
-            //   itemHeight: cardHeight,
-            //   loop: false,
-            // );
-          } else {
-            return Text("Problem :D");
-          }
-        }));
+    return BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
+      if (state is PersonLoading) {
+        return Text("Loading !");
+      } else if (state is PersonLoaded) {
+        final personsList = state.person;
+        print("LISTTTT");
+        print(userListId);
+        List<Person> myList = personsList.where((i) => personsIdList.contains(i.id) ).toList();
+        return WidgetListElement(userListId, list: myList);
+        // return Swiper(
+        //   index: 1,
+        //   itemCount: personsList.length,
+        //   itemBuilder: (BuildContext context, int index) {
+        //     return PersonCard(personsList[index]);
+        //   },
+        //   viewportFraction: 0.8,
+        //   scale: 0.9,
+        //   layout: SwiperLayout.TINDER,
+        //   itemWidth: cardWidth,
+        //   itemHeight: cardHeight,
+        //   loop: false,
+        // );
+      } else {
+        return Text("Problem :D");
+      }
+    });
   }
 }
 
 class WidgetListElement extends StatefulWidget {
   final List<Person> list;
+  final String idUserList;
 
-  WidgetListElement({Key key, this.list}) : super(key: key);
+  WidgetListElement(this.idUserList, {Key key, this.list}) : super(key: key);
 
   @override
   _WidgetListElementState createState() => _WidgetListElementState();
@@ -208,11 +205,15 @@ class _WidgetListElementState extends State<WidgetListElement> {
             actions: <Widget>[
               FlatButton(
                 child: Text('Cancel'),
-                onPressed: () => Navigator.of(context).pop(false),
-              ),
+                onPressed: () => {
+                  Navigator.of(context).pop(false),
+                }),
               FlatButton(
                 child: Text('Ok'),
-                onPressed: () => {Navigator.of(context).pop(true)},
+                onPressed: () => {
+                  Navigator.of(context).pop(true),
+                  BlocProvider.of<PersonBloc>(context).add(DeletePerson(item)),
+                },
               ),
             ],
           );
@@ -252,7 +253,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
       actionPane: SlidableScrollActionPane(),
       actionExtentRatio: 0.25,
       child: direction == Axis.horizontal
-          ? VerticalListItem(personlists[index])
+          ? VerticalListItem(personlists[index], widget.idUserList)
           : HorizontalListItem(personlists[index]),
       secondaryActionDelegate: SlideActionBuilderDelegate(
           actionCount: 1,
@@ -303,14 +304,16 @@ class _WidgetListElementState extends State<WidgetListElement> {
 }
 
 class VerticalListItem extends StatelessWidget {
-  VerticalListItem(this.item);
+  VerticalListItem(this.item, this.idUserList);
 
+  final String idUserList;
   final Person item;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, '/personView', arguments: item),
+      onTap: () => Navigator.pushNamed(context, '/personView',
+          arguments: new ScreenArguments(item, idUserList)),
       child: Container(
         color: Colors.white,
         child: ListTile(

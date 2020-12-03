@@ -45,9 +45,9 @@ class PersonEntity extends Equatable{
 
   Map<String, Object> toDocument() {
     return {
-      'listname': firstname,
-      'bestscore': lastname,
-      'creation_date': imported_from,
+      'firstname': firstname,
+      'lastname': lastname,
+      'imported_from': imported_from,
       'job': job,
       'description': description,
       'is_known': is_known,

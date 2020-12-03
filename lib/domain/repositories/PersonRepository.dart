@@ -1,7 +1,7 @@
 import 'package:gmoria/domain/models/Person.dart';
 
 abstract class PersonRepository {
-  Future<void> addNewPerson(Person userList);
+  Future<void> addNewPerson(Person userList,String idUserList);
 
   Future<void> deletePerson(Person userList);
 

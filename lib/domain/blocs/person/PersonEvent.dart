@@ -21,11 +21,12 @@ class LoadUserListPersons extends PersonEvent {
 
 class AddPerson extends PersonEvent {
   final Person person;
+  final String idList;
 
-  const AddPerson(this.person);
+  const AddPerson(this.person,this.idList);
 
   @override
-  List<Object> get props => [person];
+  List<Object> get props => [person,idList];
 
   @override
   String toString() => 'PersonAdded { person: $person }';

@@ -22,4 +22,16 @@ class PersonLoaded extends PersonState {
   String toString() => 'PersonLoaded { person: $person }';
 }
 
+class PersonAdded extends PersonState {
+  final String id;
+
+  const PersonAdded(this.id);
+
+  @override
+  List<Object> get props => [id];
+
+  @override
+  String toString() => 'PersonAdded { id: $id }';
+}
+
 class PersonLoadNotLoaded extends PersonState {}

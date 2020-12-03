@@ -10,6 +10,18 @@ abstract class UserListEvent extends Equatable {
 
 class LoadUserList extends UserListEvent {}
 
+class LoadUserListById extends UserListEvent {
+  final String userListId;
+
+  const LoadUserListById(this.userListId);
+
+  @override
+  List<Object> get props => [userListId];
+
+  @override
+  String toString() => 'UserListById { userListId: $userListId }';
+}
+
 class AddUserList extends UserListEvent {
   final UserList userList;
 
@@ -50,6 +62,15 @@ class UserListUpdated extends UserListEvent {
   final List<UserList> userList;
 
   const UserListUpdated(this.userList);
+
+  @override
+  List<Object> get props => [userList];
+}
+
+class UserListUpdatedById extends UserListEvent {
+  final UserList userList;
+
+  const UserListUpdatedById(this.userList);
 
   @override
   List<Object> get props => [userList];

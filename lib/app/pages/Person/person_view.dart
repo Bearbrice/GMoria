@@ -62,30 +62,55 @@ class _PersonInfoState extends State<PersonInfo> {
             Container(
               child: Center(
                 child: _image == null
-                    ? Text('No image selected.')
+                    ? Text('Error, could not load image or a problem occured.')
                     : Image.file(_image, width: 280.0, height: 280.0),
               ),
             ),
             Container(
-              alignment: Alignment.topCenter,
+              alignment: Alignment.center,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
-                    alignment: Alignment.topCenter,
-                    width: halfMediaWidth,
-                    child: Text(person.firstname),
-                  ),
+                      padding: EdgeInsets.all(16.0),
+                      alignment: Alignment.center,
+                      width: halfMediaWidth,
+                      child: MyText(
+                        text: person.firstname,
+                      )),
                   Container(
-                    alignment: Alignment.topCenter,
-                    width: halfMediaWidth,
-                    child: Text(person.lastname),
-                  )
+                      padding: EdgeInsets.all(16.0),
+                      alignment: Alignment.center,
+                      width: halfMediaWidth,
+                      child: MyText(
+                        text: person.lastname,
+                      ))
                 ],
               ),
             ),
-            Text(person.job),
-            Text(person.description),
+            Container(
+                padding: EdgeInsets.all(16.0),
+                alignment: Alignment.center,
+                // width: halfMediaWidth,
+                child: MyText(
+                  text: person.job,
+                )
+                // Text(
+                //   person.job,
+                //   style: TextStyle(
+                //       fontWeight: FontWeight.w900,
+                //       fontStyle: FontStyle.italic,
+                //       fontFamily: 'Open Sans',
+                //       fontSize: 40),
+                // ),
+                ),
+            Container(
+                padding: EdgeInsets.all(16.0),
+                alignment: Alignment.center,
+                // width: halfMediaWidth,
+                child: MyText(
+                  text: person.description,
+                )),
             RaisedButton(
               color: Colors.blueAccent,
               child: Text("Edit", style: TextStyle(color: Colors.white)),
@@ -117,6 +142,26 @@ class _PersonInfoState extends State<PersonInfo> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class MyText extends StatelessWidget {
+  final String text;
+
+  MyText({
+    this.text,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(8.0),
+      child: Text(text,
+          style: TextStyle(
+              fontWeight: FontWeight.w900,
+              fontFamily: 'Open Sans',
+              fontSize: 20)),
     );
   }
 }

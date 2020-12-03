@@ -72,36 +72,37 @@ class _TestFormState extends State<TestForm> {
   File _image;
   final picker = ImagePicker();
 
-  Future getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+  bool imageError = false;
 
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-      } else {
-        print('No image selected.');
-      }
-    });
+  Future getG() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    native(pickedFile);
   }
 
-  Future native() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+  Future getC() async {
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    native(pickedFile);
+  }
 
+  Future native(pickedFile) async {
     File croppedFile = await ImageCropper.cropImage(
         sourcePath: pickedFile.path,
+        aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
         aspectRatioPresets: [
           CropAspectRatioPreset.square,
-          // CropAspectRatioPreset.ratio3x2,
-          // CropAspectRatioPreset.original,
-          // CropAspectRatioPreset.ratio4x3,
-          // CropAspectRatioPreset.ratio16x9
+          //   // CropAspectRatioPreset.ratio3x2,
+          //   // CropAspectRatioPreset.original,
+          //   // CropAspectRatioPreset.ratio4x3,
+          //   // CropAspectRatioPreset.ratio16x9
         ],
         androidUiSettings: AndroidUiSettings(
-            toolbarTitle: 'Cropper',
-            toolbarColor: Colors.deepOrange,
+            // toolbarTitle: 'Cropper',
+            toolbarColor: Colors.cyan,
             toolbarWidgetColor: Colors.white,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false),
+            // initAspectRatio: CropAspectRatioPreset.square,
+            //
+            //     // initAspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
+            lockAspectRatio: true),
         iosUiSettings: IOSUiSettings(
           minimumAspectRatio: 1.0,
         ));
@@ -116,20 +117,10 @@ class _TestFormState extends State<TestForm> {
         _image = File(pickedFile.path);
         _image = croppedFile;
         // _image = compressedFile;
+        imageError = false;
       } else {
         print('No image selected.');
-      }
-    });
-  }
-
-  Future takeImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
-
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-      } else {
-        print('No image selected.');
+        imageError = true;
       }
     });
   }
@@ -150,11 +141,6 @@ class _TestFormState extends State<TestForm> {
     return returnURL;
   }
 
-  // TextEditingController firstname;
-  // TextEditingController lastname;
-  // TextEditingController job;
-  // TextEditingController description;
-
   @override
   Widget build(BuildContext context) {
     final halfMediaWidth = MediaQuery.of(context).size.width / 2.0;
@@ -172,11 +158,23 @@ class _TestFormState extends State<TestForm> {
             Container(
               child: Center(
                 child: _image == null
-                    ? Text(
-                        editMode ? 'No image available' : 'No image selected.')
+                    ? Image.asset('assets/picture/unknown.jpg',
+                        width: 200.0, height: 200.0)
+                    // Text(
+                    //         editMode ? 'No image available' : 'No image selected.')
                     : Image.file(_image, width: 280.0, height: 280.0),
               ),
             ),
+            Container(
+                child: Center(
+                    child: _image == null
+                        ? Text(
+                            'Please provide an image',
+                            style: TextStyle(
+                              color: Colors.red[900],
+                            ),
+                          )
+                        : null)),
             Container(
               alignment: Alignment.topCenter,
               child: Row(
@@ -259,23 +257,29 @@ class _TestFormState extends State<TestForm> {
             // ),
             RaisedButton(
               child: Text("From gallery"),
-              onPressed: getImage,
+              onPressed: getG,
               // textColor: Colors.lightGreenAccent,
             ),
             RaisedButton(
               child: Text("Take a photo"),
-              onPressed: takeImage,
+              onPressed: getC,
               // textColor: Colors.lightGreenAccent,
             ),
-            RaisedButton(
-              child: Text("Native gallery crop"),
-              onPressed: native,
-              // textColor: Colors.lightGreenAccent,
-            ),
+            // RaisedButton(
+            //   child: Text("Native gallery crop"),
+            //   onPressed: native,
+            //   // textColor: Colors.lightGreenAccent,
+            // ),
             RaisedButton(
               color: Colors.blueAccent,
               onPressed: () async {
                 if (_formKey.currentState.validate()) {
+                  if (_image == null) {
+                    print('No image stop');
+                    imageError = true;
+                    return;
+                  }
+                  print('Image OK - GO');
                   _formKey.currentState.save();
                   print(this.model.firstname);
                   String imageURL =await getImageURL();

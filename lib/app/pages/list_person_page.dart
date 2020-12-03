@@ -4,14 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:gmoria/app/utils/ScreenArguments.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
-import 'package:gmoria/data/repositories/DataPersonRepository.dart';
-import 'package:gmoria/data/repositories/DataUserListRepository.dart';
 import 'package:gmoria/domain/blocs/person/PersonBloc.dart';
 import 'package:gmoria/domain/blocs/person/PersonEvent.dart';
 import 'package:gmoria/domain/blocs/person/PersonState.dart';
-import 'package:gmoria/domain/blocs/userlist/UserListBloc.dart';
-import 'package:gmoria/domain/blocs/userlist/UserListEvent.dart';
-import 'package:gmoria/domain/blocs/userlist/UserListState.dart';
 import 'package:gmoria/domain/models/Person.dart';
 import 'package:gmoria/domain/models/UserList.dart';
 
@@ -49,75 +44,73 @@ class ListPage extends StatelessWidget {
       } else {
         Navigator.pushNamed(context, '/learn', arguments: userList);
       }
+
     }
 
     return Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          title: Text(
-            AppLocalizations.of(context).translate('list_title') +
-                userList.listName,
-            style: TextStyle(color: Colors.white),
-          ),
+      key: _scaffoldKey,
+      appBar: AppBar(
+        title: Text(
+          AppLocalizations.of(context).translate('list_title') +
+              userList.listName,
+          style: TextStyle(color: Colors.white),
         ),
-        body: Center(child: conditionalRendering()
-            //   OrientationBuilder(
-            //   builder: (context, orientation) => _buildList(
-            //       context,
-            //       orientation == Orientation.portrait
-            //           ? Axis.vertical
-            //           : Axis.horizontal),
-            // ),
-            ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              FloatingActionButton(
-                backgroundColor: Colors.indigo,
-                heroTag: null,
-                onPressed: () {
-                  handleEmpty('Game');
-                  // Navigator.pushNamed(context, '/personForm');
-                },
-                child: Icon(Icons.videogame_asset),
-              ),
-              FloatingActionButton(
-                backgroundColor: Colors.green,
-                heroTag: null,
-                onPressed: () {
-                  handleEmpty('Learn');
-                  // Navigator.pushNamed(context, '/personForm');
-                },
-                child: Icon(Icons.school),
-              ),
-              FloatingActionButton.extended(
-                  heroTag: null,
-                  backgroundColor: Colors.blue,
-                  label: Text('Add'),
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/personForm',
-                        arguments: new ScreenArguments(null, userList.id));
-                  },
-                  hoverColor: Colors.cyan,
-                  icon: Icon(Icons.add)
-                  // child: Icon(Icons.add),
-                  )
-            ],
+      ),
+      body: Center(child: conditionalRendering()
+          //   OrientationBuilder(
+          //   builder: (context, orientation) => _buildList(
+          //       context,
+          //       orientation == Orientation.portrait
+          //           ? Axis.vertical
+          //           : Axis.horizontal),
+          // ),
           ),
-        )
-        //   /** Add button */
-        //   floatingActionButton: FloatingActionButton(
-        //   backgroundColor: Colors.blue,
-        //   onPressed: () {
-        //     Navigator.pushNamed(context, '/personForm');
-        //   },
-        //   child: Icon(Icons.add),
-        // ),
 
-        );
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          FloatingActionButton(
+              mini: true,
+              backgroundColor: Colors.indigo,
+              heroTag: null,
+              onPressed: () {
+                handleEmpty('Game');
+                // Navigator.pushNamed(context, '/personForm');
+              },
+              child: Icon(Icons.videogame_asset)),
+          SizedBox(height: 8.0),
+          FloatingActionButton(
+            mini: true,
+            backgroundColor: Colors.green,
+            heroTag: null,
+            onPressed: () {
+              handleEmpty('Learn');
+              // Navigator.pushNamed(context, '/personForm');
+            },
+            child: Icon(Icons.school),
+          ),
+          SizedBox(height: 8.0),
+          FloatingActionButton(
+            backgroundColor: Colors.blue,
+            heroTag: null,
+            onPressed: () {
+              Navigator.pushNamed(context, '/personForm',
+                  arguments: new ScreenArguments(null, userList.id));
+            },
+            child: Icon(Icons.add),
+          ),
+        ],
+      ),
+
+      //   /** Add button */
+      //   floatingActionButton: FloatingActionButton(
+      //   backgroundColor: Colors.blue,
+      //   onPressed: () {
+      //     Navigator.pushNamed(context, '/personForm');
+      //   },
+      //   child: Icon(Icons.add),
+      // ),
+    );
   }
 }
 
@@ -125,8 +118,11 @@ class MyUserPeople extends StatelessWidget {
   // MyUserPeople({Key key}) : super(key: key);
   final List<String> personsIdList;
   final String userListId;
+
   // MyUserPeople({Key key, this.userList}) : super(key: key);
-  MyUserPeople(this.userListId,{Key key, this.personsIdList}) : super(key: key);
+  MyUserPeople(this.userListId, {Key key, this.personsIdList})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
@@ -136,7 +132,8 @@ class MyUserPeople extends StatelessWidget {
         final personsList = state.person;
         print("LISTTTT");
         print(userListId);
-        List<Person> myList = personsList.where((i) => personsIdList.contains(i.id) ).toList();
+        List<Person> myList =
+            personsList.where((i) => personsIdList.contains(i.id)).toList();
         return WidgetListElement(userListId, list: myList);
         // return Swiper(
         //   index: 1,
@@ -204,10 +201,10 @@ class _WidgetListElementState extends State<WidgetListElement> {
             content: Text('Item will be deleted'),
             actions: <Widget>[
               FlatButton(
-                child: Text('Cancel'),
-                onPressed: () => {
-                  Navigator.of(context).pop(false),
-                }),
+                  child: Text('Cancel'),
+                  onPressed: () => {
+                        Navigator.of(context).pop(false),
+                      }),
               FlatButton(
                 child: Text('Ok'),
                 onPressed: () => {

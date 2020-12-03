@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +9,7 @@ class PersonView extends StatelessWidget {
   Person person;
   String idUserList;
   ScreenArguments args;
+
   @override
   Widget build(BuildContext context) {
     args = ModalRoute.of(context).settings.arguments;
@@ -25,7 +24,7 @@ class PersonView extends StatelessWidget {
       ),
       body: PersonInfo(
         person: person,
-        idUserList:idUserList,
+        idUserList: idUserList,
       ),
     );
   }
@@ -35,7 +34,7 @@ class PersonInfo extends StatefulWidget {
   final Person person;
   final String idUserList;
 
-  PersonInfo({Key key, this.person,this.idUserList}) : super(key: key);
+  PersonInfo({Key key, this.person, this.idUserList}) : super(key: key);
 
   @override
   _PersonInfoState createState() => _PersonInfoState();
@@ -44,6 +43,7 @@ class PersonInfo extends StatefulWidget {
 class _PersonInfoState extends State<PersonInfo> {
   Person person;
   String idUserList;
+
   // _PersonInfoState({Key key, this.person}) : super(key: key);
 
   PersonM model = PersonM();
@@ -65,11 +65,12 @@ class _PersonInfoState extends State<PersonInfo> {
               child: Center(
                 child: _image == null
                     ? Text('Error, could not load image or a problem occured.')
-                    : Container (
-                  child : ExtendedImage.network(person.image_url,fit: BoxFit.fill),
-                  width: 300,
-                  height: 300,
-            ),
+                    : Container(
+                        child: ExtendedImage.network(person.image_url,
+                            fit: BoxFit.fill),
+                        width: 300,
+                        height: 300,
+                      ),
               ),
             ),
             Container(
@@ -78,50 +79,62 @@ class _PersonInfoState extends State<PersonInfo> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
-                      padding: EdgeInsets.all(16.0),
+                      // padding: EdgeInsets.all(16.0),
                       alignment: Alignment.center,
                       width: halfMediaWidth,
                       child: MyText(
+                        label: 'First name',
                         text: person.firstname,
                       )),
                   Container(
-                      padding: EdgeInsets.all(16.0),
+                      // padding: EdgeInsets.all(16.0),
                       alignment: Alignment.center,
                       width: halfMediaWidth,
                       child: MyText(
+                        label: 'Last name',
                         text: person.lastname,
-                      ))
+                      )),
+                  // Container(
+                  //     padding: EdgeInsets.all(16.0),
+                  //     alignment: Alignment.center,
+                  //     width: halfMediaWidth,
+                  //     child: MyText(
+                  //       text: person.lastname,
+                  //     ))
                 ],
               ),
             ),
             Container(
-                padding: EdgeInsets.all(16.0),
+                // padding: EdgeInsets.all(16.0),
                 alignment: Alignment.center,
                 // width: halfMediaWidth,
                 child: MyText(
+                  label: 'Job',
                   text: person.job,
-                )
-                // Text(
-                //   person.job,
-                //   style: TextStyle(
-                //       fontWeight: FontWeight.w900,
-                //       fontStyle: FontStyle.italic,
-                //       fontFamily: 'Open Sans',
-                //       fontSize: 40),
-                // ),
-                ),
+                )),
+
+            // Text(
+            //   person.job,
+            //   style: TextStyle(
+            //       fontWeight: FontWeight.w900,
+            //       fontStyle: FontStyle.italic,
+            //       fontFamily: 'Open Sans',
+            //       fontSize: 40),
+            // ),
+
             Container(
                 padding: EdgeInsets.all(16.0),
                 alignment: Alignment.center,
                 // width: halfMediaWidth,
                 child: MyText(
+                  label: 'Description',
                   text: person.description,
                 )),
             RaisedButton(
               color: Colors.blueAccent,
               child: Text("Edit", style: TextStyle(color: Colors.white)),
               onPressed: () => Navigator.pushNamed(context, '/personForm',
-                  arguments:  new ScreenArguments(person, idUserList)),
+                  arguments: new ScreenArguments(person, idUserList)),
 
               // textColor: Colors.lightGreenAccent,
             ),
@@ -152,10 +165,46 @@ class _PersonInfoState extends State<PersonInfo> {
   }
 }
 
+// var text = new
+
 class MyText extends StatelessWidget {
   final String text;
+  final String label;
 
-  MyText({
+  MyText({this.text, this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: EdgeInsets.all(5.0),
+        // child: Center(
+        child: RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+            text: (label),
+            // Note: Styles for TextSpans must be explicitly defined.
+            // Child text spans will inherit styles from parent
+            style: TextStyle(
+              fontSize: 15.0,
+              // fontFamily: 'Open Sans',
+              color: Colors.black,
+            ),
+
+            children: <TextSpan>[
+              TextSpan(
+                  text: '\n$text',
+                  style:
+                      TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0)),
+            ],
+          ),
+        ));
+  }
+}
+
+class MyTextLabel extends StatelessWidget {
+  final String text;
+
+  MyTextLabel({
     this.text,
   });
 
@@ -167,7 +216,7 @@ class MyText extends StatelessWidget {
           style: TextStyle(
               fontWeight: FontWeight.w900,
               fontFamily: 'Open Sans',
-              fontSize: 20)),
+              fontSize: 10)),
     );
   }
 }

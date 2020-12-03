@@ -9,6 +9,8 @@ import 'package:gmoria/data/repositories/DataUserListRepository.dart';
 import 'package:gmoria/domain/blocs/person/PersonBloc.dart';
 import 'package:gmoria/domain/blocs/person/PersonEvent.dart';
 import 'package:gmoria/domain/blocs/person/PersonState.dart';
+import 'package:gmoria/domain/blocs/userlist/UserListBloc.dart';
+import 'package:gmoria/domain/blocs/userlist/UserListEvent.dart';
 import 'package:gmoria/domain/models/Person.dart';
 import 'package:gmoria/domain/models/PersonFormModel.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -309,9 +311,9 @@ class _TestFormState extends State<TestForm> {
                     Person p = new Person(model.firstname, model.lastname,
                         model.job, model.description, imageURL);
                     BlocProvider.of<PersonBloc>(context).add(AddPerson(p, idUserList));
-                  }
 
-                  //Navigator.pop(context);
+                  }
+                  Navigator.of(context).pop();
                   // Navigator.push(
                   //     context,
                   //     MaterialPageRoute(

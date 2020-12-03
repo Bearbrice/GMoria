@@ -16,19 +16,29 @@ import 'package:gmoria/domain/models/Person.dart';
 import 'package:gmoria/domain/models/UserList.dart';
 
 /// Page that display a specific list
-class ListPage extends StatelessWidget {
+class ListPage extends StatefulWidget {
+
+
+  @override
+  State<StatefulWidget> createState() => _ListPageState();
+}
+
+class _ListPageState extends State<ListPage>{
+  UserList userList;
+  List<String> personsIdList;
   @override
   Widget build(BuildContext context) {
-    final UserList userList = ModalRoute.of(context).settings.arguments;
+    //final UserList userList = ModalRoute.of(context).settings.arguments;
     final _scaffoldKey = GlobalKey<ScaffoldState>();
-
+    setState(() {
+      userList = ModalRoute.of(context).settings.arguments;
+      personsIdList = userList.persons.map((personId) => personId as String).toList();
+    });
     conditionalRendering() {
       if (userList.persons.isEmpty) {
         return Center(
             child: Text("Your list is empty", style: TextStyle(fontSize: 20)));
       } else {
-        List<String> personsIdList =
-            userList.persons.map((personId) => personId as String).toList();
         return MyUserPeople(userList.id, personsIdList: personsIdList);
       }
     }
@@ -61,14 +71,14 @@ class ListPage extends StatelessWidget {
           ),
         ),
         body: Center(child: conditionalRendering()
-            //   OrientationBuilder(
-            //   builder: (context, orientation) => _buildList(
-            //       context,
-            //       orientation == Orientation.portrait
-            //           ? Axis.vertical
-            //           : Axis.horizontal),
-            // ),
-            ),
+          //   OrientationBuilder(
+          //   builder: (context, orientation) => _buildList(
+          //       context,
+          //       orientation == Orientation.portrait
+          //           ? Axis.vertical
+          //           : Axis.horizontal),
+          // ),
+        ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -103,21 +113,21 @@ class ListPage extends StatelessWidget {
                   },
                   hoverColor: Colors.cyan,
                   icon: Icon(Icons.add)
-                  // child: Icon(Icons.add),
-                  )
+                // child: Icon(Icons.add),
+              )
             ],
           ),
         )
-        //   /** Add button */
-        //   floatingActionButton: FloatingActionButton(
-        //   backgroundColor: Colors.blue,
-        //   onPressed: () {
-        //     Navigator.pushNamed(context, '/personForm');
-        //   },
-        //   child: Icon(Icons.add),
-        // ),
+      //   /** Add button */
+      //   floatingActionButton: FloatingActionButton(
+      //   backgroundColor: Colors.blue,
+      //   onPressed: () {
+      //     Navigator.pushNamed(context, '/personForm');
+      //   },
+      //   child: Icon(Icons.add),
+      // ),
 
-        );
+    );
   }
 }
 
@@ -127,16 +137,18 @@ class MyUserPeople extends StatelessWidget {
   final String userListId;
   // MyUserPeople({Key key, this.userList}) : super(key: key);
   MyUserPeople(this.userListId,{Key key, this.personsIdList}) : super(key: key);
-  @override
   Widget build(BuildContext context) {
+    print("IDD QUE JE DOIS LOADER");
+    print(personsIdList);
     return BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
       if (state is PersonLoading) {
         return Text("Loading !");
       } else if (state is PersonLoaded) {
         final personsList = state.person;
-        print("LISTTTT");
-        print(userListId);
+
         List<Person> myList = personsList.where((i) => personsIdList.contains(i.id) ).toList();
+        print("IDD QUE JE DOIS FILTRERRRRRR");
+        print(myList);
         return WidgetListElement(userListId, list: myList);
         // return Swiper(
         //   index: 1,
@@ -157,6 +169,7 @@ class MyUserPeople extends StatelessWidget {
     });
   }
 }
+
 
 class WidgetListElement extends StatefulWidget {
   final List<Person> list;
@@ -179,15 +192,17 @@ class _WidgetListElementState extends State<WidgetListElement> {
   }
 
   Widget _buildList(BuildContext context, Axis direction) {
+
     return ListView.builder(
       scrollDirection: direction,
       itemBuilder: (context, index) {
         final Axis slidableDirection =
             direction == Axis.horizontal ? Axis.vertical : Axis.horizontal;
-
+        print("JJJJJJJJJJJJEEEEEEEEEEEEUPDATEEEEEEEEEE");
+        print(personlists.length);
         return _getSlidableWithDelegates(context, index, slidableDirection);
       },
-      itemCount: widget.list.length,
+      itemCount: personlists.length,
     );
   }
 
@@ -264,7 +279,6 @@ class _WidgetListElementState extends State<WidgetListElement> {
                     ? Colors.red.withOpacity(animation.value)
                     : Colors.red,
                 icon: Icons.delete,
-                /*TODO: do not work, to correct*/
                 onTap: () => deleteDialog());
           }),
     );
@@ -292,7 +306,9 @@ class _WidgetListElementState extends State<WidgetListElement> {
 
   @override
   Widget build(BuildContext context) {
-    personlists = widget.list;
+    setState(() {
+      personlists = widget.list;
+    });
     return OrientationBuilder(
       builder: (context, orientation) => _buildList(
           context,

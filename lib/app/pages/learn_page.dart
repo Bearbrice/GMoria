@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'package:extended_image/extended_image.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +11,6 @@ import 'package:gmoria/domain/blocs/person/PersonEvent.dart';
 import 'package:gmoria/domain/blocs/person/PersonState.dart';
 import 'package:gmoria/domain/models/Person.dart';
 import 'package:gmoria/domain/models/UserList.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class LearnPage extends StatelessWidget {
   @override
@@ -22,16 +21,13 @@ class LearnPage extends StatelessWidget {
     final cardWidth = 400.0;
 
     //Check the size of the person list and manage exceptions
-    if (userList.persons == null) {
+    if (userList.persons.isEmpty) {
       elementToRender = Center(
-          child: Text("Your list is empty", style: TextStyle(fontSize: 20)));
-    } else if (userList.persons.length == 1) {
-      elementToRender = Center(
-          child: Container(
-              height: cardHeight, width: cardWidth, child: Text("1 person")));
+          child: Text(AppLocalizations.of(context).translate('learn_emptyList'),
+              style: TextStyle(fontSize: 20)));
     } else {
       List<String> personsIdList =
-      userList.persons.map((personId) => personId as String).toList();
+          userList.persons.map((personId) => personId as String).toList();
       elementToRender = PersonsList(
           personsIdList: personsIdList,
           cardHeight: cardHeight,
@@ -76,99 +72,142 @@ class PersonsList extends StatelessWidget {
         ],
         child: BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
           if (state is PersonLoading) {
-            return Text("Loading !");
+            return Center(child: CircularProgressIndicator());
           } else if (state is PersonLoaded) {
-            final personsList = shuffle(state.person);
-
+            if (state.person.length == 1) {
+              return Column(children: [
+                Container(
+                    margin: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                    padding: EdgeInsets.all(30.0),
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.lightBlue),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            1.toString(),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            " /" + 1.toString(),
+                            style: TextStyle(color: Colors.white, fontSize: 20),
+                          ),
+                        ])),
+                Center(
+                    child: Container(
+                        width: cardWidth * 0.8,
+                        height: cardHeight * 0.8,
+                        child: PersonCard(state.person.first)))
+              ]);
+            }
+            List<Person> personsList = state.person;
+            personsList.shuffle();
             return PeopleSwiper(personsList);
           } else {
-            return Text("Problem :D");
+            return Text(AppLocalizations.of(context).translate('learn_error'),
+                style: TextStyle(fontSize: 20));
           }
         }));
   }
-
-  List shuffle(List items) {
-    var random = new Random();
-
-    // Go through all elements.
-    for (var i = items.length - 1; i > 0; i--) {
-
-      // Pick a pseudorandom number according to the list length
-      var n = random.nextInt(i + 1);
-
-      var temp = items[i];
-      items[i] = items[n];
-      items[n] = temp;
-    }
-
-    return items;
-  }
-
 }
 
-class PeopleSwiper extends StatefulWidget{
+class PeopleSwiper extends StatefulWidget {
   final List<Person> personsList;
 
   const PeopleSwiper(this.personsList, {Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _PeopleSwiperState();
-
 }
 
-class _PeopleSwiperState extends State<PeopleSwiper>{
+class _PeopleSwiperState extends State<PeopleSwiper> {
   bool _loop = true;
-  int _currentIndex = 0 ;
+  int _currentIndex = 0;
+  bool displayGameButton = false;
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      Text(_currentIndex.toString()+"/"+widget.personsList.length.toString()),
-      Swiper(
-      layout: SwiperLayout.TINDER,
-      viewportFraction: 0.8,
-      itemCount: widget.personsList.length,
-      itemHeight: 400.0,
-      itemWidth: 400.0,
-      loop: _loop,
-      onIndexChanged: (value) {
-        _setCurrentIndex(value+1);
-        if(value==1){
-          print("toggleLoop");
-          _toggleLoop();
-        }
-      },
-      itemBuilder: (BuildContext context, int index) {
-        //Load shown card, 2 previous cards and 2 next cards
-        //getDownloadUrl(personsList[index].id);
-        return PersonCard(widget.personsList[index]);
-      },
-    )],);
+    return Column(
+      children: [
+        Container(
+            margin: EdgeInsets.only(top: 20.0),
+            padding: EdgeInsets.all(30.0),
+            decoration:
+                BoxDecoration(shape: BoxShape.circle, color: Colors.lightBlue),
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Text(
+                _currentIndex.toString(),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold),
+              ),
+              Text(
+                " /" + widget.personsList.length.toString(),
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            ])),
+        Swiper(
+          layout: SwiperLayout.TINDER,
+          viewportFraction: 0.8,
+          itemCount: widget.personsList.length,
+          index: -1,
+          itemHeight: 400.0,
+          itemWidth: 400.0,
+          loop: _loop,
+          onIndexChanged: (value) {
+            _setCurrentIndex(widget.personsList.length - value);
+            if (value == widget.personsList.length) {
+              //print("toggleLoop");
+              _toggleLoop();
+            }
+          },
+          itemBuilder: (BuildContext context, int index) {
+            return PersonCard(widget.personsList[index]);
+          },
+        ),
+         AnimatedContainer(
+             width: displayGameButton ? 200: 0.0,
+             height: displayGameButton ? 100: 0.0,
+             curve: Curves.ease,
+             duration: Duration(seconds: 1),
+             child:Container(
+                margin: EdgeInsets.only(top: 35.0),
+                child: RaisedButton(
+                    onPressed: () {
+                      //TODO navigate to Play Game
+                    },
+                    color: Colors.green,
+                    padding: const EdgeInsets.all(10.0),
+                    textColor: Colors.white,
+                    child: Text(
+                        AppLocalizations.of(context)
+                            .translate('learn_gameButton'),
+                        style: TextStyle(fontSize: 20)))))
+
+      ],
+    );
   }
+
   void _toggleLoop() {
     setState(() {
       _loop = false;
     });
   }
 
-  void _setCurrentIndex(value){
+  void _setCurrentIndex(value) {
     setState(() {
-      _currentIndex += value;
+      if (value == widget.personsList.length) {
+        displayGameButton = true;
+      } else {
+        displayGameButton = false;
+      }
+      _currentIndex = value;
     });
   }
-
-/*
-  Future<String> getDownloadUrl(String id) async{
-    var url = await firebase_storage.FirebaseStorage.instance
-        .ref()
-        .child('persons')
-        .child(FirebaseAuth.instance.currentUser.uid)
-        .child(id+'.jpg')
-        .getDownloadURL();
-    print(id+"------------------------------------------------"+url);
-    return url;
-  }*/
-
 }
 
 class PersonCard extends StatelessWidget {
@@ -179,7 +218,8 @@ class PersonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FlipCard(
-      direction: FlipDirection.HORIZONTAL, // default
+      direction: FlipDirection.HORIZONTAL,
+      speed: 450, // default
       front: Container(
           decoration: BoxDecoration(
             color: Colors.white,
@@ -187,20 +227,23 @@ class PersonCard extends StatelessWidget {
           ),
           child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(20.0)),
-              child: Image.network(person.image_url, fit: BoxFit.fill)
-          )
-      ),
+              child: ExtendedImage.network(
+                person.image_url,
+                fit: BoxFit.fill,
+                enableMemoryCache: true,
+                handleLoadingProgress: false,
+              ))),
       back: Container(
         height: 400.0,
         width: 400.0,
         child: Center(
           child: Text(
             person.firstname + " " + person.lastname,
-            style: TextStyle(color: Colors.white, fontSize: 20),
+            style: TextStyle(color: Colors.white, fontSize: 30),
           ),
         ),
         decoration: BoxDecoration(
-          color: Colors.redAccent,
+          color: Colors.cyan,
           borderRadius: BorderRadius.all(Radius.circular(20.0)),
         ),
       ),

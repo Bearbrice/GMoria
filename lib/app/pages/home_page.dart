@@ -161,7 +161,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
 
     /// Prevent learn and game to launch if the list is empty
     handleEmpty(action) {
-      if (item.persons == null) {
+      if (item.persons.isEmpty) {
         return _showSnackBar(context, 'The list is empty');
       }
 

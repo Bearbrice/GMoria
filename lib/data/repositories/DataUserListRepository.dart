@@ -27,6 +27,7 @@ class DataUserListRepository implements UserListRepository {
     });
   }
 
+
   @override
   Future<void> addNewUserList(UserList userList) {
     Map<String, Object> newList = {

@@ -300,16 +300,15 @@ class _TestFormState extends State<TestForm> {
                     }else{
                       imageURL =  person.image_url;
                     }
-
                     Person p = new Person(model.firstname, model.lastname,
                         model.job, model.description,imageURL,
-                        is_known: person.is_known,imported_from: person.imported_from,id: person.id);
+                        is_known: person.is_known,imported_from: person.imported_from,id: person.id,lists: person.lists);
                     print("FIRSTNAME");
                     BlocProvider.of<PersonBloc>(context).add(UpdatePerson(p));
                   }else{
                     String imageURL =await getImageURL();
                     Person p = new Person(model.firstname, model.lastname,
-                        model.job, model.description, imageURL);
+                        model.job, model.description, imageURL, lists: [idUserList]);
                     BlocProvider.of<PersonBloc>(context).add(AddPerson(p, idUserList));
 
                   }

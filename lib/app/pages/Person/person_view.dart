@@ -1,7 +1,12 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gmoria/app/utils/ScreenArguments.dart';
+import 'package:gmoria/data/repositories/DataPersonRepository.dart';
+import 'package:gmoria/domain/blocs/person/PersonBloc.dart';
+import 'package:gmoria/domain/blocs/person/PersonEvent.dart';
+import 'package:gmoria/domain/blocs/person/PersonState.dart';
 import 'package:gmoria/domain/models/Person.dart';
 import 'package:gmoria/domain/models/PersonFormModel.dart';
 
@@ -16,16 +21,29 @@ class PersonView extends StatelessWidget {
     person = args.person;
     idUserList = args.idUserList;
 
-    // print("-------------->" + person.toString());
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(person.firstname + " " + person.lastname),
-      ),
-      body: PersonInfo(
-        person: person,
-        idUserList: idUserList,
-      ),
+    return BlocProvider<PersonBloc>(
+      create: (context) {
+        print("ID A REFRESH dans la methode de chez person");
+        //print(personsIdList);
+        return PersonBloc(
+          personRepository: DataPersonRepository(),
+        )..add(LoadSinglePerson(person.id));
+      },
+      child: BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
+        if(state is SinglePersonLoaded) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(state.person.firstname + " " + state.person.lastname),
+            ),
+            body: PersonInfo(
+              person: state.person,
+              idUserList: idUserList,
+            ),
+          );
+        }else{
+          return Container();
+        }
+      }),
     );
   }
 }

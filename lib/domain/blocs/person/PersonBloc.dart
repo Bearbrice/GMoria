@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:gmoria/domain/models/UserList.dart';
 import 'package:gmoria/domain/repositories/PersonRepository.dart';
 import 'package:meta/meta.dart';
 import 'PersonEvent.dart';
@@ -29,6 +30,12 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
       yield* _mapDeletePersonToState(event);
     } else if (event is PersonUpdated) {
       yield* _mapPersonUpdateToState(event);
+    } else if(event is UserListPersonUpdated) {
+      yield* _mapUserListPersonUpdateToState(event);
+    } else if(event is LoadSinglePerson){
+      yield* _mapLoadSinglePersonToState(event);
+    } else if(event is SinglePersonUpdated){
+      yield* _mapSinglePersonUpdateToState(event);
     }
   }
 
@@ -41,8 +48,20 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
 
   Stream<PersonState> _mapLoadUserListPersonsToState(LoadUserListPersons event) async* {
     _personSubscription?.cancel();
-    _personSubscription = _personRepository.getUserListPersons(event.personsIdList).listen(
-          (person) => add(PersonUpdated(person)),
+    // _userListSubscription?.cancel();
+
+    // _userListSubscription = _personRepository.getUserListPersonsById(event.idUserList).listen((lecture)  {
+      _personSubscription =  _personRepository.getUserListPersons(event.idUserList).listen(
+            (person) => add(UserListPersonUpdated(person)),
+      );
+    // });
+
+  }
+
+  Stream<PersonState> _mapLoadSinglePersonToState(LoadSinglePerson event) async* {
+    _personSubscription?.cancel();
+    _personSubscription =  _personRepository.getSinglePerson(event.idPerson).listen(
+          (person) => add(SinglePersonUpdated(person)),
     );
   }
 
@@ -55,12 +74,22 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
   }
 
   Stream<PersonState> _mapDeletePersonToState(DeletePerson event) async* {
-    _personRepository.deletePerson(event.person);
+    _personRepository.deletePerson(event.person, event.idList);
   }
 
   Stream<PersonState> _mapPersonUpdateToState(
       PersonUpdated event) async* {
     yield PersonLoaded(event.person);
+  }
+
+  Stream<PersonState> _mapUserListPersonUpdateToState(
+      UserListPersonUpdated event) async* {
+    yield UserListPersonLoaded(event.person);
+  }
+
+  Stream<PersonState> _mapSinglePersonUpdateToState(
+      SinglePersonUpdated event) async* {
+    yield SinglePersonLoaded(event.person);
   }
 
   @override

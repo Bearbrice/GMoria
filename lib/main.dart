@@ -34,19 +34,17 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
         providers: [
           BlocProvider<UserListBloc>(
-            create: (context) {
-              return UserListBloc(
-                userListRepository: DataUserListRepository(),
-              )..add(LoadUserList());
-            },
-          ),
+              create: (context) {
+                return UserListBloc(
+                  userListRepository: DataUserListRepository(),
+                )..add(LoadUserList());
+              }),
           BlocProvider<PersonBloc>(
-            create: (context) {
-              return PersonBloc(
-                personRepository: DataPersonRepository(),
-              )..add(LoadPerson());
-            },
-          )
+              create: (context) {
+                return PersonBloc(
+                  personRepository: DataPersonRepository(),
+                )..add(LoadPerson());
+              }),
         ],
         child: MultiProvider(
           providers: [
@@ -55,7 +53,7 @@ class MyApp extends StatelessWidget {
             ),
             StreamProvider(
               create: (context) =>
-                  context.read<AuthenticationService>().authStateChanges,
+              context.read<AuthenticationService>().authStateChanges,
             )
           ],
           child: MaterialApp(
@@ -97,7 +95,8 @@ class MyApp extends StatelessWidget {
               return supportedLocales.first;
             },
           ),
-        ));
+        )
+      );
   }
 }
 

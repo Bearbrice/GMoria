@@ -10,9 +10,10 @@ class PersonEntity extends Equatable{
   final String description;
   final bool is_known;
   final String image_url;
+  final List lists;
 
   PersonEntity(this.id, this.firstname, this.lastname, this.imported_from, this.job,
-      this.description, this.is_known, this.image_url);
+      this.description, this.is_known, this.image_url,this.lists);
 
   static PersonEntity fromSnapshot(DocumentSnapshot snap) {
     return PersonEntity(
@@ -24,6 +25,7 @@ class PersonEntity extends Equatable{
       snap.data()['description'],
       snap.data()['is_known'],
       snap.data()['image_url'],
+      snap.data()['lists'],
     );
   }
 
@@ -37,11 +39,12 @@ class PersonEntity extends Equatable{
       json['description'] as String,
       json['is_known'] as bool,
       json['image_url'] as String,
+      json['lists'] as List
     );
   }
 
   @override
-  List<Object> get props => [id, firstname, lastname, imported_from, job, description, is_known, image_url];
+  List<Object> get props => [id, firstname, lastname, imported_from, job, description, is_known, image_url, lists];
 
   Map<String, Object> toDocument() {
     return {
@@ -51,7 +54,8 @@ class PersonEntity extends Equatable{
       'job': job,
       'description': description,
       'is_known': is_known,
-      'image_url': image_url
+      'image_url': image_url,
+      'lists' : lists
     };
   }
 
@@ -64,7 +68,8 @@ class PersonEntity extends Equatable{
       'job': job,
       'description': description,
       'is_known': is_known,
-      'image_url': image_url
+      'image_url': image_url,
+      'lists' : lists
     };
   }
 }

@@ -4,7 +4,9 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:gmoria/data/entities/PersonEntity.dart';
+import 'package:gmoria/data/entities/UserListEntity.dart';
 import 'package:gmoria/domain/models/Person.dart';
+import 'package:gmoria/domain/models/UserList.dart';
 import 'package:gmoria/domain/repositories/PersonRepository.dart';
 
 class DataPersonRepository implements PersonRepository {
@@ -23,57 +25,74 @@ class DataPersonRepository implements PersonRepository {
   }
 
   @override
-  Stream<List<Person>> getUserListPersons(List<String> personsIdList) {
+  Stream<UserList> getUserListPersonsById(String idUserList) {
+    return listsCollection.doc(idUserList).snapshots().map((snapshot) {
+      return UserList.fromEntity(UserListEntity.fromSnapshot(snapshot));
+    });
+  }
+
+  @override
+  Stream<List<Person>> getUserListPersons(String idUserList) {
     //As the whereIn query only allows up to 10 equalities,
     //the following lines merge the results of multiple queries with max 10 ids
-
-    List<Stream> results = [];
-    if (personsIdList.length >= 10) {
-      List<List<String>> listOfLists = new List<List<String>>();
-      for (var i = 0; i < personsIdList.length; i += 10) {
-        List<String> sub =
-            personsIdList.sublist(i, min(personsIdList.length, i + 10));
-        print("SUBLIST !!!!!!!!!!!!!!!!!     " + i.toString());
-        print(sub);
-        print(personsIdList);
-        listOfLists.add(sub);
-      }
-
-      listOfLists.forEach((idsList) {
-        results.add(
-            personCollection
-            .where(FieldPath.documentId, whereIn: idsList)
-            .snapshots());
-      });
-      var controller = StreamController<List<Person>>();
-      StreamZip(results).asBroadcastStream().listen((snapshots) {
-        List<DocumentSnapshot> documents = List<DocumentSnapshot>();
-
-        snapshots.forEach((snapshot) {
-          documents.addAll(snapshot.documents);
-        });
-
-        final persons = documents.map((doc) {
-          return Person.fromEntity(PersonEntity.fromSnapshot(doc));
-        }).toList();
-
-        controller.add(persons);
-      });
-      return controller.stream;
-    }
-
+    //TODO case with more than 10 equalities
     return personCollection
-        .where(FieldPath.documentId, whereIn: personsIdList)
+        .where('lists', arrayContains: idUserList)
         .snapshots()
         .map((snapshot) {
       return snapshot.docs
           .map((doc) => Person.fromEntity(PersonEntity.fromSnapshot(doc)))
           .toList();
     });
+
+    // List<Stream> results = [];
+    // if (personsIdList.length >= 10) {
+    //   List<List<String>> listOfLists = new List<List<String>>();
+    //   for (var i = 0; i < personsIdList.length; i += 10) {
+    //     List<String> sub =
+    //     personsIdList.sublist(i, min(personsIdList.length, i + 10));
+    //     print("SUBLIST !!!!!!!!!!!!!!!!!     " + i.toString());
+    //     print(sub);
+    //     print(personsIdList);
+    //     listOfLists.add(sub);
+    //   }
+    //
+    //   listOfLists.forEach((idsList) {
+    //     results.add(
+    //         personCollection
+    //             .where(FieldPath.documentId, whereIn: idsList)
+    //             .snapshots());
+    //   });
+    //   var controller = StreamController<List<Person>>();
+    //   StreamZip(results).asBroadcastStream().listen((snapshots) {
+    //     List<DocumentSnapshot> documents = List<DocumentSnapshot>();
+    //
+    //     snapshots.forEach((snapshot) {
+    //       documents.addAll(snapshot.documents);
+    //     });
+    //
+    //     final persons = documents.map((doc) {
+    //       return Person.fromEntity(PersonEntity.fromSnapshot(doc));
+    //     }).toList();
+    //
+    //     controller.add(persons);
+    //   });
+    //   return controller.stream;
+    // }
+    //
+    // return personCollection
+    //     .where(FieldPath.documentId, whereIn: personsIdList)
+    //     .snapshots()
+    //     .map((snapshot) {
+    //   return snapshot.docs
+    //       .map((doc) => Person.fromEntity(PersonEntity.fromSnapshot(doc)))
+    //       .toList();
+    // });
   }
 
   @override
   Future<void> addNewPerson(Person person, String idUserList) async {
+
     return personCollection
         .add(person.toEntity().toDocument())
         .then((value) => {
@@ -83,16 +102,22 @@ class DataPersonRepository implements PersonRepository {
             });
   }
 
-  Future<void> addNewPerson2(Person person) {
-    return personCollection.add(person.toEntity().toDocument());
-  }
-
   @override
-  Future<void> deletePerson(Person person) {
-    Reference photoRef =
-        FirebaseStorage.instance.ref().storage.refFromURL(person.image_url);
-    photoRef.delete();
-    return personCollection.doc(person.id).delete();
+  Future<void> deletePerson(Person person, String idUserList) {
+    listsCollection.doc(idUserList).update({
+      'persons': FieldValue.arrayRemove([person.id])
+    });
+
+    if(person.lists.map((p) => p as String).toList().length == 1){
+      Reference photoRef =
+      FirebaseStorage.instance.ref().storage.refFromURL(person.image_url);
+      photoRef.delete();
+      return personCollection.doc(person.id).delete();
+    }
+
+    personCollection.doc(person.id).update({
+      'lists': FieldValue.arrayRemove([idUserList])
+    });
   }
 
   @override
@@ -101,4 +126,12 @@ class DataPersonRepository implements PersonRepository {
         .doc(person.id)
         .update(person.toEntity().toDocument());
   }
+
+  @override
+  Stream<Person> getSinglePerson(String idPerson) {
+    return personCollection.doc(idPerson).snapshots().map((event) {
+      return Person.fromEntity(PersonEntity.fromSnapshot(event));
+    });
+  }
+
 }

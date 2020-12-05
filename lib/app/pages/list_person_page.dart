@@ -5,12 +5,10 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:gmoria/app/utils/ScreenArguments.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
 import 'package:gmoria/data/repositories/DataPersonRepository.dart';
-import 'package:gmoria/data/repositories/DataUserListRepository.dart';
 import 'package:gmoria/domain/blocs/person/PersonBloc.dart';
 import 'package:gmoria/domain/blocs/person/PersonEvent.dart';
 import 'package:gmoria/domain/blocs/person/PersonState.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListBloc.dart';
-import 'package:gmoria/domain/blocs/userlist/UserListEvent.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListState.dart';
 import 'package:gmoria/domain/models/Person.dart';
 import 'package:gmoria/domain/models/UserList.dart';
@@ -25,21 +23,49 @@ class ListPage extends StatefulWidget {
 
 class _ListPageState extends State<ListPage>{
   UserList userList;
-  List<String> personsIdList;
+  //List<String> personsIdList;
+  bool change;
   @override
   Widget build(BuildContext context) {
     //final UserList userList = ModalRoute.of(context).settings.arguments;
     final _scaffoldKey = GlobalKey<ScaffoldState>();
     setState(() {
       userList = ModalRoute.of(context).settings.arguments;
-      personsIdList = userList.persons.map((personId) => personId as String).toList();
+      //personsIdList = userList.persons.map((personId) => personId as String).toList();
     });
+
+
     conditionalRendering() {
       if (userList.persons.isEmpty) {
         return Center(
             child: Text("Your list is empty", style: TextStyle(fontSize: 20)));
       } else {
-        return MyUserPeople(userList.id, personsIdList: personsIdList);
+        print("J?ESSAIE DE FAIRE çA EN DYNAMIQUQQUQUQUQUEW");
+        print(userList.persons);
+        // return BlocBuilder<UserListBloc, UserListState>(builder: (context, state) {
+        //   if (state is UserListLoading) {
+        //     return Text("Loading !");
+        //   } else if (state is UserListLoaded) {
+        //     //return Text(state.userList.toString());
+        //     final userLists = state.userList;
+        //     List<String> personsIdList = userLists.where((element) => element.id == userList.id).first.persons.map((personId) => personId as String).toList();
+        //     print("ID A REFRESH");
+        //     print(personsIdList);
+            return BlocProvider<PersonBloc>(
+              create: (context) {
+                print("ID A REFRESH dans la methode de chez person");
+                //print(personsIdList);
+                return PersonBloc(
+                  personRepository: DataPersonRepository(),
+                )..add(LoadUserListPersons(userList.id));
+              },
+              child: MyUserPeople(userList.id),
+            );
+          // } else {
+          //   return Text("Problem :D");
+          // }
+        //  });
+
       }
     }
 
@@ -120,23 +146,23 @@ class _ListPageState extends State<ListPage>{
 
 class MyUserPeople extends StatelessWidget {
   // MyUserPeople({Key key}) : super(key: key);
-  final List<String> personsIdList;
+  //List<String> personsIdList;
   final String userListId;
   // MyUserPeople({Key key, this.userList}) : super(key: key);
-  MyUserPeople(this.userListId,{Key key, this.personsIdList}) : super(key: key);
+  MyUserPeople(this.userListId,{Key key}) : super(key: key);
   Widget build(BuildContext context) {
     print("IDD QUE JE DOIS LOADER");
-    print(personsIdList);
-    return BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
+    return BlocBuilder<PersonBloc, PersonState>(
+        builder: (context, state) {
       if (state is PersonLoading) {
         return Text("Loading !");
-      } else if (state is PersonLoaded) {
+      } else if (state is UserListPersonLoaded) {
         final personsList = state.person;
-
-        List<Person> myList = personsList.where((i) => personsIdList.contains(i.id) ).toList();
+        print("PERSONSSSSSSSSSSSSS");
+        print(state.person.length);
+        //List<Person> myList = personsList.where((i) => personsIdList.contains(i.id) ).toList();
         print("IDD QUE JE DOIS FILTRERRRRRR");
-        print(myList);
-        return WidgetListElement(userListId, list: myList);
+        return WidgetListElement(userListId, list: personsList);
         // return Swiper(
         //   index: 1,
         //   itemCount: personsList.length,
@@ -170,7 +196,6 @@ class WidgetListElement extends StatefulWidget {
 
 class _WidgetListElementState extends State<WidgetListElement> {
   SlidableController slidableController;
-  List<Person> personlists;
 
   @protected
   void initState() {
@@ -186,16 +211,16 @@ class _WidgetListElementState extends State<WidgetListElement> {
         final Axis slidableDirection =
             direction == Axis.horizontal ? Axis.vertical : Axis.horizontal;
         print("JJJJJJJJJJJJEEEEEEEEEEEEUPDATEEEEEEEEEE");
-        print(personlists.length);
+        print(widget.list.length);
         return _getSlidableWithDelegates(context, index, slidableDirection);
       },
-      itemCount: personlists.length,
+      itemCount: widget.list.length,
     );
   }
 
   Widget _getSlidableWithDelegates(
       BuildContext context, int index, Axis direction) {
-    final Person item = personlists[index];
+    final Person item = widget.list[index];
 
     deleteDialog() {
       return showDialog<bool>(
@@ -214,7 +239,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
                 child: Text('Ok'),
                 onPressed: () => {
                   Navigator.of(context).pop(true),
-                  BlocProvider.of<PersonBloc>(context).add(DeletePerson(item)),
+                  BlocProvider.of<PersonBloc>(context).add(DeletePerson(item,widget.idUserList)),
                 },
               ),
             ],
@@ -248,15 +273,15 @@ class _WidgetListElementState extends State<WidgetListElement> {
                   ? 'Dismiss Archive'
                   : 'Dismiss Delete');
           setState(() {
-            personlists.removeAt(index);
+            widget.list.removeAt(index);
           });
         },
       ),
       actionPane: SlidableScrollActionPane(),
       actionExtentRatio: 0.25,
       child: direction == Axis.horizontal
-          ? VerticalListItem(personlists[index], widget.idUserList)
-          : HorizontalListItem(personlists[index]),
+          ? VerticalListItem(widget.list[index], widget.idUserList)
+          : HorizontalListItem(widget.list[index]),
       secondaryActionDelegate: SlideActionBuilderDelegate(
           actionCount: 1,
           builder: (context, index, animation, renderingMode) {
@@ -293,9 +318,6 @@ class _WidgetListElementState extends State<WidgetListElement> {
 
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      personlists = widget.list;
-    });
     return OrientationBuilder(
       builder: (context, orientation) => _buildList(
           context,

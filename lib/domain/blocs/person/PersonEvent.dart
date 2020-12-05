@@ -10,13 +10,21 @@ abstract class PersonEvent extends Equatable {
 
 class LoadPerson extends PersonEvent {}
 
-class LoadUserListPersons extends PersonEvent {
-  final List<String> personsIdList;
-
-  const LoadUserListPersons(this.personsIdList);
+class LoadSinglePerson extends PersonEvent {
+  final String idPerson;
+  const LoadSinglePerson(this.idPerson);
 
   @override
-  List<Object> get props => [personsIdList];
+  List<Object> get props => [idPerson];
+}
+
+class LoadUserListPersons extends PersonEvent {
+  final String idUserList;
+
+  const LoadUserListPersons(this.idUserList);
+
+  @override
+  List<Object> get props => [idUserList];
 }
 
 class AddPerson extends PersonEvent {
@@ -46,11 +54,12 @@ class UpdatePerson extends PersonEvent {
 
 class DeletePerson extends PersonEvent {
   final Person person;
+  final String idList;
 
-  const DeletePerson(this.person);
+  const DeletePerson(this.person,this.idList);
 
   @override
-  List<Object> get props => [person];
+  List<Object> get props => [person,idList];
 
   @override
   String toString() => 'PersonDeleted { person: $person }';
@@ -60,6 +69,24 @@ class PersonUpdated extends PersonEvent {
   final List<Person> person;
 
   const PersonUpdated(this.person);
+
+  @override
+  List<Object> get props => [person];
+}
+
+class UserListPersonUpdated extends PersonEvent {
+  final List<Person> person;
+
+  const UserListPersonUpdated(this.person);
+
+  @override
+  List<Object> get props => [person];
+}
+
+class SinglePersonUpdated extends PersonEvent {
+  final Person person;
+
+  const SinglePersonUpdated(this.person);
 
   @override
   List<Object> get props => [person];

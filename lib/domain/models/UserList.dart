@@ -13,7 +13,7 @@ class UserList {
   UserList(this.listName,
       {this.bestScore = 0, Timestamp creation_date, List persons, String id})
       : this.creation_date = creation_date ?? Timestamp.now(),
-        this.persons = persons,
+        this.persons = persons ?? new List(),
         this.id = id;
 
   UserList copyWith(
@@ -23,7 +23,7 @@ class UserList {
       id : id ?? this.id,
       bestScore: bestScore ?? this.bestScore,
       creation_date: creation_date ?? this.creation_date,
-      persons: persons ?? this.persons,
+      persons: persons ?? new List(),
     );
   }
 

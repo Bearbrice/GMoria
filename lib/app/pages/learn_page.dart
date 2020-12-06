@@ -26,12 +26,8 @@ class LearnPage extends StatelessWidget {
           child: Text(AppLocalizations.of(context).translate('learn_emptyList'),
               style: TextStyle(fontSize: 20)));
     } else {
-      List<String> personsIdList =
-          userList.persons.map((personId) => personId as String).toList();
       elementToRender = PersonsList(
-          personsIdList: personsIdList,
-          cardHeight: cardHeight,
-          cardWidth: cardWidth);
+          userList: userList, cardHeight: cardHeight, cardWidth: cardWidth);
     }
     return Scaffold(
       backgroundColor: Colors.white,
@@ -51,11 +47,11 @@ class LearnPage extends StatelessWidget {
 }
 
 class PersonsList extends StatelessWidget {
-  final personsIdList;
+  final userList;
   final cardWidth;
   final cardHeight;
 
-  PersonsList({Key key, this.personsIdList, this.cardWidth, this.cardHeight})
+  PersonsList({Key key, this.userList, this.cardWidth, this.cardHeight})
       : super(key: key);
 
   @override
@@ -66,14 +62,14 @@ class PersonsList extends StatelessWidget {
             create: (context) {
               return PersonBloc(
                 personRepository: DataPersonRepository(),
-              )..add(LoadUserListPersons(personsIdList));
+              )..add(LoadUserListPersons(userList.id));
             },
           )
         ],
         child: BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
           if (state is PersonLoading) {
             return Center(child: CircularProgressIndicator());
-          } else if (state is PersonLoaded) {
+          } else if (state is UserListPersonLoaded) {
             if (state.person.length == 1) {
               return Column(children: [
                 Container(
@@ -155,7 +151,7 @@ class _PeopleSwiperState extends State<PeopleSwiper> {
           viewportFraction: 0.8,
           itemCount: widget.personsList.length,
           index: -1,
-          itemHeight: 400.0,
+          itemHeight: 480.0,
           itemWidth: 400.0,
           loop: _loop,
           onIndexChanged: (value) {
@@ -169,13 +165,13 @@ class _PeopleSwiperState extends State<PeopleSwiper> {
             return PersonCard(widget.personsList[index]);
           },
         ),
-         AnimatedContainer(
-             width: displayGameButton ? 200: 0.0,
-             height: displayGameButton ? 100: 0.0,
-             curve: Curves.ease,
-             duration: Duration(seconds: 1),
-             child:Container(
-                margin: EdgeInsets.only(top: 35.0),
+        AnimatedContainer(
+            width: displayGameButton ? 200 : 0.0,
+            height: displayGameButton ? 60 : 0.0,
+            curve: Curves.ease,
+            duration: Duration(seconds: 1),
+            child: Container(
+                margin: EdgeInsets.only(top: 10.0),
                 child: RaisedButton(
                     onPressed: () {
                       //TODO navigate to Play Game
@@ -187,7 +183,6 @@ class _PeopleSwiperState extends State<PeopleSwiper> {
                         AppLocalizations.of(context)
                             .translate('learn_gameButton'),
                         style: TextStyle(fontSize: 20)))))
-
       ],
     );
   }
@@ -219,26 +214,49 @@ class PersonCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return FlipCard(
       direction: FlipDirection.HORIZONTAL,
-      speed: 450, // default
+      speed: 450,
+      flipOnTouch: person.job != "" ? true : false,
+      // default
       front: Container(
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(20.0)),
           ),
-          child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(20.0)),
-              child: ExtendedImage.network(
-                person.image_url,
-                fit: BoxFit.fill,
-                enableMemoryCache: true,
-                handleLoadingProgress: false,
-              ))),
+          child: Column(
+            children: [
+              ClipRRect(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20.0),
+                      topRight: Radius.circular(20.0)),
+                  child: ExtendedImage.network(
+                    person.image_url,
+                    fit: BoxFit.fill,
+                    enableMemoryCache: true,
+                    handleLoadingProgress: false,
+                  )),
+              Container(
+                height: 70.0,
+                width: 400.0,
+                decoration: BoxDecoration(
+                  color: Colors.cyan,
+                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20.0), bottomRight: Radius.circular(20.0)),
+                ),
+                child: Center(
+                  child: Text(
+                    person.firstname+" "+person.lastname,
+                    style: TextStyle(color: Colors.white, fontSize: 30),
+                  ),
+                ),
+              )
+            ],
+          )),
       back: Container(
         height: 400.0,
         width: 400.0,
+        padding: EdgeInsets.all(10),
         child: Center(
           child: Text(
-            person.firstname + " " + person.lastname,
+            person.job,
             style: TextStyle(color: Colors.white, fontSize: 30),
           ),
         ),

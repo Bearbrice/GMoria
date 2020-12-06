@@ -15,6 +15,37 @@ class PersonView extends StatelessWidget {
   String idUserList;
   ScreenArguments args;
 
+  deleteDialog(context) {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Delete'),
+          content: Text('This person will be deleted'),
+          actions: <Widget>[
+            FlatButton(
+                child: Text('Cancel'),
+                onPressed: () => {
+                      Navigator.of(context).pop(false),
+                    }),
+            FlatButton(
+              child: Text('Ok'),
+              onPressed: () => {
+                // Pop the dialog
+                Navigator.of(context).pop(true),
+                // Pop the page
+                Navigator.of(context).pop(true),
+                // Delete the person
+                BlocProvider.of<PersonBloc>(context)
+                    .add(DeletePerson(person, idUserList))
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     args = ModalRoute.of(context).settings.arguments;
@@ -30,17 +61,37 @@ class PersonView extends StatelessWidget {
         )..add(LoadSinglePerson(person.id));
       },
       child: BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
-        if(state is SinglePersonLoaded) {
+        if (state is SinglePersonLoaded) {
           return Scaffold(
-            appBar: AppBar(
-              title: Text(state.person.firstname + " " + state.person.lastname),
-            ),
-            body: PersonInfo(
-              person: state.person,
-              idUserList: idUserList,
-            ),
-          );
-        }else{
+              appBar: AppBar(
+                title:
+                    Text(state.person.firstname + " " + state.person.lastname),
+              ),
+              body: PersonInfo(
+                person: state.person,
+                idUserList: idUserList,
+              ),
+              floatingActionButton: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    FloatingActionButton(
+                        mini: true,
+                        backgroundColor: Colors.blueAccent,
+                        heroTag: null,
+                        onPressed: () => Navigator.pushNamed(
+                            context, '/personForm',
+                            arguments: new ScreenArguments(person, idUserList)),
+                        child: Icon(Icons.edit)),
+                    SizedBox(height: 8.0),
+                    FloatingActionButton(
+                      mini: true,
+                      backgroundColor: Colors.red,
+                      heroTag: null,
+                      onPressed: () => deleteDialog(context),
+                      child: Icon(Icons.delete),
+                    ),
+                  ]));
+        } else {
           return Container();
         }
       }),
@@ -141,41 +192,42 @@ class _PersonInfoState extends State<PersonInfo> {
             // ),
 
             Container(
-                padding: EdgeInsets.all(16.0),
+                padding: EdgeInsets.fromLTRB(55, 16, 55, 16),
                 alignment: Alignment.center,
                 // width: halfMediaWidth,
                 child: MyText(
                   label: 'Description',
                   text: person.description,
                 )),
-            RaisedButton(
-              color: Colors.blueAccent,
-              child: Text("Edit", style: TextStyle(color: Colors.white)),
-              onPressed: () => Navigator.pushNamed(context, '/personForm',
-                  arguments: new ScreenArguments(person, idUserList)),
 
-              // textColor: Colors.lightGreenAccent,
-            ),
-            RaisedButton(
-              color: Colors.red,
-              onPressed: () => "",
-              // onPressed: () {
-              // if (_formKey.currentState.validate()) {
-              //   _formKey.currentState.save();
-              //   Navigator.pushNamed(context, '/list');
-              //   // Navigator.push(
-              //   //     context,
-              //   //     MaterialPageRoute(
-              //   //         builder: (context) => Result(model: this.model)));
-              // }
-              // },
-              child: Text(
-                'Delete',
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-            )
+            // RaisedButton(
+            //   color: Colors.blueAccent,
+            //   child: Text("Edit", style: TextStyle(color: Colors.white)),
+            //   onPressed: () => Navigator.pushNamed(context, '/personForm',
+            //       arguments: new ScreenArguments(person, idUserList)),
+            //
+            //   // textColor: Colors.lightGreenAccent,
+            // ),
+            // RaisedButton(
+            //   color: Colors.red,
+            //   // onPressed: () => deleteDialog(context),
+            //   // onPressed: () {
+            //   // if (_formKey.currentState.validate()) {
+            //   //   _formKey.currentState.save();
+            //   //   Navigator.pushNamed(context, '/list');
+            //   //   // Navigator.push(
+            //   //   //     context,
+            //   //   //     MaterialPageRoute(
+            //   //   //         builder: (context) => Result(model: this.model)));
+            //   // }
+            //   // },
+            //   child: Text(
+            //     'Delete',
+            //     style: TextStyle(
+            //       color: Colors.white,
+            //     ),
+            //   ),
+            // )
           ],
         ),
       ),
@@ -212,29 +264,29 @@ class MyText extends StatelessWidget {
               TextSpan(
                   text: '\n$text',
                   style:
-                      TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0)),
+                      TextStyle(fontWeight: FontWeight.w500, fontSize: 20.0)),
             ],
           ),
         ));
   }
 }
 
-class MyTextLabel extends StatelessWidget {
-  final String text;
-
-  MyTextLabel({
-    this.text,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(8.0),
-      child: Text(text,
-          style: TextStyle(
-              fontWeight: FontWeight.w900,
-              fontFamily: 'Open Sans',
-              fontSize: 10)),
-    );
-  }
-}
+// class MyTextLabel extends StatelessWidget {
+//   final String text;
+//
+//   MyTextLabel({
+//     this.text,
+//   });
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Padding(
+//       padding: EdgeInsets.all(8.0),
+//       child: Text(text,
+//           style: TextStyle(
+//               fontWeight: FontWeight.w900,
+//               fontFamily: 'Open Sans',
+//               fontSize: 10)),
+//     );
+//   }
+// }

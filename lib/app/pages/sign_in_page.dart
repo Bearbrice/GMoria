@@ -28,6 +28,7 @@ class SignInPage extends StatelessWidget {
               decoration: InputDecoration(
                 labelText: AppContext.translate('signIn_password'),
               ),
+              obscureText: true,
             ),
             RaisedButton(
               onPressed: () {

@@ -9,8 +9,6 @@ import 'package:gmoria/data/repositories/DataUserListRepository.dart';
 import 'package:gmoria/domain/blocs/person/PersonBloc.dart';
 import 'package:gmoria/domain/blocs/person/PersonEvent.dart';
 import 'package:gmoria/domain/blocs/person/PersonState.dart';
-import 'package:gmoria/domain/blocs/userlist/UserListBloc.dart';
-import 'package:gmoria/domain/blocs/userlist/UserListEvent.dart';
 import 'package:gmoria/domain/models/Person.dart';
 import 'package:gmoria/domain/models/PersonFormModel.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -24,6 +22,7 @@ class PersonForm extends StatelessWidget {
   String idUserList;
   String title = "Add a new person";
   ScreenArguments args;
+
   @override
   Widget build(BuildContext context) {
     //person = ModalRoute.of(context).settings.arguments;
@@ -35,7 +34,7 @@ class PersonForm extends StatelessWidget {
     if (person != null) {
       editMode = true;
       title = "Edit: " + person.firstname + " " + person.lastname;
-    }else{
+    } else {
       editMode = false;
     }
     return BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
@@ -43,7 +42,7 @@ class PersonForm extends StatelessWidget {
         appBar: AppBar(
           title: Text(title),
         ),
-        body: TestForm(idUserList:idUserList, person: person),
+        body: TestForm(idUserList: idUserList, person: person),
       );
     });
   }
@@ -61,7 +60,8 @@ class PersonForm extends StatelessWidget {
 class TestForm extends StatefulWidget {
   final Person person;
   final String idUserList;
-  TestForm({Key key, this.person,this.idUserList}) : super(key: key);
+
+  TestForm({Key key, this.person, this.idUserList}) : super(key: key);
 
   @override
   _TestFormState createState() => _TestFormState();
@@ -137,8 +137,7 @@ class _TestFormState extends State<TestForm> {
     print("PATHHHHHHHHHHHHHH");
     print(basename(_image.path));
     UploadTask uploadTask = storageReference.putFile(_image);
-    await uploadTask.whenComplete(() =>  {
-      print('File Uploaded')});
+    await uploadTask.whenComplete(() => {print('File Uploaded')});
     String returnURL;
     await storageReference.getDownloadURL().then((fileURL) {
       returnURL = fileURL;
@@ -162,13 +161,24 @@ class _TestFormState extends State<TestForm> {
           children: <Widget>[
             Container(
               child: Center(
-                child: !editMode
-                    ? _image == null ? Image.asset('assets/picture/unknown.jpg',
-                        width: 200.0, height: 200.0) : Image.file(_image,width: 280,height: 280)
-                    // Text(
-                    //         editMode ? 'No image available' : 'No image selected.')
-                    : _image == null ? ExtendedImage.network(person.image_url,fit: BoxFit.fill,width: 280,height: 280)
-                : Image.file(_image,width: 280,height: 280),
+                child: GestureDetector(
+                    onTap: () {
+                      getG();
+                    },
+                    child: !editMode
+                        ? _image == null
+                            ? Image.asset(
+                                'assets/picture/unknown.jpg',
+                                width: 200.0,
+                                height: 200.0,
+                              )
+                            : Image.file(_image, width: 280, height: 280)
+                        // Text(
+                        //         editMode ? 'No image available' : 'No image selected.')
+                        : _image == null
+                            ? ExtendedImage.network(person.image_url,
+                                fit: BoxFit.fill, width: 280, height: 280)
+                            : Image.file(_image, width: 280, height: 280)),
               ),
             ),
             Container(
@@ -244,6 +254,10 @@ class _TestFormState extends State<TestForm> {
               hintText: 'Description (optional)',
               initialValue: person.description,
               isEmail: false,
+              isLong: true,
+              // maxLines: 10,
+              // maxLines: 30,
+              textInputType: TextInputType.multiline,
               // controller: description,
 
               // validator: (String value) {
@@ -289,28 +303,33 @@ class _TestFormState extends State<TestForm> {
                   _formKey.currentState.save();
                   print(this.model.firstname);
 
-
-                  if(editMode){
+                  if (editMode) {
                     String imageURL;
-                    if(_image != null){
-                      Reference photoRef = FirebaseStorage.instance.ref().storage.refFromURL(person.image_url);
+                    if (_image != null) {
+                      Reference photoRef = FirebaseStorage.instance
+                          .ref()
+                          .storage
+                          .refFromURL(person.image_url);
                       photoRef.delete();
                       imageURL = await getImageURL();
-
-                    }else{
-                      imageURL =  person.image_url;
+                    } else {
+                      imageURL = person.image_url;
                     }
                     Person p = new Person(model.firstname, model.lastname,
-                        model.job, model.description,imageURL,
-                        is_known: person.is_known,imported_from: person.imported_from,id: person.id,lists: person.lists);
+                        model.job, model.description, imageURL,
+                        is_known: person.is_known,
+                        imported_from: person.imported_from,
+                        id: person.id,
+                        lists: person.lists);
                     print("FIRSTNAME");
                     BlocProvider.of<PersonBloc>(context).add(UpdatePerson(p));
-                  }else{
-                    String imageURL =await getImageURL();
+                  } else {
+                    String imageURL = await getImageURL();
                     Person p = new Person(model.firstname, model.lastname,
-                        model.job, model.description, imageURL, lists: [idUserList]);
-                    BlocProvider.of<PersonBloc>(context).add(AddPerson(p, idUserList));
-
+                        model.job, model.description, imageURL,
+                        lists: [idUserList]);
+                    BlocProvider.of<PersonBloc>(context)
+                        .add(AddPerson(p, idUserList));
                   }
                   Navigator.of(context).pop();
                   // Navigator.push(
@@ -341,16 +360,21 @@ class MyTextFormField extends StatelessWidget {
   final Function onSaved;
   final bool isPassword;
   final bool isEmail;
+  final bool isLong;
+  final int maxLines;
+  final TextInputType textInputType;
 
-  MyTextFormField({
-    this.initialValue,
-    this.controller,
-    this.hintText,
-    this.validator,
-    this.onSaved,
-    this.isPassword = false,
-    this.isEmail = false,
-  });
+  MyTextFormField(
+      {this.initialValue,
+      this.controller,
+      this.hintText,
+      this.validator,
+      this.onSaved,
+      this.isPassword = false,
+      this.isEmail = false,
+      this.isLong = false,
+      this.maxLines,
+      this.textInputType = TextInputType.text});
 
   @override
   Widget build(BuildContext context) {
@@ -364,12 +388,14 @@ class MyTextFormField extends StatelessWidget {
           filled: true,
           fillColor: Colors.grey[200],
         ),
+        minLines: isLong ? 3 : 1,
         controller: controller,
         obscureText: isPassword ? true : false,
         validator: validator,
+        maxLines: maxLines,
         onSaved: onSaved,
         initialValue: initialValue,
-        keyboardType: isEmail ? TextInputType.emailAddress : TextInputType.text,
+        keyboardType: isEmail ? TextInputType.emailAddress : textInputType,
       ),
     );
   }

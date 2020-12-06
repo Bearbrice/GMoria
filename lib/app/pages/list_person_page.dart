@@ -76,7 +76,7 @@ class _ListPageState extends State<ListPage>{
 
     /// Prevent learn and game to launch if the list is empty
     handleEmpty(action) {
-      if (userList.persons == null) {
+      if (userList.persons.isEmpty) {
         return _showSnackBar(context, 'The list is empty');
       }
 
@@ -228,7 +228,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
         builder: (context) {
           return AlertDialog(
             title: Text('Delete'),
-            content: Text('Item will be deleted'),
+            content: Text('This person will be deleted'),
             actions: <Widget>[
               FlatButton(
                   child: Text('Cancel'),

@@ -116,6 +116,11 @@ class _WidgetListElementState extends State<WidgetListElement> {
   }
 
   Widget _buildList(BuildContext context, Axis direction) {
+    // Sort the list of person by list name
+    widget.list.sort((a, b) {
+      return a.listName.compareTo(b.listName);
+    });
+
     return ListView.builder(
       scrollDirection: direction,
       itemBuilder: (context, index) {

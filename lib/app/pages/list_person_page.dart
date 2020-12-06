@@ -8,23 +8,21 @@ import 'package:gmoria/data/repositories/DataPersonRepository.dart';
 import 'package:gmoria/domain/blocs/person/PersonBloc.dart';
 import 'package:gmoria/domain/blocs/person/PersonEvent.dart';
 import 'package:gmoria/domain/blocs/person/PersonState.dart';
-import 'package:gmoria/domain/blocs/userlist/UserListBloc.dart';
-import 'package:gmoria/domain/blocs/userlist/UserListState.dart';
 import 'package:gmoria/domain/models/Person.dart';
 import 'package:gmoria/domain/models/UserList.dart';
 
 /// Page that display a specific list
 class ListPage extends StatefulWidget {
-
-
   @override
   State<StatefulWidget> createState() => _ListPageState();
 }
 
-class _ListPageState extends State<ListPage>{
+class _ListPageState extends State<ListPage> {
   UserList userList;
+
   //List<String> personsIdList;
   bool change;
+
   @override
   Widget build(BuildContext context) {
     //final UserList userList = ModalRoute.of(context).settings.arguments;
@@ -33,7 +31,6 @@ class _ListPageState extends State<ListPage>{
       userList = ModalRoute.of(context).settings.arguments;
       //personsIdList = userList.persons.map((personId) => personId as String).toList();
     });
-
 
     conditionalRendering() {
       if (userList.persons.isEmpty) {
@@ -51,19 +48,19 @@ class _ListPageState extends State<ListPage>{
         //     List<String> personsIdList = userLists.where((element) => element.id == userList.id).first.persons.map((personId) => personId as String).toList();
         //     print("ID A REFRESH");
         //     print(personsIdList);
-            return BlocProvider<PersonBloc>(
-              create: (context) {
-                print("ID A REFRESH dans la methode de chez person");
-                //print(personsIdList);
-                return PersonBloc(
-                  personRepository: DataPersonRepository(),
-                )..add(LoadUserListPersons(userList.id));
-              },
-              child: MyUserPeople(userList.id),
-            );
-          // } else {
-          //   return Text("Problem :D");
-          // }
+        return BlocProvider<PersonBloc>(
+          create: (context) {
+            print("ID A REFRESH dans la methode de chez person");
+            //print(personsIdList);
+            return PersonBloc(
+              personRepository: DataPersonRepository(),
+            )..add(LoadUserListPersons(userList.id));
+          },
+          child: MyUserPeople(userList.id),
+        );
+        // } else {
+        //   return Text("Problem :D");
+        // }
         //  });
 
       }
@@ -88,15 +85,15 @@ class _ListPageState extends State<ListPage>{
     }
 
     return Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          title: Text(
-            AppLocalizations.of(context).translate('list_title') +
-                userList.listName,
-            style: TextStyle(color: Colors.white),
-          ),
+      key: _scaffoldKey,
+      appBar: AppBar(
+        title: Text(
+          AppLocalizations.of(context).translate('list_title') +
+              userList.listName,
+          style: TextStyle(color: Colors.white),
         ),
-        body: Center(child: conditionalRendering()
+      ),
+      body: Center(child: conditionalRendering()
           //   OrientationBuilder(
           //   builder: (context, orientation) => _buildList(
           //       context,
@@ -104,7 +101,7 @@ class _ListPageState extends State<ListPage>{
           //           ? Axis.vertical
           //           : Axis.horizontal),
           // ),
-        ),
+          ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
@@ -148,12 +145,13 @@ class MyUserPeople extends StatelessWidget {
   // MyUserPeople({Key key}) : super(key: key);
   //List<String> personsIdList;
   final String userListId;
+
   // MyUserPeople({Key key, this.userList}) : super(key: key);
-  MyUserPeople(this.userListId,{Key key}) : super(key: key);
+  MyUserPeople(this.userListId, {Key key}) : super(key: key);
+
   Widget build(BuildContext context) {
     print("IDD QUE JE DOIS LOADER");
-    return BlocBuilder<PersonBloc, PersonState>(
-        builder: (context, state) {
+    return BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
       if (state is PersonLoading) {
         return Text("Loading !");
       } else if (state is UserListPersonLoaded) {
@@ -183,7 +181,6 @@ class MyUserPeople extends StatelessWidget {
   }
 }
 
-
 class WidgetListElement extends StatefulWidget {
   final List<Person> list;
   final String idUserList;
@@ -204,6 +201,10 @@ class _WidgetListElementState extends State<WidgetListElement> {
   }
 
   Widget _buildList(BuildContext context, Axis direction) {
+    // Sort the list of person by first names
+    widget.list.sort((a, b) {
+      return a.firstname.compareTo(b.firstname);
+    });
 
     return ListView.builder(
       scrollDirection: direction,
@@ -239,7 +240,8 @@ class _WidgetListElementState extends State<WidgetListElement> {
                 child: Text('Ok'),
                 onPressed: () => {
                   Navigator.of(context).pop(true),
-                  BlocProvider.of<PersonBloc>(context).add(DeletePerson(item,widget.idUserList)),
+                  BlocProvider.of<PersonBloc>(context)
+                      .add(DeletePerson(item, widget.idUserList)),
                 },
               ),
             ],

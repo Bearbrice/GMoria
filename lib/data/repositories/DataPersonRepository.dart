@@ -35,7 +35,6 @@ class DataPersonRepository implements PersonRepository {
   Stream<List<Person>> getUserListPersons(String idUserList) {
     //As the whereIn query only allows up to 10 equalities,
     //the following lines merge the results of multiple queries with max 10 ids
-    //TODO case with more than 10 equalities
     return personCollection
         .where('lists', arrayContains: idUserList)
         .snapshots()

@@ -2,6 +2,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
@@ -73,7 +74,7 @@ class PersonsList extends StatelessWidget {
             if (state.person.length == 1) {
               return Column(children: [
                 Container(
-                    margin: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                    margin: EdgeInsets.only(top: 20.0, bottom: 15.0),
                     padding: EdgeInsets.all(30.0),
                     decoration: BoxDecoration(
                         shape: BoxShape.circle, color: Colors.lightBlue),
@@ -94,10 +95,21 @@ class PersonsList extends StatelessWidget {
                         ])),
                 Center(
                     child: Container(
-                        width: cardWidth * 0.8,
-                        height: cardHeight * 0.8,
+                        width: cardWidth * 0.9,
+                        height: cardHeight*1.1,
                         child: PersonCard(state.person.first)))
-              ]);
+              ,
+                RaisedButton(
+                    onPressed: () {
+                      //TODO navigate to Play Game
+                    },
+                    color: Colors.green,
+                    padding: const EdgeInsets.all(10.0),
+                    textColor: Colors.white,
+                    child: Text(
+                        AppLocalizations.of(context)
+                            .translate('learn_gameButton'),
+                        style: TextStyle(fontSize: 20)))]);
             }
             List<Person> personsList = state.person;
             personsList.shuffle();
@@ -120,7 +132,6 @@ class PeopleSwiper extends StatefulWidget {
 }
 
 class _PeopleSwiperState extends State<PeopleSwiper> {
-  bool _loop = true;
   int _currentIndex = 0;
   bool displayGameButton = false;
 
@@ -129,7 +140,7 @@ class _PeopleSwiperState extends State<PeopleSwiper> {
     return Column(
       children: [
         Container(
-            margin: EdgeInsets.only(top: 20.0),
+            margin: EdgeInsets.only(top: 10.0),
             padding: EdgeInsets.all(30.0),
             decoration:
                 BoxDecoration(shape: BoxShape.circle, color: Colors.lightBlue),
@@ -148,18 +159,13 @@ class _PeopleSwiperState extends State<PeopleSwiper> {
             ])),
         Swiper(
           layout: SwiperLayout.TINDER,
-          viewportFraction: 0.8,
           itemCount: widget.personsList.length,
           index: -1,
-          itemHeight: 480.0,
+          itemHeight: 463.0,
           itemWidth: 400.0,
-          loop: _loop,
+          loop: true,
           onIndexChanged: (value) {
             _setCurrentIndex(widget.personsList.length - value);
-            if (value == widget.personsList.length) {
-              //print("toggleLoop");
-              _toggleLoop();
-            }
           },
           itemBuilder: (BuildContext context, int index) {
             return PersonCard(widget.personsList[index]);
@@ -187,12 +193,6 @@ class _PeopleSwiperState extends State<PeopleSwiper> {
     );
   }
 
-  void _toggleLoop() {
-    setState(() {
-      _loop = false;
-    });
-  }
-
   void _setCurrentIndex(value) {
     setState(() {
       if (value == widget.personsList.length) {
@@ -212,12 +212,7 @@ class PersonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FlipCard(
-      direction: FlipDirection.HORIZONTAL,
-      speed: 450,
-      flipOnTouch: person.job != "" ? true : false,
-      // default
-      front: Container(
+    return Container(
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(20.0)),
@@ -238,7 +233,7 @@ class PersonCard extends StatelessWidget {
                 height: 70.0,
                 width: 400.0,
                 decoration: BoxDecoration(
-                  color: Colors.cyan,
+                  color: Colors.lightBlue,
                   borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20.0), bottomRight: Radius.circular(20.0)),
                 ),
                 child: Center(
@@ -249,22 +244,6 @@ class PersonCard extends StatelessWidget {
                 ),
               )
             ],
-          )),
-      back: Container(
-        height: 400.0,
-        width: 400.0,
-        padding: EdgeInsets.all(10),
-        child: Center(
-          child: Text(
-            person.job,
-            style: TextStyle(color: Colors.white, fontSize: 30),
-          ),
-        ),
-        decoration: BoxDecoration(
-          color: Colors.cyan,
-          borderRadius: BorderRadius.all(Radius.circular(20.0)),
-        ),
-      ),
-    );
+          ));
   }
 }

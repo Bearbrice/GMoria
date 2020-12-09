@@ -19,51 +19,24 @@ class ListPage extends StatefulWidget {
 
 class _ListPageState extends State<ListPage> {
   UserList userList;
-
-  //List<String> personsIdList;
   bool change;
 
   @override
   Widget build(BuildContext context) {
-    //final UserList userList = ModalRoute.of(context).settings.arguments;
     final _scaffoldKey = GlobalKey<ScaffoldState>();
     setState(() {
       userList = ModalRoute.of(context).settings.arguments;
-      //personsIdList = userList.persons.map((personId) => personId as String).toList();
     });
 
     conditionalRendering() {
-      if (userList.persons.isEmpty) {
-        return Center(
-            child: Text("Your list is empty", style: TextStyle(fontSize: 20)));
-      } else {
-        print("J?ESSAIE DE FAIRE çA EN DYNAMIQUQQUQUQUQUEW");
-        print(userList.persons);
-        // return BlocBuilder<UserListBloc, UserListState>(builder: (context, state) {
-        //   if (state is UserListLoading) {
-        //     return Text("Loading !");
-        //   } else if (state is UserListLoaded) {
-        //     //return Text(state.userList.toString());
-        //     final userLists = state.userList;
-        //     List<String> personsIdList = userLists.where((element) => element.id == userList.id).first.persons.map((personId) => personId as String).toList();
-        //     print("ID A REFRESH");
-        //     print(personsIdList);
         return BlocProvider<PersonBloc>(
           create: (context) {
-            print("ID A REFRESH dans la methode de chez person");
-            //print(personsIdList);
             return PersonBloc(
               personRepository: DataPersonRepository(),
             )..add(LoadUserListPersons(userList.id));
           },
           child: MyUserPeople(userList.id),
         );
-        // } else {
-        //   return Text("Problem :D");
-        // }
-        //  });
-
-      }
     }
 
     void _showSnackBar(BuildContext context, String text) {
@@ -93,15 +66,7 @@ class _ListPageState extends State<ListPage> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: Center(child: conditionalRendering()
-          //   OrientationBuilder(
-          //   builder: (context, orientation) => _buildList(
-          //       context,
-          //       orientation == Orientation.portrait
-          //           ? Axis.vertical
-          //           : Axis.horizontal),
-          // ),
-          ),
+      body: Center(child: conditionalRendering()),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
@@ -142,38 +107,26 @@ class _ListPageState extends State<ListPage> {
 }
 
 class MyUserPeople extends StatelessWidget {
-  // MyUserPeople({Key key}) : super(key: key);
-  //List<String> personsIdList;
   final String userListId;
 
   // MyUserPeople({Key key, this.userList}) : super(key: key);
   MyUserPeople(this.userListId, {Key key}) : super(key: key);
 
   Widget build(BuildContext context) {
-    print("IDD QUE JE DOIS LOADER");
     return BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
       if (state is PersonLoading) {
         return Text("Loading !");
       } else if (state is UserListPersonLoaded) {
-        final personsList = state.person;
-        print("PERSONSSSSSSSSSSSSS");
-        print(state.person.length);
-        //List<Person> myList = personsList.where((i) => personsIdList.contains(i.id) ).toList();
-        print("IDD QUE JE DOIS FILTRERRRRRR");
-        return WidgetListElement(userListId, list: personsList);
-        // return Swiper(
-        //   index: 1,
-        //   itemCount: personsList.length,
-        //   itemBuilder: (BuildContext context, int index) {
-        //     return PersonCard(personsList[index]);
-        //   },
-        //   viewportFraction: 0.8,
-        //   scale: 0.9,
-        //   layout: SwiperLayout.TINDER,
-        //   itemWidth: cardWidth,
-        //   itemHeight: cardHeight,
-        //   loop: false,
-        // );
+        if(state.person.isNotEmpty) {
+          //If the list is not empty
+          final personsList = state.person;
+          return WidgetListElement(userListId, list: personsList);
+        }else{
+          //If the list is empty
+          return Center(
+              child: Text("Your list is empty", style: TextStyle(fontSize: 20))
+          );
+        }
       } else {
         return Text("Problem :D");
       }
@@ -211,8 +164,6 @@ class _WidgetListElementState extends State<WidgetListElement> {
       itemBuilder: (context, index) {
         final Axis slidableDirection =
             direction == Axis.horizontal ? Axis.vertical : Axis.horizontal;
-        print("JJJJJJJJJJJJEEEEEEEEEEEEUPDATEEEEEEEEEE");
-        print(widget.list.length);
         return _getSlidableWithDelegates(context, index, slidableDirection);
       },
       itemCount: widget.list.length,

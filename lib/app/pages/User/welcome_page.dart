@@ -68,6 +68,60 @@ class _WelcomePageState extends State<WelcomePage> {
     );
   }
 
+  Widget _googleButton(){
+    return InkWell(
+      child: Container(
+
+          // width: deviceSize
+              // .width/2,
+          // height: deviceSize.height/18,
+          width: MediaQuery.of(context).size.width/1.5,
+          padding: EdgeInsets.symmetric(vertical: 10),
+
+          // margin: EdgeInsets.only(top: 25),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              color:Colors.black
+          ),
+          child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Container(
+                    height: 30.0,
+                    width: 30.0,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image:
+                          AssetImage('assets/picture/google.jpg'),
+                          fit: BoxFit.cover),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  Text('Sign in with Google',
+                    style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white
+                    ),
+                  ),
+                ],
+              )
+          )
+      ),
+      onTap: ()
+      async{
+        context
+            .read<AuthenticationService>()
+            .signInWithGoogle();
+        //   Navigator.of(context).pushNamedAndRemoveUntil
+        //     (RouteName.Home, (Route<dynamic> route) => false
+        //   );}
+        // ).catchError((e) => print(e));
+      },
+    );
+  }
+
   Widget _signInForm() {
     return Form(
       key: _formKey,
@@ -93,7 +147,7 @@ class _WelcomePageState extends State<WelcomePage> {
             },
           ),
           SizedBox(
-            height: 20,
+            height: 10,
           ),
           error
               ? Text(
@@ -176,9 +230,13 @@ class _WelcomePageState extends State<WelcomePage> {
               SizedBox(
                 height: 80,
               ),
+
               _signInForm(),
+              // SizedBox(
+              //   height: 10,
+              // ),
               SizedBox(
-                height: 20,
+                height: 10,
               ),
               _signInButton(),
               // _submitButton(),
@@ -186,6 +244,10 @@ class _WelcomePageState extends State<WelcomePage> {
                 height: 20,
               ),
               _signUpButton(),
+              SizedBox(
+                height: 20,
+              ),
+              _googleButton(),
             ],
           ),
         ),

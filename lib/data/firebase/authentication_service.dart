@@ -23,9 +23,13 @@ class AuthenticationService {
     try {
       await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
-      return "Signed in";
     } on FirebaseAuthException catch (e) {
-      return e.message;
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+      }
+      return e.code;
     }
   }
 
@@ -34,14 +38,6 @@ class AuthenticationService {
   /// use your own custom class that would take the exception and return better
   /// error messages. That way you can throw, return or whatever you prefer with that instead.
   Future<String> signUp({String email, String password}) async {
-    // try {
-    //   await _firebaseAuth.createUserWithEmailAndPassword(
-    //       email: email, password: password);
-    //   return "Signed up";
-    // } on FirebaseAuthException catch (e) {
-    //   return e.message;
-    // }
-
     try {
       await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
@@ -50,10 +46,8 @@ class AuthenticationService {
         print('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
         print('The account already exists for that email. Code: AlreadyExists');
-        return 'AlreadyExists';
       }
-    } catch (e) {
-      print(e);
+      return e.code;
     }
   }
 

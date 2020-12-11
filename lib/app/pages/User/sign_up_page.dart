@@ -1,4 +1,6 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:gmoria/app/pages/User/welcome.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
 import 'package:gmoria/data/firebase/authentication_service.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +15,7 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController password2Controller = TextEditingController();
@@ -95,21 +98,22 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget _submitButton() {
     return InkWell(
       onTap: () {
+        if (_formKey.currentState.validate()) {
+          if (passwordController.text == password2Controller.text) {
+            print(true);
+          } else {
+            print(false);
+            return;
+          }
 
-        if (passwordController.text == password2Controller.text) {
-          print(true);
-        } else {
-          print(false);
-          return;
+          context
+              .read<AuthenticationService>()
+              .signUp(
+                email: emailController.text.trim(),
+                password: password2Controller.text.trim(),
+              )
+              .then((value) => {print(value), Navigator.pop(context)});
         }
-
-        context
-            .read<AuthenticationService>()
-            .signUp(
-              email: emailController.text.trim(),
-              password: password2Controller.text.trim(),
-            )
-            .then((value) => {print(value), Navigator.pop(context)});
 
         // print(show);
       },
@@ -129,7 +133,7 @@ class _SignUpPageState extends State<SignUpPage> {
             ],
             color: Colors.white),
         child: Text(
-          'Register Now',
+          'Register now',
           // style: TextStyle(fontSize: 20, color: Color(0xfff7892b)),
           style: TextStyle(fontSize: 20, color: Colors.black),
         ),
@@ -172,33 +176,64 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Widget _signInForm() {
-    return Column(
-      children: [
-        SizedBox(
-          height: 20,
-        ),
-        MyTextField(
+    return Form(
+      key: _formKey,
+      // child: SingleChildScrollView(
+      child: Column(
+        // return Column(
+        children: [
+          SizedBox(
+            height: 20,
+          ),
+          MyTextField(
             controller: emailController,
             labelText: AppContext.translate('signIn_email'),
-            obscure: false),
-        SizedBox(
-          height: 10,
-        ),
-        MyTextField(
+            obscure: false,
+            validator: (email) =>
+                EmailValidator.validate(email) ? null : "Invalid email address",
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          MyTextField(
             controller: passwordController,
             labelText: AppContext.translate('signIn_password'),
-            obscure: true),
-        SizedBox(
-          height: 10,
-        ),
-        MyTextField(
+            obscure: true,
+            validator: (String value) {
+              if (value.isEmpty) {
+                return 'You must provide a password (minimum length: 6)';
+              }
+              if (value.length < 6) {
+                return 'The password must have a minimum length of 6)';
+              }
+              return null;
+            },
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          MyTextField(
             controller: password2Controller,
             labelText: 'Confirm password',
-            obscure: true),
-        SizedBox(
-          height: 20,
-        ),
-      ],
+            obscure: true,
+            validator: (String value) {
+              if (passwordController.text != password2Controller.text) {
+                return 'The confirmed password does not match the first one';
+              }
+              // if (value.isEmpty) {
+              //   return 'You must provide a password (minimum length: 6)';
+              // }
+              // if (value.length < 6) {
+              //   return 'The password must have a minimum length of 6)';
+              // }
+              return null;
+            },
+          ),
+          SizedBox(
+            height: 20,
+          ),
+        ],
+      ),
     );
   }
 
@@ -220,6 +255,55 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
           ]),
     );
+  }
+
+  Widget _subtitle() {
+    // return RichText(
+    // textAlign: TextAlign.center,
+    return Text(
+      'Register',
+
+      style: TextStyle(
+          shadows: [Shadow(color: Colors.white, offset: Offset(0, -5))],
+          color: Colors.transparent,
+          decoration: TextDecoration.underline,
+          decorationColor: Colors.cyanAccent,
+          decorationThickness: 0.8,
+          // decorationStyle: TextDecorationStyle.dashed,
+          fontSize: 20,
+          fontWeight: FontWeight.w700),
+      // style: TextStyle(
+      //     shadows: [
+      //       Shadow(
+      //           color: Colors.black,
+      //           offset: Offset(0, -5))
+      //     ],
+      //     decoration: TextDecoration.underline,
+      //     decorationThickness: 2,
+      //     decorationColor: Colors.cyan,
+      //       fontSize: 20, fontWeight: FontWeight.w700, color: Colors.white
+      //   ),
+    );
+
+    // return Text(
+    //
+    //     text: 'Register',
+    //     style: TextStyle(
+    //         fontSize: 30, fontWeight: FontWeight.w700, color: Colors.white
+    //     ),
+    //     // children: [
+    //     //   TextSpan(
+    //     //     text: 'M',
+    //     //     style: TextStyle(color: Colors.black, fontSize: 30),
+    //     //   ),
+    //     //   TextSpan(
+    //     //     text: 'oria',
+    //     //     style: TextStyle(color: Colors.white, fontSize: 30),
+    //     //   ),
+    //     // ]
+    // );
+    // ,
+    // );
   }
 
   // Widget _emailPasswordWidget() {
@@ -260,7 +344,11 @@ class _SignUpPageState extends State<SignUpPage> {
                 children: <Widget>[
                   _title(),
                   SizedBox(
-                    height: 80,
+                    height: 20,
+                  ),
+                  _subtitle(),
+                  SizedBox(
+                    height: 10,
                   ),
                   _signInForm(),
                   SizedBox(
@@ -443,30 +531,33 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 }
 
-class MyTextField extends StatelessWidget {
-  final TextEditingController controller;
-  final String labelText;
-  final bool obscure;
-
-  MyTextField({this.controller, this.labelText, this.obscure});
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      obscureText: obscure,
-      controller: controller,
-      cursorColor: Colors.black,
-      style: TextStyle(color: Colors.white),
-      decoration: InputDecoration(
-        labelText: labelText,
-        labelStyle: TextStyle(color: Colors.white),
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
-        ),
-        focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.white70),
-        ),
-      ),
-    );
-  }
-}
+// class MyTextField extends StatelessWidget {
+//   final TextEditingController controller;
+//   final String labelText;
+//   final bool obscure;
+//   final Function validator;
+//
+//   MyTextField({this.controller, this.labelText, this.obscure, this.validator});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return TextFormField(
+//       obscureText: obscure,
+//       controller: controller,
+//       validator: validator,
+//       keyboardType: isEmail ? TextInputType.emailAddress : textInputType,
+//       cursorColor: Colors.black,
+//       style: TextStyle(color: Colors.white),
+//       decoration: InputDecoration(
+//         labelText: labelText,
+//         labelStyle: TextStyle(color: Colors.white),
+//         enabledBorder: UnderlineInputBorder(
+//           borderSide: BorderSide(color: Colors.white),
+//         ),
+//         focusedBorder: UnderlineInputBorder(
+//           borderSide: BorderSide(color: Colors.white70),
+//         ),
+//       ),
+//     );
+//   }
+// }

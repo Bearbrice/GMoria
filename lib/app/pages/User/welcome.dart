@@ -1,3 +1,4 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
 import 'package:gmoria/data/firebase/authentication_service.dart';
@@ -13,17 +14,35 @@ class WelcomePage extends StatefulWidget {
 }
 
 class _WelcomePageState extends State<WelcomePage> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   var AppContext;
 
+  bool error = false;
+  String errorMessage = "";
+
   Widget _signInButton() {
     return InkWell(
       onTap: () {
-        context.read<AuthenticationService>().signIn(
-            email: emailController.text.trim(),
-            password: passwordController.text.trim());
+        if (_formKey.currentState.validate()) {
+          context
+              .read<AuthenticationService>()
+              .signIn(
+                  email: emailController.text.trim(),
+                  password: passwordController.text.trim())
+              .then((value) => {
+                    if (value == 'user-not-found' || value == 'wrong-password')
+                      {
+                        setState(() {
+                          error = true;
+                          errorMessage =
+                              'No user found for that email or wrong password provided';
+                        }),
+                      }
+                  });
+        }
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
@@ -50,17 +69,46 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   Widget _signInForm() {
-    return Column(
-      children: [
-        MyTextField(
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          MyTextField(
             controller: emailController,
             labelText: AppContext.translate('signIn_email'),
-            obscure: false),
-        MyTextField(
+            obscure: false,
+            isEmail: true,
+            validator: (email) =>
+                EmailValidator.validate(email) ? null : "Invalid email address",
+            // (String value) {
+            //   if (value.isEmpty) {
+            //     return 'You must provide a password (minimum length: 6)';
+            //   }
+            //   return null;
+            // },
+          ),
+          MyTextField(
             controller: passwordController,
             labelText: AppContext.translate('signIn_password'),
-            obscure: true),
-      ],
+            obscure: true,
+            validator: (String value) {
+              if (value.isEmpty) {
+                return 'You must provide a password';
+              }
+              return null;
+            },
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          error
+              ? Text(
+                  errorMessage,
+                  style: TextStyle(color: Colors.red),
+                )
+              : Container()
+        ],
+      ),
     );
   }
 
@@ -187,18 +235,30 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 }
 
+/// Reused in sign_up_page.dart
 class MyTextField extends StatelessWidget {
   final TextEditingController controller;
   final String labelText;
   final bool obscure;
+  final Function validator;
+  final bool isEmail;
 
-  MyTextField({this.controller, this.labelText, this.obscure});
+  // final TextInputType textInputType;
+
+  MyTextField(
+      {this.controller,
+      this.labelText,
+      this.obscure = false,
+      this.validator,
+      this.isEmail = false});
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       obscureText: obscure,
       controller: controller,
+      validator: validator,
+      keyboardType: isEmail ? TextInputType.emailAddress : TextInputType.text,
       cursorColor: Colors.black,
       style: TextStyle(color: Colors.white),
       decoration: InputDecoration(

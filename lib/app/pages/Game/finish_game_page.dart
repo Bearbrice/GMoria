@@ -47,7 +47,8 @@ class GameFinishedPage extends StatelessWidget {
             imported_from : this.persons[index].imported_from,
             is_known: true,
             id: this.persons[index].id,
-            lists: this.persons[index].lists
+            lists: this.persons[index].lists,
+            fk_user_id: this.persons[index].fk_user_id
         );
       }else{
         bad++;

@@ -314,7 +314,8 @@ class VerticalListItem extends StatelessWidget {
         color: Colors.white,
         child: ListTile(
           leading: CircleAvatar(
-            backgroundColor: Colors.blue,
+            backgroundColor: Colors.transparent,
+            backgroundImage: ExtendedImage.network(item.image_url, isAntiAlias: true, enableMemoryCache: true,).image,
             //child: Text('${item.index}'),
             foregroundColor: Colors.white,
           ),

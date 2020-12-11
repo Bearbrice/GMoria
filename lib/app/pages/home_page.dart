@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:gmoria/app/utils/InitialGameArguments.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
 import 'package:gmoria/data/firebase/authentication_service.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListBloc.dart';
@@ -215,7 +216,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
       }
 
       if (action == 'Game') {
-        Navigator.pushNamed(context, '/game', arguments: item);
+        Navigator.pushNamed(context, '/game', arguments: InitialGameArguments(item,false));
       } else {
         Navigator.pushNamed(context, '/learn', arguments: item);
       }
@@ -338,6 +339,7 @@ class VerticalListItem extends StatelessWidget {
       onTap: () => Navigator.pushNamed(context, '/list', arguments: item),
       child:
           Container(
+            color: Colors.grey[200],
             height: 80,
             child: Card(
                 shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(2)),

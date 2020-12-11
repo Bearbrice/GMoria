@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:gmoria/app/utils/InitialGameArguments.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
 import 'package:gmoria/data/repositories/DataPersonRepository.dart';
 import 'package:gmoria/domain/blocs/person/PersonBloc.dart';
@@ -100,7 +101,7 @@ class PersonsList extends StatelessWidget {
               ,
                 RaisedButton(
                     onPressed: () {
-                      //TODO navigate to Play Game
+                      Navigator.popAndPushNamed(context, '/game', arguments: InitialGameArguments(userList,false));
                     },
                     color: Colors.green,
                     padding: const EdgeInsets.all(10.0),
@@ -112,7 +113,7 @@ class PersonsList extends StatelessWidget {
             }
             List<Person> personsList = state.person;
             personsList.shuffle();
-            return PeopleSwiper(personsList);
+            return PeopleSwiper(personsList, userList);
           } else {
             return Text(AppLocalizations.of(context).translate('learn_error'),
                 style: TextStyle(fontSize: 20));
@@ -123,8 +124,9 @@ class PersonsList extends StatelessWidget {
 
 class PeopleSwiper extends StatefulWidget {
   final List<Person> personsList;
+  final UserList userList;
 
-  const PeopleSwiper(this.personsList, {Key key}) : super(key: key);
+  const PeopleSwiper(this.personsList,this.userList, {Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _PeopleSwiperState();
@@ -180,6 +182,7 @@ class _PeopleSwiperState extends State<PeopleSwiper> {
                 child: RaisedButton(
                     onPressed: () {
                       //TODO navigate to Play Game
+                      Navigator.popAndPushNamed(context, '/game', arguments: InitialGameArguments(widget.userList,false));
                     },
                     color: Colors.green,
                     padding: const EdgeInsets.all(10.0),

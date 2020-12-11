@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gmoria/app/utils/GameArguments.dart';
-import 'package:gmoria/data/repositories/DataUserListRepository.dart';
+import 'package:gmoria/app/utils/InitialGameArguments.dart';
 import 'package:gmoria/domain/blocs/person/PersonBloc.dart';
 import 'package:gmoria/domain/blocs/person/PersonEvent.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListBloc.dart';
@@ -30,25 +30,42 @@ class GameFinishedPage extends StatelessWidget {
     userList = args.userList;
 
     int correct = 0;
+    int bad = 0;
     this.answers.forEach((index, value) {
+      Person personToUpdate;
       if (this.persons[index].firstname.toLowerCase() +
               " " +
               this.persons[index].lastname.toLowerCase() ==
           value.toLowerCase()){
         correct++;
-        Person personToUpdate = new Person(
-          this.persons[index].firstname,
+        personToUpdate = new Person(
+            this.persons[index].firstname,
             this.persons[index].lastname,
             this.persons[index].job,
             this.persons[index].description,
             this.persons[index].image_url,
             imported_from : this.persons[index].imported_from,
             is_known: true,
-          id: this.persons[index].id,
-          lists: this.persons[index].lists
+            id: this.persons[index].id,
+            lists: this.persons[index].lists
         );
-            BlocProvider.of<PersonBloc>(context).add(UpdatePerson(personToUpdate));
+      }else{
+        bad++;
+        personToUpdate = new Person(
+            this.persons[index].firstname,
+            this.persons[index].lastname,
+            this.persons[index].job,
+            this.persons[index].description,
+            this.persons[index].image_url,
+            imported_from : this.persons[index].imported_from,
+            is_known: false,
+            id: this.persons[index].id,
+            lists: this.persons[index].lists
+        );
       }
+
+      BlocProvider.of<PersonBloc>(context).add(UpdatePerson(personToUpdate));
+
     });
     colorList = [
       Colors.green,
@@ -173,7 +190,7 @@ class GameFinishedPage extends StatelessWidget {
                   ),
                   new Container(
                     margin: const EdgeInsets.only(top: 35.0),
-                    child: RaisedButton(
+                    child: bad>0 ? RaisedButton(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16.0, vertical: 20.0),
                       shape: RoundedRectangleBorder(
@@ -183,9 +200,9 @@ class GameFinishedPage extends StatelessWidget {
                       child: Text("Restart"),
                       onPressed: () {
                         Navigator.popAndPushNamed(context, '/game',
-                            arguments: userList);
+                            arguments: InitialGameArguments(userList,true));
                       },
-                    ),
+                    ) : Container(),
                   )
                 ],
               ),

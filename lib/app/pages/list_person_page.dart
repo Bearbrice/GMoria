@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:gmoria/app/utils/InitialGameArguments.dart';
 import 'package:gmoria/app/utils/ScreenArguments.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
 import 'package:gmoria/data/repositories/DataPersonRepository.dart';
@@ -51,7 +52,7 @@ class _ListPageState extends State<ListPage> {
       }
 
       if (action == 'Game') {
-        Navigator.pushNamed(context, '/game', arguments: userList);
+        Navigator.pushNamed(context, '/game', arguments: InitialGameArguments(userList,false));
       } else {
         Navigator.pushNamed(context, '/learn', arguments: userList);
       }

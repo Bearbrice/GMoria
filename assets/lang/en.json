@@ -9,5 +9,6 @@
   "learn_emptyList" : "Your list is empty",
   "learn_gameButton" : "Ready to play ?",
   "list_title" : "List: ",
-  "save": "Save"
+  "save": "Save",
+  "game_title" : "Game : "
 }

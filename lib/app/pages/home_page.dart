@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListBloc.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListEvent.dart';
@@ -12,89 +13,101 @@ import 'package:gmoria/domain/models/UserList.dart';
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    TextEditingController listController = new TextEditingController();
-    _showDialog() async {
-      await showDialog<String>(
-        context: context,
-        child: new AlertDialog(
-          contentPadding: const EdgeInsets.all(16.0),
-          content: new Row(
-            children: <Widget>[
-              new Expanded(
-                child: new TextField(
-                  controller: listController,
-                  autofocus: true,
-                  decoration: new InputDecoration(
-                      labelText: 'List name', hintText: 'eg. Football team'),
-                ),
-              )
+    return BlocBuilder<UserListBloc, UserListState>(builder: (context, state) {
+      TextEditingController listController = new TextEditingController();
+      _showDialog() async {
+        await showDialog<String>(
+          context: context,
+          child: new AlertDialog(
+            contentPadding: const EdgeInsets.all(16.0),
+            content: new Row(
+              children: <Widget>[
+                new Expanded(
+                  child: new TextField(
+                    controller: listController,
+                    autofocus: true,
+                    decoration: new InputDecoration(
+                        labelText: 'List name', hintText: 'eg. Football team'),
+                  ),
+                )
+              ],
+            ),
+            actions: <Widget>[
+              new FlatButton(
+                  child: const Text('Cancel'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }),
+              new FlatButton(
+                  child: const Text('Add'),
+                  onPressed: () {
+                    if (state is UserListLoading) {
+                      return Text("Loading !");
+                    } else if (state is UserListLoaded) {
+                      if(state.userList.where((element) => element.listName == listController.text).length == 0){
+                        var item = UserList(listController.text);
+                        BlocProvider.of<UserListBloc>(context).add(
+                            AddUserList(item));
+                        // Do not display the dialog anymore
+                        Navigator.pop(context);
+                        // Reset the TextField input
+                        listController.text = "";
+                      }else{
+                        Fluttertoast.showToast(
+                            msg: "List name already exists !",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0
+                        );
+                      }
+
+                    } else {
+                      return Text("Problem :D");
+                    }
+                  })
             ],
           ),
-          actions: <Widget>[
-            new FlatButton(
-                child: const Text('Cancel'),
-                onPressed: () {
-                  Navigator.pop(context);
-                }),
-            new FlatButton(
-                child: const Text('Add'),
-                onPressed: () {
-                  var item = UserList(listController.text);
-                  BlocProvider.of<UserListBloc>(context).add(AddUserList(item));
-                  // Do not display the dialog anymore
-                  Navigator.pop(context);
-                  // Reset the TextField input
-                  listController.text = "";
-                  // Push the screen to created list
-                  //Navigator.pushNamed(context, '/list', arguments: item);
-                })
-          ],
+        );
+      }
+
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context).translate('title')),
+        ),
+        body: Center(
+          child: (() {
+            if (state is UserListLoading) {
+              return Text("Loading !");
+            } else if (state is UserListLoaded) {
+              //return Text(state.userList.toString());
+              final userLists = state.userList;
+              return WidgetListElement(list: userLists);
+            } else {
+              return Text("Problem :D");
+            }
+          }()),
+          //   OrientationBuilder(
+          //   builder: (context, orientation) => _buildList(
+          //       context,
+          //       orientation == Orientation.portrait
+          //           ? Axis.vertical
+          //           : Axis.horizontal),
+          // ),
+        ),
+        /** Add button */
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.blue,
+          onPressed: _showDialog,
+          child: Icon(Icons.add),
         ),
       );
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate('title')),
-      ),
-      body: Center(
-        child: MyUserLists(),
-        //   OrientationBuilder(
-        //   builder: (context, orientation) => _buildList(
-        //       context,
-        //       orientation == Orientation.portrait
-        //           ? Axis.vertical
-        //           : Axis.horizontal),
-        // ),
-      ),
-      /** Add button */
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
-        onPressed: _showDialog,
-        child: Icon(Icons.add),
-      ),
-    );
-  }
-}
-
-class MyUserLists extends StatelessWidget {
-  MyUserLists({Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<UserListBloc, UserListState>(builder: (context, state) {
-      if (state is UserListLoading) {
-        return Text("Loading !");
-      } else if (state is UserListLoaded) {
-        //return Text(state.userList.toString());
-        final userLists = state.userList;
-        return WidgetListElement(list: userLists);
-      } else {
-        return Text("Problem :D");
-      }
     });
   }
 }
+
 
 class WidgetListElement extends StatefulWidget {
   final List<UserList> list;
@@ -125,7 +138,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
       scrollDirection: direction,
       itemBuilder: (context, index) {
         final Axis slidableDirection =
-            direction == Axis.horizontal ? Axis.vertical : Axis.horizontal;
+        direction == Axis.horizontal ? Axis.vertical : Axis.horizontal;
 
         return _getSlidableWithDelegates(context, index, slidableDirection);
       },
@@ -133,8 +146,8 @@ class _WidgetListElementState extends State<WidgetListElement> {
     );
   }
 
-  Widget _getSlidableWithDelegates(
-      BuildContext context, int index, Axis direction) {
+  Widget _getSlidableWithDelegates(BuildContext context, int index,
+      Axis direction) {
     final UserList item = userlists[index];
 
     deleteDialog() {
@@ -151,7 +164,8 @@ class _WidgetListElementState extends State<WidgetListElement> {
               ),
               FlatButton(
                 child: Text('Ok'),
-                onPressed: () => {
+                onPressed: () =>
+                {
                   Navigator.of(context).pop(true),
                   print("NOM : " + item.listName),
                   BlocProvider.of<UserListBloc>(context)
@@ -171,7 +185,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
       }
 
       if (action == 'Game') {
-        _showSnackBar(context, 'Game');
+        Navigator.pushNamed(context, '/game', arguments: item);
       } else {
         Navigator.pushNamed(context, '/learn', arguments: item);
       }
@@ -192,8 +206,8 @@ class _WidgetListElementState extends State<WidgetListElement> {
         onWillDismiss: (item == null)
             ? null
             : (actionType) {
-                return deleteDialog();
-              },
+          return deleteDialog();
+        },
 
         onDismissed: (actionType) {
           _showSnackBar(
@@ -273,11 +287,12 @@ class _WidgetListElementState extends State<WidgetListElement> {
   Widget build(BuildContext context) {
     userlists = widget.list;
     return OrientationBuilder(
-      builder: (context, orientation) => _buildList(
-          context,
-          orientation == Orientation.portrait
-              ? Axis.vertical
-              : Axis.horizontal),
+      builder: (context, orientation) =>
+          _buildList(
+              context,
+              orientation == Orientation.portrait
+                  ? Axis.vertical
+                  : Axis.horizontal),
     );
   }
 }

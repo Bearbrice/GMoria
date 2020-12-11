@@ -51,7 +51,7 @@ class _ListPageState extends State<ListPage> {
       }
 
       if (action == 'Game') {
-        _showSnackBar(context, 'Game');
+        Navigator.pushNamed(context, '/game', arguments: userList);
       } else {
         Navigator.pushNamed(context, '/learn', arguments: userList);
       }

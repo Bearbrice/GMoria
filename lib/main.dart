@@ -12,6 +12,9 @@ import 'app/pages/Person/person_view.dart';
 import 'package:gmoria/data/firebase/authentication_service.dart';
 import 'package:provider/provider.dart';
 import 'app/pages/Person/person_view.dart';
+import 'app/pages/check_game_answers_page.dart';
+import 'app/pages/finish_game_page.dart';
+import 'app/pages/game_page.dart';
 import 'app/pages/home_page.dart';
 import 'app/pages/learn_page.dart';
 import 'app/pages/sign_in_page.dart';
@@ -60,6 +63,9 @@ class MyApp extends StatelessWidget {
             title: 'GMoria',
             initialRoute: '/',
             routes: {
+              '/checkanswers' : (context) => CheckAnswersPage(),
+              '/endgame' : (context) => GameFinishedPage(),
+              '/game' : (context) => GamePage(),
               '/learn': (context) => LearnPage(),
               '/list': (context) => ListPage(),
               '/personForm': (context) => PersonForm(),

@@ -14,6 +14,7 @@ import 'app/pages/Game/finish_game_page.dart';
 import 'app/pages/Person/person_view.dart';
 import 'package:gmoria/data/firebase/authentication_service.dart';
 import 'package:provider/provider.dart';
+import 'app/pages/AllContacts/all_contacts_page.dart';
 import 'app/pages/Game/check_game_answers_page.dart';
 import 'app/pages/Game/game_page.dart';
 import 'app/pages/home_page.dart';
@@ -69,6 +70,7 @@ class MyApp extends StatelessWidget {
               '/game' : (context) => GamePage(),
               '/learn': (context) => LearnPage(),
               '/list': (context) => ListPage(),
+              '/allContacts': (context) => AllContacts(),
               '/personForm': (context) => PersonForm(),
               '/personView': (context) => PersonView(),
             },

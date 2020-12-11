@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:async/async.dart';
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:gmoria/data/entities/PersonEntity.dart';
 import 'package:gmoria/data/entities/UserListEntity.dart';
@@ -13,11 +14,14 @@ class DataPersonRepository implements PersonRepository {
   final personCollection = FirebaseFirestore.instance.collection('persons');
   final listsCollection = FirebaseFirestore.instance.collection('lists');
   List<Person> currentPersons = new List<Person>();
+  var user = FirebaseAuth.instance.currentUser;
 
-  //TODO method to get only 1 person or get from the array of UserList
   @override
   Stream<List<Person>> getPersons() {
-    return personCollection.snapshots().map((snapshot) {
+    return personCollection
+        .where('fk_user_id', isEqualTo: user.uid)
+        .snapshots()
+        .map((snapshot) {
       return snapshot.docs
           .map((doc) => Person.fromEntity(PersonEntity.fromSnapshot(doc)))
           .toList();
@@ -91,7 +95,7 @@ class DataPersonRepository implements PersonRepository {
 
   @override
   Future<void> addNewPerson(Person person, String idUserList) async {
-
+    person.fk_user_id = user.uid;
     return personCollection
         .add(person.toEntity().toDocument())
         .then((value) => {
@@ -107,16 +111,32 @@ class DataPersonRepository implements PersonRepository {
       'persons': FieldValue.arrayRemove([person.id])
     });
 
-    if(person.lists.map((p) => p as String).toList().length == 1){
+    if (person.lists.map((p) => p as String).toList().length == 1) {
       Reference photoRef =
-      FirebaseStorage.instance.ref().storage.refFromURL(person.image_url);
+          FirebaseStorage.instance.ref().storage.refFromURL(person.image_url);
       photoRef.delete();
       return personCollection.doc(person.id).delete();
     }
 
-    personCollection.doc(person.id).update({
+    return personCollection.doc(person.id).update({
       'lists': FieldValue.arrayRemove([idUserList])
     });
+  }
+
+  @override
+  Future<void> forceDeletePerson(Person person) {
+    //Remove person from lists
+    person.lists.forEach((listId) {
+      listsCollection.doc(listId).update({
+        'persons': FieldValue.arrayRemove([person.id])
+      });
+    });
+
+    //Delete person
+    Reference photoRef = FirebaseStorage.instance.ref()
+        .storage.refFromURL(person.image_url);
+    photoRef.delete();
+    return personCollection.doc(person.id).delete();
   }
 
   @override
@@ -132,5 +152,4 @@ class DataPersonRepository implements PersonRepository {
       return Person.fromEntity(PersonEntity.fromSnapshot(event));
     });
   }
-
 }

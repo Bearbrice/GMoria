@@ -6,6 +6,8 @@ abstract class PersonRepository {
 
   Future<void> deletePerson(Person userList, String idUserList);
 
+  Future<void> forceDeletePerson(Person userList);
+
   Future<void> updatePerson(Person userList);
 
   Stream<List<Person>> getPersons();

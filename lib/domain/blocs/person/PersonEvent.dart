@@ -65,6 +65,18 @@ class DeletePerson extends PersonEvent {
   String toString() => 'PersonDeleted { person: $person }';
 }
 
+class ForceDeletePerson extends PersonEvent {
+  final Person person;
+
+  const ForceDeletePerson(this.person);
+
+  @override
+  List<Object> get props => [person];
+
+  @override
+  String toString() => 'ForceDeletePerson { person: $person }';
+}
+
 class PersonUpdated extends PersonEvent {
   final List<Person> person;
 

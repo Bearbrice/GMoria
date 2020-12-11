@@ -36,6 +36,8 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
       yield* _mapLoadSinglePersonToState(event);
     } else if(event is SinglePersonUpdated){
       yield* _mapSinglePersonUpdateToState(event);
+    }else if(event is ForceDeletePerson){
+      yield* _mapForceDeletePersonToState(event);
     }
   }
 
@@ -90,6 +92,10 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
   Stream<PersonState> _mapSinglePersonUpdateToState(
       SinglePersonUpdated event) async* {
     yield SinglePersonLoaded(event.person);
+  }
+
+  Stream<PersonState> _mapForceDeletePersonToState(ForceDeletePerson event) async* {
+    _personRepository.forceDeletePerson(event.person);
   }
 
   @override

@@ -90,24 +90,33 @@ class MyHomePage extends StatelessWidget {
               return Text("Problem :D");
             }
           }()),
-          //   OrientationBuilder(
-          //   builder: (context, orientation) => _buildList(
-          //       context,
-          //       orientation == Orientation.portrait
-          //           ? Axis.vertical
-          //           : Axis.horizontal),
-          // ),
         ),
-        // /** Add button */
-        // floatingActionButton: FloatingActionButton(
-        //   backgroundColor: Colors.blue,
-        //   onPressed: _showDialog,
-        //   child: Icon(Icons.add),
-        // ),
         /* TEMPORARY */
         floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
+            FloatingActionButton(
+              mini: true,
+              backgroundColor: Colors.green,
+              heroTag: null,
+              onPressed: () {
+                context.read<AuthenticationService>().signOut();
+                // handleEmpty('Learn');
+                // Navigator.pushNamed(context, '/personForm');
+              },
+              child: Icon(Icons.logout),
+            ),
+            SizedBox(height: 8.0),
+            FloatingActionButton(
+                mini: true,
+                backgroundColor: Colors.green,
+                heroTag: null,
+                onPressed: () {
+                  //;
+                  Navigator.pushNamed(context, '/allContacts');
+                },
+                child: Icon(Icons.people_alt)),
+            SizedBox(height: 8.0),
             FloatingActionButton(
               mini: true,
               backgroundColor: Colors.blue,
@@ -121,18 +130,6 @@ class MyHomePage extends StatelessWidget {
             // Navigator.pushNamed(context, '/personForm');
             // },
             // child: Icon(Icons.videogame_asset)),
-            SizedBox(height: 8.0),
-            FloatingActionButton(
-              mini: true,
-              backgroundColor: Colors.green,
-              heroTag: null,
-              onPressed: () {
-                context.read<AuthenticationService>().signOut();
-                // handleEmpty('Learn');
-                // Navigator.pushNamed(context, '/personForm');
-              },
-              child: Icon(Icons.logout),
-            ),
             SizedBox(height: 8.0),
           ],
         ),

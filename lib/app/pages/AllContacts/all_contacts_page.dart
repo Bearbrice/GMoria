@@ -1,11 +1,8 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:gmoria/app/utils/ScreenArguments.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
-import 'package:gmoria/data/repositories/DataPersonRepository.dart';
 import 'package:gmoria/domain/blocs/person/PersonBloc.dart';
 import 'package:gmoria/domain/blocs/person/PersonEvent.dart';
 import 'package:gmoria/domain/blocs/person/PersonState.dart';
@@ -13,31 +10,17 @@ import 'package:gmoria/domain/models/Person.dart';
 import 'package:gmoria/domain/models/UserList.dart';
 
 /// Page that display a specific list
-class ListPage extends StatefulWidget {
+class AllContacts extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _ListPageState();
+  State<StatefulWidget> createState() => _AllContactsState();
 }
 
-class _ListPageState extends State<ListPage> {
+class _AllContactsState extends State<AllContacts> {
   UserList userList;
   bool change;
   @override
   Widget build(BuildContext context) {
     final _scaffoldKey = GlobalKey<ScaffoldState>();
-    setState(() {
-      userList = ModalRoute.of(context).settings.arguments;
-    });
-
-    conditionalRendering() {
-      return BlocProvider<PersonBloc>(
-        create: (context) {
-          return PersonBloc(
-            personRepository: DataPersonRepository(),
-          )..add(LoadUserListPersons(userList.id));
-        },
-        child: MyUserPeople(userList.id),
-      );
-    }
 
     void _showSnackBar(BuildContext context, String text) {
       final snackBar = SnackBar(content: Text(text));
@@ -51,7 +34,7 @@ class _ListPageState extends State<ListPage> {
       }
 
       if (action == 'Game') {
-        Navigator.pushNamed(context, '/game', arguments: userList);
+        _showSnackBar(context, 'Game');
       } else {
         Navigator.pushNamed(context, '/learn', arguments: userList);
       }
@@ -61,89 +44,34 @@ class _ListPageState extends State<ListPage> {
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
-          AppLocalizations.of(context).translate('list_title') +
-              userList.listName,
+          AppLocalizations.of(context).translate('all_contacts_title'),
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: Center(child: conditionalRendering()),
-      floatingActionButton: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          FloatingActionButton(
-              mini: true,
-              backgroundColor: Colors.indigo,
-              heroTag: null,
-              onPressed: () {
-                handleEmpty('Game');
-                // Navigator.pushNamed(context, '/personForm');
-              },
-              child: Icon(Icons.videogame_asset)),
-          SizedBox(height: 8.0),
-          FloatingActionButton(
-            mini: true,
-            backgroundColor: Colors.green,
-            heroTag: null,
-            onPressed: () {
-              handleEmpty('Learn');
-              // Navigator.pushNamed(context, '/personForm');
-            },
-            child: Icon(Icons.school),
-          ),
-          SizedBox(height: 8.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              FloatingActionButton(
-                mini: true,
-                backgroundColor: Colors.blue,
-                heroTag: null,
-                onPressed: () {
-                  /*Navigator.pushNamed(context, '/personForm',
-                      arguments: new ScreenArguments(null, userList.id));*/
-                },
-                child: Icon(Icons.group_add),
-              ),
-              SizedBox(width: 8.0),
-              FloatingActionButton(
-                backgroundColor: Colors.blue,
-                heroTag: null,
-                onPressed: () {
-                  Navigator.pushNamed(context, '/personForm',
-                      arguments: new ScreenArguments(null, userList.id));
-                },
-                child: Icon(Icons.add),
-              ),
-            ],
-          )
-
-        ],
-      ),
+      body: Center(child: MyUserPeople()),
     );
   }
 }
 
 class MyUserPeople extends StatelessWidget {
-  final String userListId;
 
   // MyUserPeople({Key key, this.userList}) : super(key: key);
-  MyUserPeople(this.userListId, {Key key}) : super(key: key);
+  MyUserPeople({Key key}) : super(key: key);
 
   Widget build(BuildContext context) {
     return BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
       if (state is PersonLoading) {
         return Text("Loading !");
-      } else if (state is UserListPersonLoaded) {
+      } else if (state is PersonLoaded) {
         if (state.person.isNotEmpty) {
           //If the list is not empty
           final personsList = state.person;
-          return WidgetListElement(userListId, list: personsList);
+          return WidgetListElement(list: personsList);
         } else {
           //If the list is empty
           return Center(
               child:
-                  Text("Your list is empty", style: TextStyle(fontSize: 20)));
+              Text("Your list is empty", style: TextStyle(fontSize: 20)));
         }
       } else {
         return Text("Problem :D");
@@ -154,9 +82,8 @@ class MyUserPeople extends StatelessWidget {
 
 class WidgetListElement extends StatefulWidget {
   final List<Person> list;
-  final String idUserList;
 
-  WidgetListElement(this.idUserList, {Key key, this.list}) : super(key: key);
+  WidgetListElement({Key key, this.list}) : super(key: key);
 
   @override
   _WidgetListElementState createState() => _WidgetListElementState();
@@ -181,7 +108,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
       scrollDirection: direction,
       itemBuilder: (context, index) {
         final Axis slidableDirection =
-            direction == Axis.horizontal ? Axis.vertical : Axis.horizontal;
+        direction == Axis.horizontal ? Axis.vertical : Axis.horizontal;
         return _getSlidableWithDelegates(context, index, slidableDirection);
       },
       itemCount: widget.list.length,
@@ -203,14 +130,14 @@ class _WidgetListElementState extends State<WidgetListElement> {
               FlatButton(
                   child: Text('Cancel'),
                   onPressed: () => {
-                        Navigator.of(context).pop(false),
-                      }),
+                    Navigator.of(context).pop(false),
+                  }),
               FlatButton(
                 child: Text('Ok'),
                 onPressed: () => {
                   Navigator.of(context).pop(true),
                   BlocProvider.of<PersonBloc>(context)
-                      .add(DeletePerson(item, widget.idUserList)),
+                      .add(ForceDeletePerson(item)),
                 },
               ),
             ],
@@ -234,8 +161,8 @@ class _WidgetListElementState extends State<WidgetListElement> {
         onWillDismiss: (item == null)
             ? null
             : (actionType) {
-                return deleteDialog();
-              },
+          return deleteDialog();
+        },
 
         onDismissed: (actionType) {
           _showSnackBar(
@@ -251,7 +178,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
       actionPane: SlidableScrollActionPane(),
       actionExtentRatio: 0.25,
       child: direction == Axis.horizontal
-          ? VerticalListItem(widget.list[index], widget.idUserList)
+          ? VerticalListItem(widget.list[index])
           : HorizontalListItem(widget.list[index]),
       secondaryActionDelegate: SlideActionBuilderDelegate(
           actionCount: 1,
@@ -300,16 +227,15 @@ class _WidgetListElementState extends State<WidgetListElement> {
 }
 
 class VerticalListItem extends StatelessWidget {
-  VerticalListItem(this.item, this.idUserList);
+  VerticalListItem(this.item);
 
-  final String idUserList;
   final Person item;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, '/personView',
-          arguments: new ScreenArguments(item, idUserList)),
+      onTap: () => {print("Open Details")}/*Navigator.pushNamed(context, '/personView',
+          arguments: new ScreenArguments(item, idUserList))*/,
       child: Container(
         color: Colors.white,
         child: ListTile(

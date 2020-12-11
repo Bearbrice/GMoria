@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gmoria/data/entities/PersonEntity.dart';
 import 'package:meta/meta.dart';
 
@@ -13,14 +12,16 @@ class Person {
   final bool is_known;
   final String image_url;
   final List lists;
+  String fk_user_id;
 
   Person(
-      this.firstname, this.lastname, this.job, this.description,this.image_url,{this.imported_from = 'App', this.is_known = false, String id, List lists})
+      this.firstname, this.lastname, this.job, this.description,this.image_url,{this.imported_from = 'App', this.is_known = false, String id, List lists, String fk_user_id})
       : this.id = id ?? null,
+        this.fk_user_id = fk_user_id ?? null,
         this.lists = lists;
 
   Person copyWith(
-      {String id, String firstname, String lastname, String job, String description, String imported_from,  bool is_known, String image_url, List lists}) {
+      {String id, String firstname, String lastname, String job, String description, String imported_from,  bool is_known, String image_url, List lists, String fk_user_id}) {
     return Person(
       firstname ?? this.firstname,
       lastname ?? this.lastname,
@@ -30,7 +31,8 @@ class Person {
       id: id ?? this.id,
       imported_from: imported_from ?? this.imported_from,
       is_known: is_known ?? this.is_known,
-      lists: lists ?? this.lists
+      lists: lists ?? this.lists,
+      fk_user_id: fk_user_id ?? this.fk_user_id
     );
   }
 
@@ -44,7 +46,8 @@ class Person {
       imported_from.hashCode ^
       is_known.hashCode ^
       id.hashCode ^
-      lists.hashCode;
+      lists.hashCode^
+      fk_user_id.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -59,7 +62,8 @@ class Person {
               imported_from == other.imported_from &&
               is_known == other.is_known &&
               id == other.id &&
-              lists == other.lists;
+              lists == other.lists &&
+              fk_user_id == other.fk_user_id;
 
   @override
   String toString() {
@@ -68,7 +72,7 @@ class Person {
 
   PersonEntity toEntity() {
     return PersonEntity(id, firstname, lastname,imported_from, job,
-        description, is_known, image_url,lists);
+        description, is_known, image_url,lists, fk_user_id);
   }
 
   static Person fromEntity(PersonEntity entity) {
@@ -82,6 +86,7 @@ class Person {
       is_known: entity.is_known ?? false,
       id: entity.id,
       lists: entity.lists,
+      fk_user_id: entity.fk_user_id ?? null
     );
   }
 }

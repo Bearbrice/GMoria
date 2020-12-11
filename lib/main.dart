@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:gmoria/app/pages/Person/person_form_page.dart';
+import 'package:gmoria/app/pages/User/sign_up_page.dart';
+import 'package:gmoria/app/pages/User/welcome.dart';
 import 'package:gmoria/app/pages/list_person_page.dart';
 import 'package:gmoria/data/repositories/DataPersonRepository.dart';
 import 'package:gmoria/domain/blocs/person/PersonBloc.dart';
@@ -17,7 +19,7 @@ import 'app/pages/finish_game_page.dart';
 import 'app/pages/game_page.dart';
 import 'app/pages/home_page.dart';
 import 'app/pages/learn_page.dart';
-import 'app/pages/sign_in_page.dart';
+import 'app/pages/User/sign_in_page_old.dart';
 import 'app/utils/app_localizations.dart';
 import 'data/repositories/DataUserListRepository.dart';
 import 'domain/blocs/simple_bloc_observer.dart';
@@ -63,6 +65,7 @@ class MyApp extends StatelessWidget {
             title: 'GMoria',
             initialRoute: '/',
             routes: {
+              '/signUp': (context) => SignUpPage(),
               '/checkanswers' : (context) => CheckAnswersPage(),
               '/endgame' : (context) => GameFinishedPage(),
               '/game' : (context) => GamePage(),
@@ -115,6 +118,6 @@ class AuthenticationWrapper extends StatelessWidget {
     if (firebaseUser != null) {
       return MyHomePage();
     }
-    return SignInPage();
+    return WelcomePage();
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
+import 'package:gmoria/data/firebase/authentication_service.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListBloc.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListEvent.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListState.dart';
@@ -97,11 +98,43 @@ class MyHomePage extends StatelessWidget {
           //           : Axis.horizontal),
           // ),
         ),
-        /** Add button */
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.blue,
-          onPressed: _showDialog,
-          child: Icon(Icons.add),
+        // /** Add button */
+        // floatingActionButton: FloatingActionButton(
+        //   backgroundColor: Colors.blue,
+        //   onPressed: _showDialog,
+        //   child: Icon(Icons.add),
+        // ),
+        /* TEMPORARY */
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            FloatingActionButton(
+              mini: true,
+              backgroundColor: Colors.blue,
+              onPressed: _showDialog,
+              child: Icon(Icons.add),
+
+              // backgroundColor: Colors.indigo,
+              heroTag: null,),
+            // onPressed: () {
+            //   handleEmpty('Game');
+            // Navigator.pushNamed(context, '/personForm');
+            // },
+            // child: Icon(Icons.videogame_asset)),
+            SizedBox(height: 8.0),
+            FloatingActionButton(
+              mini: true,
+              backgroundColor: Colors.green,
+              heroTag: null,
+              onPressed: () {
+                context.read<AuthenticationService>().signOut();
+                // handleEmpty('Learn');
+                // Navigator.pushNamed(context, '/personForm');
+              },
+              child: Icon(Icons.logout),
+            ),
+            SizedBox(height: 8.0),
+          ],
         ),
       );
     });

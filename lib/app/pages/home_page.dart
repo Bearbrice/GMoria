@@ -45,7 +45,7 @@ class MyHomePage extends StatelessWidget {
                     if (state is UserListLoading) {
                       return Text("Loading !");
                     } else if (state is UserListLoaded) {
-                      if(state.userList.where((element) => element.listName == listController.text).length == 0){
+                      if(state.userList.where((element) => element.listName.toLowerCase() == listController.text.toLowerCase()).length == 0){
                         var item = UserList(listController.text);
                         BlocProvider.of<UserListBloc>(context).add(
                             AddUserList(item));
@@ -339,18 +339,33 @@ class VerticalListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, '/list', arguments: item),
-      child: Container(
-        color: Colors.white,
-        child: ListTile(
-          leading: CircleAvatar(
-            backgroundColor: Colors.red,
-            //child: Text('${item.index}'),
-            foregroundColor: Colors.white,
+      child:
+          Container(
+            height: 80,
+            child: Card(
+                shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(2)),
+                // decoration: BoxDecoration(
+                //   color: Colors.white,
+                //   border: Border(bottom: BorderSide(color: Colors.black12)) ,
+                // ),
+              child: Center(
+                child: new Column(
+                  children:<Widget> [
+                    ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.red,
+                        child: Text('${item.persons.length}'),
+                        foregroundColor: Colors.white,
+                      ),
+                      title: Text(item.listName),
+                      subtitle: item.bestScore > 0 ? Text("Best score : ${item.bestScore}%") : Text(""),
+                    )
+                  ],
+                ),
+              )
+            ),
           ),
-          title: Text(item.listName),
-        ),
-      ),
-    );
+      );
   }
 }
 

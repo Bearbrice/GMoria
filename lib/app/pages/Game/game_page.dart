@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:extended_image/extended_image.dart';
@@ -42,8 +43,11 @@ class GamePage extends StatelessWidget {
                       AppLocalizations.of(context).translate('learn_emptyList'),
                       style: TextStyle(fontSize: 20)));
             } else {
+              //TODO : Filter list
+              List<Person> persons = state.person;
+              persons.shuffle();
               elementToRender =
-                  QuizPage(persons: state.person); //Quiz(person: state.person);
+                  QuizPage(persons: persons, userList: userList); //Quiz(person: state.person);
             }
             return Scaffold(
               backgroundColor: Colors.white,
@@ -69,8 +73,9 @@ class GamePage extends StatelessWidget {
 
 class QuizPage extends StatefulWidget {
   final List<Person> persons;
+  final UserList userList;
 
-  const QuizPage({Key key, @required this.persons}) : super(key: key);
+  const QuizPage({Key key, @required this.persons, this.userList}) : super(key: key);
 
   @override
   _QuizPageState createState() => _QuizPageState();
@@ -79,6 +84,7 @@ class QuizPage extends StatefulWidget {
 class _QuizPageState extends State<QuizPage> {
   TextEditingController nameController = new TextEditingController();
   Image _image;
+  bool activeBtn = true;
   final TextStyle _personstyle = TextStyle(
       fontSize: 18.0, fontWeight: FontWeight.w500, color: Colors.white);
 
@@ -151,12 +157,13 @@ class _QuizPageState extends State<QuizPage> {
                           decoration: new InputDecoration(
                             focusColor: Colors.blue,
                               border: OutlineInputBorder(),
-                              labelText: 'Lastname & Firstname '))),
+                              labelText: 'Firstname & Lastname'))),
                   Container(
                     child: Container(
                       margin: EdgeInsets.only(top: 30),
                       alignment: Alignment.bottomCenter,
                       child: RaisedButton(
+                        color:  Colors.blue,
                         padding: MediaQuery.of(context).size.width > 800
                             ? const EdgeInsets.symmetric(
                                 vertical: 20.0, horizontal: 64.0)
@@ -166,10 +173,10 @@ class _QuizPageState extends State<QuizPage> {
                               ? "Submit"
                               : "Next",
                           style: MediaQuery.of(context).size.width > 800
-                              ? TextStyle(fontSize: 30.0)
-                              : null,
+                              ? TextStyle(fontSize: 30.0, color: Colors.white)
+                              : TextStyle(color: Colors.white),
                         ),
-                        onPressed: _nextSubmit,
+                        onPressed: activeBtn ? _nextSubmit : null,
                       ),
                     ),
                   )
@@ -197,22 +204,39 @@ class _QuizPageState extends State<QuizPage> {
       );
       return;
     }
-    if (_currentIndex < (widget.persons.length - 1)) {
-      Fluttertoast.showToast(
-          msg: nameController.text == widget.persons[_currentIndex].firstname + " " + widget.persons[_currentIndex].lastname ? "Correct Answer !" : "Bad Answer !",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: nameController.text == widget.persons[_currentIndex].firstname + " " + widget.persons[_currentIndex].lastname ? Colors.green : Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
+
+    Fluttertoast.showToast(
+        msg: nameController.text == widget.persons[_currentIndex].firstname + " " + widget.persons[_currentIndex].lastname ? "Correct Answer !" : "Bad Answer !",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: nameController.text == widget.persons[_currentIndex].firstname + " " + widget.persons[_currentIndex].lastname ? Colors.green : Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
+
+    if (_currentIndex < (widget.persons.length - 1 )) {
       setState(() {
-        _currentIndex++;
+        activeBtn = false;
       });
+
+      Timer(Duration(seconds: 2), () {
+        // 2s over, navigate to a new page
+        setState(() {
+          _currentIndex++;
+          activeBtn = true;
+        });
+      });
+
       nameController.text = "";
     } else {
-      Navigator.pushNamed(context, '/endgame', arguments: new GameArguments(widget.persons, _answers) );
+      setState(() {
+        activeBtn = false;
+      });
+      Timer(Duration(seconds: 2), () {
+        Navigator.pushNamed(context, '/endgame', arguments: new GameArguments(widget.persons, _answers,widget.userList) );
+      });
+
       // Navigator.of(context).pushReplacement(MaterialPageRoute(
       //     builder: (_) => QuizFinishedPage(
       //         persons: widget.persons, answers: _answers)));
@@ -231,7 +255,7 @@ class _QuizPageState extends State<QuizPage> {
               FlatButton(
                 child: Text("Yes"),
                 onPressed: () {
-                  Navigator.pop(context, true);
+                  Navigator.popUntil(context,ModalRoute.withName('/'));
                 },
               ),
               FlatButton(

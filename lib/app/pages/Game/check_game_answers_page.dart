@@ -10,6 +10,7 @@ class CheckAnswersPage extends StatelessWidget {
   GameArguments args;
   Image _image;
 
+
   @override
   Widget build(BuildContext context){
     args = ModalRoute.of(context).settings.arguments;
@@ -47,14 +48,12 @@ class CheckAnswersPage extends StatelessWidget {
       return RaisedButton(
         child: Text("Done"),
         onPressed: (){
-          Navigator.pop(context);
-          Navigator.pop(context);
-          Navigator.pop(context);
+          Navigator.popUntil(context,ModalRoute.withName('/'));
         },
       );
     }
     Person person = persons[index];
-    bool correct = person.firstname + " " + person.lastname == answers[index];
+    bool correct = person.firstname.toLowerCase() + " " + person.lastname.toLowerCase() == answers[index].toLowerCase();
     _image = Image.network(person.image_url);
     return Card(
       child: Padding(

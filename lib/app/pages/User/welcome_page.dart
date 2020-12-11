@@ -80,12 +80,6 @@ class _WelcomePageState extends State<WelcomePage> {
             isEmail: true,
             validator: (email) =>
                 EmailValidator.validate(email) ? null : "Invalid email address",
-            // (String value) {
-            //   if (value.isEmpty) {
-            //     return 'You must provide a password (minimum length: 6)';
-            //   }
-            //   return null;
-            // },
           ),
           MyTextField(
             controller: passwordController,
@@ -115,10 +109,7 @@ class _WelcomePageState extends State<WelcomePage> {
   Widget _signUpButton() {
     return InkWell(
       onTap: () {
-        // Navigator.pushNamed(context, );
         Navigator.pushNamed(context, '/signUp');
-        // Navigator.push(
-        //     context, MaterialPageRoute(builder: (context) => SignUpPage()));
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
@@ -134,34 +125,6 @@ class _WelcomePageState extends State<WelcomePage> {
         ),
       ),
     );
-  }
-
-  Widget _label() {
-    return Container(
-        margin: EdgeInsets.only(top: 40, bottom: 20),
-        child: Column(
-          children: <Widget>[
-            Text(
-              'Quick login with Touch ID',
-              style: TextStyle(color: Colors.white, fontSize: 17),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Icon(Icons.fingerprint, size: 90, color: Colors.white),
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              'Touch ID',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 15,
-                decoration: TextDecoration.underline,
-              ),
-            ),
-          ],
-        ));
   }
 
   Widget _title() {
@@ -202,8 +165,8 @@ class _WelcomePageState extends State<WelcomePage> {
                     spreadRadius: 2)
               ],
               gradient: LinearGradient(
-                  begin: Alignment.topCenter, end: Alignment.bottomCenter,
-                  // colors: [Color(0xfffbb448), Color(0xffe46b10)])),
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
                   colors: [Colors.blue, Colors.lightBlueAccent])),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -223,10 +186,6 @@ class _WelcomePageState extends State<WelcomePage> {
                 height: 20,
               ),
               _signUpButton(),
-              // SizedBox(
-              //   height: 20,
-              // ),
-              // _label()
             ],
           ),
         ),
@@ -242,8 +201,6 @@ class MyTextField extends StatelessWidget {
   final bool obscure;
   final Function validator;
   final bool isEmail;
-
-  // final TextInputType textInputType;
 
   MyTextField(
       {this.controller,

@@ -48,7 +48,7 @@ class PersonDetailsPage extends StatelessWidget {
                       style: TextStyle(fontSize: 20)));
             } else {
               List<Person> personsList = state.person;
-              personsList.sort((Person a,Person b) => a.lastname.toLowerCase().compareTo(b.lastname.toLowerCase()));
+              personsList.sort((Person a,Person b) => a.firstname.toLowerCase().compareTo(b.firstname.toLowerCase()));
               elementToRender = DetailsPage(
                   persons: personsList,
                   userListId : userListId,

@@ -72,7 +72,7 @@ class MyApp extends StatelessWidget {
               '/list': (context) => ListPage(),
               '/allContacts': (context) => AllContacts(),
               '/personForm': (context) => PersonForm(),
-              '/personView': (context) => PersonView(),
+              '/personDetails' : (context) => PersonDetailsPage()
             },
             theme: ThemeData(
               primarySwatch: Colors.blue,

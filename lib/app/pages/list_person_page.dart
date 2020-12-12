@@ -138,8 +138,7 @@ class MyUserPeople extends StatelessWidget {
       } else if (state is UserListPersonLoaded) {
         if (state.person.isNotEmpty) {
           //If the list is not empty
-          final personsList = state.person;
-          return WidgetListElement(userListId, list: personsList);
+          return WidgetListElement(userListId, list: state.person);
         } else {
           //If the list is empty
           return Center(
@@ -175,7 +174,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
   Widget _buildList(BuildContext context, Axis direction) {
     // Sort the list of person by first names
     widget.list.sort((a, b) {
-      return a.firstname.compareTo(b.firstname);
+      return a.firstname.toLowerCase().compareTo(b.firstname.toLowerCase());
     });
 
     return ListView.builder(
@@ -309,7 +308,7 @@ class VerticalListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, '/personView',
+      onTap: () => Navigator.pushNamed(context, '/personDetails', // TODO remettre /personView après
           arguments: new ScreenArguments(item, idUserList)),
       child: Container(
         color: Colors.white,

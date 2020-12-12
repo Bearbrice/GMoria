@@ -106,7 +106,14 @@ class GameFinishedPage extends StatelessWidget {
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: <Widget>[
-                  PieChart(dataMap: dataMap,colorList: colorList),
+                  PieChart(
+                      dataMap: dataMap,
+                      colorList: colorList,
+                    chartValuesOptions: ChartValuesOptions(
+                      showChartValueBackground: false,
+                      showChartValuesInPercentage: true,
+                    ),
+                  ),
                   Card(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0)),
@@ -123,7 +130,7 @@ class GameFinishedPage extends StatelessWidget {
                     child: ListTile(
                       contentPadding: const EdgeInsets.all(16.0),
                       title: Text("Score", style: titleStyle),
-                      trailing: Text("${correct / persons.length * 100}%",
+                      trailing: Text("${(correct / persons.length * 100).round()}%",
                           style: trailingStyle),
                     ),
                   ),
@@ -176,7 +183,7 @@ class GameFinishedPage extends StatelessWidget {
                         color: Colors.white,
                         child: Text("Home"),
                         onPressed: () {
-                          bestScore = (correct / persons.length * 100).toInt();
+                          bestScore = (correct / persons.length * 100).round();
                           UserList updatedUserList = new UserList(
                             userList.listName,
                             id: userList.id,

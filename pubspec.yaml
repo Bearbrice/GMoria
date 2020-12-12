@@ -64,6 +64,10 @@ dependencies:
   #Authentication
   google_sign_in: ^4.5.6
 
+  #Privacy policy
+  flutter_markdown: ^0.5.1
+  url_launcher: ^5.7.10
+
   #Bloc
   bloc: ^6.1.0
   flutter_bloc: ^6.1.1
@@ -93,6 +97,8 @@ flutter:
     - assets/lang/en.json
     - assets/picture/unknown.jpg
     - assets/picture/google.jpg
+    - assets/text/PrivacyPolicy.md
+    - assets/text/TermsConditions.md
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

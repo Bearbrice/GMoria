@@ -163,7 +163,7 @@ class _WelcomePageState extends State<WelcomePage> {
   Widget _signUpButton() {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, '/signUp');
+        Navigator.pushNamed(context, '/signUp', arguments: false);
       },
       child: Container(
         width: MediaQuery.of(context).size.width,

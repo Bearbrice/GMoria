@@ -17,6 +17,7 @@ import 'package:provider/provider.dart';
 import 'app/pages/AllContacts/all_contacts_page.dart';
 import 'app/pages/Game/check_game_answers_page.dart';
 import 'app/pages/Game/game_page.dart';
+import 'app/pages/User/agreement_page.dart';
 import 'app/pages/home_page.dart';
 import 'app/pages/learn_page.dart';
 import 'app/utils/app_localizations.dart';
@@ -72,7 +73,9 @@ class MyApp extends StatelessWidget {
               '/list': (context) => ListPage(),
               '/allContacts': (context) => AllContacts(),
               '/personForm': (context) => PersonForm(),
-              '/personDetails' : (context) => PersonDetailsPage()
+              '/personDetails' : (context) => PersonDetailsPage(),
+              // '/personView': (context) => PersonView(),
+              '/terms': (context) => Agreement(),
             },
             theme: ThemeData(
               primarySwatch: Colors.blue,

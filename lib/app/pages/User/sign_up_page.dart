@@ -1,4 +1,5 @@
 import 'package:email_validator/email_validator.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gmoria/app/pages/User/welcome_page.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
@@ -19,6 +20,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController password2Controller = TextEditingController();
+  bool isSwitched = false;
 
   var AppContext;
 
@@ -49,22 +51,27 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget _submitButton() {
     return InkWell(
       onTap: () {
-        if (_formKey.currentState.validate()) {
-          if (passwordController.text == password2Controller.text) {
-            print(true);
-          } else {
-            print(false);
-            return;
-          }
+        if (isSwitched) {
+          if (_formKey.currentState.validate()) {
+            if (passwordController.text == password2Controller.text) {
+              print(true);
+            } else {
+              print(false);
+              return;
+            }
 
-          ///Sign up the new user
-          context
-              .read<AuthenticationService>()
-              .signUp(
-                email: emailController.text.trim(),
-                password: password2Controller.text.trim(),
-              )
-              .then((value) => {print(value), Navigator.pop(context)});
+            ///Sign up the new user
+            context
+                .read<AuthenticationService>()
+                .signUp(
+                  email: emailController.text.trim(),
+                  password: password2Controller.text.trim(),
+                )
+                .then((value) => {print(value), Navigator.pop(context)});
+          }
+        } else {
+          print(
+              'The privacy policy and terms and conditions have not been accepted');
         }
       },
       child: Container(
@@ -93,6 +100,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget _loginAccountLabel() {
     return InkWell(
       onTap: () {
+        // Navigator.pushNamed(context, '/signUp');
         Navigator.pop(context);
       },
       child: Container(
@@ -114,6 +122,35 @@ class _SignUpPageState extends State<SignUpPage> {
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 13,
+                  fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _linkToTerms() {
+    return InkWell(
+      onTap: () {
+        // Navigator.pop(context);
+
+        moveToAgreement();
+      },
+      child: Container(
+        // margin: EdgeInsets.symmetric(vertical: 20),
+        padding: EdgeInsets.all(5),
+        alignment: Alignment.bottomCenter,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'Privacy policy & Terms and conditions',
+              style: TextStyle(
+                  color: Colors.indigo[800],
+                  fontSize: 15,
+                  decoration: TextDecoration.underline,
+                  decorationColor: Colors.indigo,
                   fontWeight: FontWeight.w600),
             ),
           ],
@@ -171,6 +208,33 @@ class _SignUpPageState extends State<SignUpPage> {
             },
           ),
           SizedBox(
+            height: 10,
+          ),
+          // Text('You must acccept'),
+          _linkToTerms(),
+          SwitchListTile(
+            value: isSwitched,
+            onChanged: (value) {
+              setState(() {
+                isSwitched = value;
+                print('Agree:' + isSwitched.toString());
+              });
+            },
+            activeColor: Colors.lightGreenAccent,
+            // secondary: new Icon(Icons.find_in_page_sharp),
+            title: new Text(
+                'I have read and accept the privacy policy, the terms and conditions'),
+
+            // subtitle: new Text('and I agree with the policy'),
+          ),
+
+          isSwitched
+              ? Container()
+              : Text(
+                  'You must accept the privacy policy, terms and conditions',
+                  style: new TextStyle(color: Colors.red),
+                ),
+          SizedBox(
             height: 20,
           ),
         ],
@@ -212,9 +276,27 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
+  /// Update the switch if the terms are accepted
+  void updateIsSwitch(bool accepted) {
+    setState(() => isSwitched = accepted);
+  }
+
+  /// Move to terms page and wait to get if the terms are accepted
+  void moveToAgreement() async {
+    final accepted =
+        await Navigator.pushNamed(context, '/terms', arguments: false);
+
+    if (accepted != null) {
+      updateIsSwitch(accepted);
+    } else {
+      updateIsSwitch(false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     AppContext = AppLocalizations.of(context);
+
     return Scaffold(
       body: Stack(
         children: <Widget>[
@@ -249,10 +331,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   _signInForm(),
                   SizedBox(
-                    height: 20,
-                  ),
-                  SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   _submitButton(),
                   _loginAccountLabel(),

@@ -26,40 +26,68 @@ class PersonDetailsPage extends StatelessWidget {
     initialP = args.person;
 
     var elementToRender;
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider<PersonBloc>(
-            create: (context) {
-              return PersonBloc(
-                personRepository: DataPersonRepository(),
-              )..add(LoadUserListPersons(userListId));
-            },
-          )
-        ],
-        child: BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
-          if (state is PersonLoading) {
-            return Center(child: CircularProgressIndicator());
-          } else if (state is UserListPersonLoaded) {
-            //Check the size of the person list and manage exceptions
-            if (state.person.isEmpty) {
-              elementToRender = Center(
-                  child: Text(
-                      AppLocalizations.of(context).translate('learn_emptyList'),
-                      style: TextStyle(fontSize: 20)));
+    if(userListId != "allContacts"){
+      return MultiBlocProvider(
+          providers: [
+            BlocProvider<PersonBloc>(
+              create: (context) {
+                return PersonBloc(
+                  personRepository: DataPersonRepository(),
+                )..add(LoadUserListPersons(userListId));
+              },
+            )
+          ],
+          child: BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
+            if (state is PersonLoading) {
+              return Center(child: CircularProgressIndicator());
+            } else if (state is UserListPersonLoaded) {
+              //Check the size of the person list and manage exceptions
+              if (state.person.isEmpty) {
+                elementToRender = Center(
+                    child: Text(
+                        AppLocalizations.of(context).translate('learn_emptyList'),
+                        style: TextStyle(fontSize: 20)));
+              } else {
+                List<Person> personsList = state.person;
+                personsList.sort((Person a,Person b) => a.firstname.toLowerCase().compareTo(b.firstname.toLowerCase()));
+                elementToRender = DetailsPage(
+                    persons: personsList,
+                    userListId : userListId,
+                    initialPerson : initialP); //Quiz(person: state.person);
+              }
+              return  elementToRender;
             } else {
-              List<Person> personsList = state.person;
-              personsList.sort((Person a,Person b) => a.firstname.toLowerCase().compareTo(b.firstname.toLowerCase()));
-              elementToRender = DetailsPage(
-                  persons: personsList,
-                  userListId : userListId,
-                  initialPerson : initialP); //Quiz(person: state.person);
+              return Text(AppLocalizations.of(context).translate('learn_error'),
+                  style: TextStyle(fontSize: 20));
             }
-            return  elementToRender;
+          }));
+    }else{
+      return BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
+        if (state is PersonLoading) {
+          return Center(child: CircularProgressIndicator());
+        } else if (state is PersonLoaded) {
+          //Check the size of the person list and manage exceptions
+          if (state.person.isEmpty) {
+            elementToRender = Center(
+                child: Text(
+                    AppLocalizations.of(context).translate('learn_emptyList'),
+                    style: TextStyle(fontSize: 20)));
           } else {
-            return Text(AppLocalizations.of(context).translate('learn_error'),
-                style: TextStyle(fontSize: 20));
+            List<Person> personsList = state.person;
+            personsList.sort((Person a,Person b) => a.firstname.toLowerCase().compareTo(b.firstname.toLowerCase()));
+            elementToRender = DetailsPage(
+                persons: personsList,
+                userListId : userListId,
+                initialPerson : initialP); //Quiz(person: state.person);
           }
-        }));
+          return  elementToRender;
+        } else {
+          return Text(AppLocalizations.of(context).translate('learn_error'),
+              style: TextStyle(fontSize: 20));
+        }
+      });
+    }
+
   }
 }
 
@@ -100,7 +128,7 @@ class _DetailsPageState extends State<DetailsPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Delete'),
+          title: Text('Delete', style: TextStyle(color: Colors.red),),
           content: Text('This person will be deleted'),
           actions: <Widget>[
             FlatButton(
@@ -115,7 +143,10 @@ class _DetailsPageState extends State<DetailsPage> {
                 Navigator.of(context).pop(true),
                 // Pop the page
                 Navigator.of(context).pop(true),
+                idUserList == "allContacts"?
                 // Delete the person
+                BlocProvider.of<PersonBloc>(context)
+                    .add(ForceDeletePerson(widget.persons[_currentIndex])):
                 BlocProvider.of<PersonBloc>(context)
                     .add(DeletePerson(widget.persons[_currentIndex], idUserList))
               },

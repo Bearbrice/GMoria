@@ -1,7 +1,9 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:gmoria/app/utils/ScreenArguments.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
 import 'package:gmoria/domain/blocs/person/PersonBloc.dart';
 import 'package:gmoria/domain/blocs/person/PersonEvent.dart';
@@ -124,16 +126,16 @@ class _WidgetListElementState extends State<WidgetListElement> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Delete'),
-            content: Text('This person will be deleted'),
+            title: Text(AppLocalizations.of(context).translate('delete_dialog_title'), style: TextStyle(color: Colors.red),),
+            content: Text(AppLocalizations.of(context).translate('delete_dialog_text_contact_permanently')),
             actions: <Widget>[
               FlatButton(
-                  child: Text('Cancel'),
+                  child: Text(AppLocalizations.of(context).translate('delete_dialog_cancel')),
                   onPressed: () => {
                     Navigator.of(context).pop(false),
                   }),
               FlatButton(
-                child: Text('Ok'),
+                child: Text(AppLocalizations.of(context).translate('delete_dialog_ok')),
                 onPressed: () => {
                   Navigator.of(context).pop(true),
                   BlocProvider.of<PersonBloc>(context)
@@ -234,14 +236,14 @@ class VerticalListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => {print("Open Details")}/*Navigator.pushNamed(context, '/personView',
-          arguments: new ScreenArguments(item, idUserList))*/,
+      onTap: () => Navigator.pushNamed(context, '/personDetails', arguments: new ScreenArguments(item, "allContacts")),
       child: Container(
         color: Colors.white,
         child: ListTile(
           leading: CircleAvatar(
             backgroundColor: Colors.blue,
             //child: Text('${item.index}'),
+            backgroundImage: ExtendedImage.network(item.image_url).image,
             foregroundColor: Colors.white,
           ),
           title: Text(item.firstname + " " + item.lastname),

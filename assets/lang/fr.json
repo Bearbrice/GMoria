@@ -11,5 +11,12 @@
   "list_title" : "List: ",
   "save": "Save",
   "all_contacts_title": "Mes contacts",
+  "delete_dialog_title": "Supprimer",
+  "delete_dialog_text_contact_permanently": "Ce contact sera supprimé définitivement",
+  "delete_dialog_ok": "Continuer",
+  "delete_dialog_cancel": "Annuler",
+  "import_contacts_title": "Importer depuis mes contacts",
+  "import_contacts_button_label": "Importer",
+  "unknown_error": "Oops... quelque chose ne s'est pas passé comme prévu! Veuillez réessayer.",
   "game_title" : "Jouer : "
 }

@@ -2,13 +2,15 @@ import 'package:gmoria/domain/models/Person.dart';
 import 'package:gmoria/domain/models/UserList.dart';
 
 abstract class PersonRepository {
-  Future<void> addNewPerson(Person userList,String idUserList);
+  Future<void> addNewPerson(Person person,String idUserList);
 
-  Future<void> deletePerson(Person userList, String idUserList);
+  Future<void> addExistingPersonsToList(List<Person> persons,UserList userList);
 
-  Future<void> forceDeletePerson(Person userList);
+  Future<void> deletePerson(Person person, String idUserList);
 
-  Future<void> updatePerson(Person userList);
+  Future<void> forceDeletePerson(Person person);
+
+  Future<void> updatePerson(Person person);
 
   Stream<List<Person>> getPersons();
 

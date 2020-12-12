@@ -101,8 +101,8 @@ class _ListPageState extends State<ListPage> {
                 backgroundColor: Colors.blue,
                 heroTag: null,
                 onPressed: () {
-                  /*Navigator.pushNamed(context, '/personForm',
-                      arguments: new ScreenArguments(null, userList.id));*/
+                  Navigator.pushNamed(context, '/importFromAllContacts',
+                      arguments: userList);
                 },
                 child: Icon(Icons.group_add),
               ),

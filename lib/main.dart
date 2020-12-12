@@ -10,6 +10,7 @@ import 'package:gmoria/app/pages/list_person_page.dart';
 import 'package:gmoria/data/repositories/DataPersonRepository.dart';
 import 'package:gmoria/domain/blocs/person/PersonBloc.dart';
 import 'package:gmoria/domain/blocs/person/PersonEvent.dart';
+import 'app/pages/AllContacts/import_from_all_contacts.dart';
 import 'app/pages/Game/finish_game_page.dart';
 import 'app/pages/Person/person_view.dart';
 import 'package:gmoria/data/firebase/authentication_service.dart';
@@ -72,6 +73,7 @@ class MyApp extends StatelessWidget {
               '/learn': (context) => LearnPage(),
               '/list': (context) => ListPage(),
               '/allContacts': (context) => AllContacts(),
+              '/importFromAllContacts': (context) => ImportFromAllContacts(),
               '/personForm': (context) => PersonForm(),
               '/personDetails' : (context) => PersonDetailsPage(),
               // '/personView': (context) => PersonView(),

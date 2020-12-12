@@ -11,5 +11,12 @@
   "list_title" : "List: ",
   "save": "Save",
   "all_contacts_title": "All Contacts",
+  "delete_dialog_title": "Delete",
+  "delete_dialog_text_contact_permanently": "The contact will be permanently deleted",
+  "delete_dialog_ok": "Ok",
+  "delete_dialog_cancel": "Cancel",
+  "import_contacts_title": "Import from all contacts",
+  "import_contacts_button_label": "Import",
+  "unknown_error": "Oops... something went wrong! Please try again.",
   "game_title" : "Game : "
 }

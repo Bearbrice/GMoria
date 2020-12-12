@@ -186,8 +186,8 @@ class _WidgetListElementState extends State<WidgetListElement> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Delete'),
-            content: Text('Item will be deleted'),
+            title: Text('Delete', style: TextStyle(color: Colors.red)),
+            content: Text('The list selected will be deleted'),
             actions: <Widget>[
               FlatButton(
                 child: Text('Cancel'),
@@ -288,7 +288,6 @@ class _WidgetListElementState extends State<WidgetListElement> {
                     ? Colors.red.withOpacity(animation.value)
                     : Colors.red,
                 icon: Icons.delete,
-                /*TODO: do not work, to correct*/
                 onTap: () => deleteDialog());
           }),
     );

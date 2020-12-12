@@ -6,7 +6,6 @@ import 'package:meta/meta.dart';
 import 'PersonEvent.dart';
 import 'PersonState.dart';
 
-
 class PersonBloc extends Bloc<PersonEvent, PersonState> {
   final PersonRepository _personRepository;
   StreamSubscription _personSubscription;
@@ -30,14 +29,16 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
       yield* _mapDeletePersonToState(event);
     } else if (event is PersonUpdated) {
       yield* _mapPersonUpdateToState(event);
-    } else if(event is UserListPersonUpdated) {
+    } else if (event is UserListPersonUpdated) {
       yield* _mapUserListPersonUpdateToState(event);
-    } else if(event is LoadSinglePerson){
+    } else if (event is LoadSinglePerson) {
       yield* _mapLoadSinglePersonToState(event);
-    } else if(event is SinglePersonUpdated){
+    } else if (event is SinglePersonUpdated) {
       yield* _mapSinglePersonUpdateToState(event);
-    }else if(event is ForceDeletePerson){
+    } else if (event is ForceDeletePerson) {
       yield* _mapForceDeletePersonToState(event);
+    } else if (event is AddExistingPersonsToList) {
+      yield* _mapAddExistingPersonsToListToState(event);
     }
   }
 
@@ -48,27 +49,26 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
         );
   }
 
-  Stream<PersonState> _mapLoadUserListPersonsToState(LoadUserListPersons event) async* {
+  Stream<PersonState> _mapLoadUserListPersonsToState(
+      LoadUserListPersons event) async* {
     _personSubscription?.cancel();
-    // _userListSubscription?.cancel();
-
-    // _userListSubscription = _personRepository.getUserListPersonsById(event.idUserList).listen((lecture)  {
-      _personSubscription =  _personRepository.getUserListPersons(event.idUserList).listen(
-            (person) => add(UserListPersonUpdated(person)),
-      );
-    // });
-
+    _personSubscription =
+        _personRepository.getUserListPersons(event.idUserList).listen(
+              (person) => add(UserListPersonUpdated(person)),
+            );
   }
 
-  Stream<PersonState> _mapLoadSinglePersonToState(LoadSinglePerson event) async* {
+  Stream<PersonState> _mapLoadSinglePersonToState(
+      LoadSinglePerson event) async* {
     _personSubscription?.cancel();
-    _personSubscription =  _personRepository.getSinglePerson(event.idPerson).listen(
-          (person) => add(SinglePersonUpdated(person)),
-    );
+    _personSubscription =
+        _personRepository.getSinglePerson(event.idPerson).listen(
+              (person) => add(SinglePersonUpdated(person)),
+            );
   }
 
   Stream<PersonState> _mapAddPersonToState(AddPerson event) async* {
-    await _personRepository.addNewPerson(event.person,event.idList);
+    await _personRepository.addNewPerson(event.person, event.idList);
   }
 
   Stream<PersonState> _mapUpdatePersonToState(UpdatePerson event) async* {
@@ -79,8 +79,7 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
     _personRepository.deletePerson(event.person, event.idList);
   }
 
-  Stream<PersonState> _mapPersonUpdateToState(
-      PersonUpdated event) async* {
+  Stream<PersonState> _mapPersonUpdateToState(PersonUpdated event) async* {
     yield PersonLoaded(event.person);
   }
 
@@ -94,8 +93,13 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
     yield SinglePersonLoaded(event.person);
   }
 
-  Stream<PersonState> _mapForceDeletePersonToState(ForceDeletePerson event) async* {
+  Stream<PersonState> _mapForceDeletePersonToState(
+      ForceDeletePerson event) async* {
     _personRepository.forceDeletePerson(event.person);
+  }
+
+  Stream<PersonState> _mapAddExistingPersonsToListToState(AddExistingPersonsToList event) async* {
+    await _personRepository.addExistingPersonsToList(event.persons, event.userList);
   }
 
   @override

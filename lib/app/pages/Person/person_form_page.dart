@@ -4,6 +4,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gmoria/app/utils/ScreenArguments.dart';
 import 'package:gmoria/data/repositories/DataUserListRepository.dart';
 import 'package:gmoria/domain/blocs/person/PersonBloc.dart';
@@ -295,6 +296,11 @@ class _TestFormState extends State<TestForm> {
               onPressed: () async {
                 if (_formKey.currentState.validate()) {
                   if (_image == null && !editMode) {
+                    Fluttertoast.showToast(
+                        textColor: Colors.white,
+                        backgroundColor: Colors.red,
+                        msg: "Please provide an image"
+                    );
                     print('No image stop');
                     imageError = true;
                     return;
@@ -320,8 +326,7 @@ class _TestFormState extends State<TestForm> {
                         is_known: person.is_known,
                         imported_from: person.imported_from,
                         id: person.id,
-                        lists: person.lists);
-                    print("FIRSTNAME");
+                        lists: person.lists, fk_user_id: person.fk_user_id);
                     BlocProvider.of<PersonBloc>(context).add(UpdatePerson(p));
                   } else {
                     String imageURL = await getImageURL();

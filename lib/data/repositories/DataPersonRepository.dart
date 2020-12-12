@@ -1,9 +1,8 @@
-import 'dart:math';
-import 'package:async/async.dart';
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:gmoria/data/entities/PersonEntity.dart';
 import 'package:gmoria/data/entities/UserListEntity.dart';
 import 'package:gmoria/domain/models/Person.dart';
@@ -100,7 +99,8 @@ class DataPersonRepository implements PersonRepository {
         .add(person.toEntity().toDocument())
         .then((value) => {
               listsCollection.doc(idUserList).update({
-                'persons': FieldValue.arrayUnion([value.id])
+                'persons': FieldValue.arrayUnion([value.id]),
+                'bestscore' : 0
               })
             });
   }
@@ -108,7 +108,8 @@ class DataPersonRepository implements PersonRepository {
   @override
   Future<void> deletePerson(Person person, String idUserList) {
     listsCollection.doc(idUserList).update({
-      'persons': FieldValue.arrayRemove([person.id])
+      'persons': FieldValue.arrayRemove([person.id]),
+      'bestscore': 0
     });
 
     if (person.lists.map((p) => p as String).toList().length == 1) {
@@ -128,7 +129,8 @@ class DataPersonRepository implements PersonRepository {
     //Remove person from lists
     person.lists.forEach((listId) {
       listsCollection.doc(listId).update({
-        'persons': FieldValue.arrayRemove([person.id])
+        'persons': FieldValue.arrayRemove([person.id]),
+        'bestscore': 0
       });
     });
 
@@ -150,6 +152,20 @@ class DataPersonRepository implements PersonRepository {
   Stream<Person> getSinglePerson(String idPerson) {
     return personCollection.doc(idPerson).snapshots().map((event) {
       return Person.fromEntity(PersonEntity.fromSnapshot(event));
+    });
+  }
+
+  @override
+  Future<void> addExistingPersonsToList(List<Person> persons, UserList userList) {
+    persons.forEach((person) {
+      personCollection.doc(person.id).update({
+        'lists': FieldValue.arrayUnion([userList.id])
+      });
+      userList.persons.add(person.id);
+    });
+    return listsCollection.doc(userList.id).update({
+      'persons': userList.persons,
+      'bestscore': 0
     });
   }
 }

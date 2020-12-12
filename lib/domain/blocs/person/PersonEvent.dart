@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:gmoria/domain/models/Person.dart';
+import 'package:gmoria/domain/models/UserList.dart';
 
 abstract class PersonEvent extends Equatable {
   const PersonEvent();
@@ -102,4 +103,14 @@ class SinglePersonUpdated extends PersonEvent {
 
   @override
   List<Object> get props => [person];
+}
+
+class AddExistingPersonsToList extends PersonEvent {
+  final List<Person> persons;
+  final UserList userList;
+
+  const AddExistingPersonsToList(this.persons, this.userList);
+
+  @override
+  List<Object> get props => [persons];
 }

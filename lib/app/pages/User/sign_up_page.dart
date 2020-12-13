@@ -21,6 +21,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController password2Controller = TextEditingController();
   bool isSwitched = false;
+  bool showError = false;
 
   var AppContext;
 
@@ -60,7 +61,7 @@ class _SignUpPageState extends State<SignUpPage> {
               return;
             }
 
-            ///Sign up the new user
+            /// Sign up the new user
             context
                 .read<AuthenticationService>()
                 .signUp(
@@ -70,6 +71,10 @@ class _SignUpPageState extends State<SignUpPage> {
                 .then((value) => {print(value), Navigator.pop(context)});
           }
         } else {
+          setState(() {
+            showError = true;
+            // print('Agree:' + isSwitched.toString());
+          });
           print(
               'The privacy policy and terms and conditions have not been accepted');
         }
@@ -217,6 +222,7 @@ class _SignUpPageState extends State<SignUpPage> {
             onChanged: (value) {
               setState(() {
                 isSwitched = value;
+                showError = !value;
                 print('Agree:' + isSwitched.toString());
               });
             },
@@ -227,12 +233,29 @@ class _SignUpPageState extends State<SignUpPage> {
 
             // subtitle: new Text('and I agree with the policy'),
           ),
-
-          isSwitched
+          // Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+          //   Flexible(
+          //     child:
+          !showError
               ? Container()
-              : Text(
-                  'You must accept the privacy policy, terms and conditions',
-                  style: new TextStyle(color: Colors.red),
+              : Center(
+                  child: Container(
+                    width: 280.0,
+                    height: 42.0,
+                    alignment: Alignment(0.0, 0.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5.0),
+                      color: Colors.blue[200],
+                    ),
+                    child: Text(
+                      'You must accept the privacy policy, terms and conditions',
+                      style: new TextStyle(
+                        color: Colors.red,
+                        height: 1,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 ),
           SizedBox(
             height: 20,
@@ -278,7 +301,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   /// Update the switch if the terms are accepted
   void updateIsSwitch(bool accepted) {
-    setState(() => isSwitched = accepted);
+    setState(() => {isSwitched = accepted, showError = false});
   }
 
   /// Move to terms page and wait to get if the terms are accepted

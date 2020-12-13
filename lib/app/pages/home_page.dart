@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gmoria/app/utils/InitialGameArguments.dart';
-import 'package:gmoria/app/utils/app_localizations.dart';
 import 'package:gmoria/data/firebase/authentication_service.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListBloc.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListEvent.dart';
@@ -46,15 +45,20 @@ class MyHomePage extends StatelessWidget {
                     if (state is UserListLoading) {
                       return Text("Loading !");
                     } else if (state is UserListLoaded) {
-                      if(state.userList.where((element) => element.listName.toLowerCase() == listController.text.toLowerCase()).length == 0){
+                      if (state.userList
+                              .where((element) =>
+                                  element.listName.toLowerCase() ==
+                                  listController.text.toLowerCase())
+                              .length ==
+                          0) {
                         var item = UserList(listController.text);
-                        BlocProvider.of<UserListBloc>(context).add(
-                            AddUserList(item));
+                        BlocProvider.of<UserListBloc>(context)
+                            .add(AddUserList(item));
                         // Do not display the dialog anymore
                         Navigator.pop(context);
                         // Reset the TextField input
                         listController.text = "";
-                      }else{
+                      } else {
                         Fluttertoast.showToast(
                             msg: "List name already exists !",
                             toastLength: Toast.LENGTH_SHORT,
@@ -62,10 +66,8 @@ class MyHomePage extends StatelessWidget {
                             timeInSecForIosWeb: 1,
                             backgroundColor: Colors.red,
                             textColor: Colors.white,
-                            fontSize: 16.0
-                        );
+                            fontSize: 16.0);
                       }
-
                     } else {
                       return Text("Problem :D");
                     }
@@ -77,7 +79,25 @@ class MyHomePage extends StatelessWidget {
 
       return Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context).translate('title')),
+          title: Text('User account'),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.engineering),
+              tooltip: 'My account',
+              onPressed: () {
+                Navigator.pushNamed(context, '/userPage');
+
+                // scaffoldKey.currentState.showSnackBar(snackBar);
+              },
+            ),
+            // IconButton(
+            //   icon: const Icon(Icons.navigate_next),
+            //   tooltip: 'Next page',
+            //   onPressed: () {
+            //     // openPage(context);
+            //   },
+            // ),
+          ],
         ),
         body: Center(
           child: (() {
@@ -125,7 +145,8 @@ class MyHomePage extends StatelessWidget {
               child: Icon(Icons.add),
 
               // backgroundColor: Colors.indigo,
-              heroTag: null,),
+              heroTag: null,
+            ),
             // onPressed: () {
             //   handleEmpty('Game');
             // Navigator.pushNamed(context, '/personForm');
@@ -138,7 +159,6 @@ class MyHomePage extends StatelessWidget {
     });
   }
 }
-
 
 class WidgetListElement extends StatefulWidget {
   final List<UserList> list;
@@ -169,7 +189,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
       scrollDirection: direction,
       itemBuilder: (context, index) {
         final Axis slidableDirection =
-        direction == Axis.horizontal ? Axis.vertical : Axis.horizontal;
+            direction == Axis.horizontal ? Axis.vertical : Axis.horizontal;
 
         return _getSlidableWithDelegates(context, index, slidableDirection);
       },
@@ -177,8 +197,8 @@ class _WidgetListElementState extends State<WidgetListElement> {
     );
   }
 
-  Widget _getSlidableWithDelegates(BuildContext context, int index,
-      Axis direction) {
+  Widget _getSlidableWithDelegates(
+      BuildContext context, int index, Axis direction) {
     final UserList item = userlists[index];
 
     deleteDialog() {
@@ -195,8 +215,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
               ),
               FlatButton(
                 child: Text('Ok'),
-                onPressed: () =>
-                {
+                onPressed: () => {
                   Navigator.of(context).pop(true),
                   print("NOM : " + item.listName),
                   BlocProvider.of<UserListBloc>(context)
@@ -216,7 +235,8 @@ class _WidgetListElementState extends State<WidgetListElement> {
       }
 
       if (action == 'Game') {
-        Navigator.pushNamed(context, '/game', arguments: InitialGameArguments(item,false));
+        Navigator.pushNamed(context, '/game',
+            arguments: InitialGameArguments(item, false));
       } else {
         Navigator.pushNamed(context, '/learn', arguments: item);
       }
@@ -237,8 +257,8 @@ class _WidgetListElementState extends State<WidgetListElement> {
         onWillDismiss: (item == null)
             ? null
             : (actionType) {
-          return deleteDialog();
-        },
+                return deleteDialog();
+              },
 
         onDismissed: (actionType) {
           _showSnackBar(
@@ -317,12 +337,11 @@ class _WidgetListElementState extends State<WidgetListElement> {
   Widget build(BuildContext context) {
     userlists = widget.list;
     return OrientationBuilder(
-      builder: (context, orientation) =>
-          _buildList(
-              context,
-              orientation == Orientation.portrait
-                  ? Axis.vertical
-                  : Axis.horizontal),
+      builder: (context, orientation) => _buildList(
+          context,
+          orientation == Orientation.portrait
+              ? Axis.vertical
+              : Axis.horizontal),
     );
   }
 }
@@ -336,34 +355,35 @@ class VerticalListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, '/list', arguments: item),
-      child:
-          Container(
-            color: Colors.grey[200],
-            height: 80,
-            child: Card(
-                shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(2)),
-                // decoration: BoxDecoration(
-                //   color: Colors.white,
-                //   border: Border(bottom: BorderSide(color: Colors.black12)) ,
-                // ),
-              child: Center(
-                child: new Column(
-                  children:<Widget> [
-                    ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.red,
-                        child: Text('${item.persons.length}'),
-                        foregroundColor: Colors.white,
-                      ),
-                      title: Text(item.listName),
-                      subtitle: item.bestScore > 0 ? Text("Best score : ${item.bestScore}%") : Text(""),
-                    )
-                  ],
-                ),
-              )
-            ),
-          ),
-      );
+      child: Container(
+        color: Colors.grey[200],
+        height: 80,
+        child: Card(
+            shape:
+                BeveledRectangleBorder(borderRadius: BorderRadius.circular(2)),
+            // decoration: BoxDecoration(
+            //   color: Colors.white,
+            //   border: Border(bottom: BorderSide(color: Colors.black12)) ,
+            // ),
+            child: Center(
+              child: new Column(
+                children: <Widget>[
+                  ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: Colors.red,
+                      child: Text('${item.persons.length}'),
+                      foregroundColor: Colors.white,
+                    ),
+                    title: Text(item.listName),
+                    subtitle: item.bestScore > 0
+                        ? Text("Best score : ${item.bestScore}%")
+                        : Text(""),
+                  )
+                ],
+              ),
+            )),
+      ),
+    );
   }
 }
 

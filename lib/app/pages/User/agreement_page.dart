@@ -52,6 +52,7 @@ class Agreement extends StatelessWidget {
           MyFutureBuilder(
               future: rootBundle.loadString("assets/text/TermsConditions.md"))
         ]);
+        break;
     }
   }
 

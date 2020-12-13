@@ -5,19 +5,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:gmoria/app/pages/Person/person_form_page.dart';
 import 'package:gmoria/app/pages/User/sign_up_page.dart';
+import 'package:gmoria/app/pages/User/user_page.dart';
 import 'package:gmoria/app/pages/User/welcome_page.dart';
 import 'package:gmoria/app/pages/list_person_page.dart';
+import 'package:gmoria/data/firebase/authentication_service.dart';
 import 'package:gmoria/data/repositories/DataPersonRepository.dart';
 import 'package:gmoria/domain/blocs/person/PersonBloc.dart';
 import 'package:gmoria/domain/blocs/person/PersonEvent.dart';
-import 'app/pages/AllContacts/import_from_all_contacts.dart';
-import 'app/pages/Game/finish_game_page.dart';
-import 'app/pages/Person/person_view.dart';
-import 'package:gmoria/data/firebase/authentication_service.dart';
 import 'package:provider/provider.dart';
+
 import 'app/pages/AllContacts/all_contacts_page.dart';
+import 'app/pages/AllContacts/import_from_all_contacts.dart';
 import 'app/pages/Game/check_game_answers_page.dart';
+import 'app/pages/Game/finish_game_page.dart';
 import 'app/pages/Game/game_page.dart';
+import 'app/pages/Person/person_view.dart';
 import 'app/pages/User/agreement_page.dart';
 import 'app/pages/home_page.dart';
 import 'app/pages/learn_page.dart';
@@ -39,18 +41,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
         providers: [
-          BlocProvider<UserListBloc>(
-              create: (context) {
-                return UserListBloc(
-                  userListRepository: DataUserListRepository(),
-                )..add(LoadUserList());
-              }),
-          BlocProvider<PersonBloc>(
-              create: (context) {
-                return PersonBloc(
-                  personRepository: DataPersonRepository(),
-                )..add(LoadPerson());
-              }),
+          BlocProvider<UserListBloc>(create: (context) {
+            return UserListBloc(
+              userListRepository: DataUserListRepository(),
+            )..add(LoadUserList());
+          }),
+          BlocProvider<PersonBloc>(create: (context) {
+            return PersonBloc(
+              personRepository: DataPersonRepository(),
+            )..add(LoadPerson());
+          }),
         ],
         child: MultiProvider(
           providers: [
@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
             ),
             StreamProvider(
               create: (context) =>
-              context.read<AuthenticationService>().authStateChanges,
+                  context.read<AuthenticationService>().authStateChanges,
             )
           ],
           child: MaterialApp(
@@ -67,17 +67,17 @@ class MyApp extends StatelessWidget {
             initialRoute: '/',
             routes: {
               '/signUp': (context) => SignUpPage(),
-              '/checkanswers' : (context) => CheckAnswersPage(),
-              '/endgame' : (context) => GameFinishedPage(),
-              '/game' : (context) => GamePage(),
+              '/checkanswers': (context) => CheckAnswersPage(),
+              '/endgame': (context) => GameFinishedPage(),
+              '/game': (context) => GamePage(),
               '/learn': (context) => LearnPage(),
               '/list': (context) => ListPage(),
               '/allContacts': (context) => AllContacts(),
               '/importFromAllContacts': (context) => ImportFromAllContacts(),
               '/personForm': (context) => PersonForm(),
-              '/personDetails' : (context) => PersonDetailsPage(),
-              // '/personView': (context) => PersonView(),
+              '/personDetails': (context) => PersonDetailsPage(),
               '/terms': (context) => Agreement(),
+              '/userPage': (context) => UserPage(),
             },
             theme: ThemeData(
               primarySwatch: Colors.blue,
@@ -109,8 +109,7 @@ class MyApp extends StatelessWidget {
               return supportedLocales.first;
             },
           ),
-        )
-      );
+        ));
   }
 }
 

@@ -18,7 +18,7 @@ Lien vers la politique de confidentialité des fournisseurs de services tiers ut
 
 * [Google Play Services](https://www.google.com/policies/privacy/)
 * [Google Analytics pour Firebase](https://firebase.google.com/policies/analytics)
-* [Firebase Crashlytics] (https://firebase.google.com/support/privacy/)
+* [Firebase Crashlytics](https://firebase.google.com/support/privacy/)
 
 ## Données de journal
 

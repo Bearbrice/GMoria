@@ -10,9 +10,9 @@ L'application utilise des services tiers qui déclarent leurs propres conditions
 
 Lien vers les conditions générales des fournisseurs de services tiers utilisés par l'application
 
-* [Google Play Services] (https://policies.google.com/terms)
+* [Google Play Services](https://policies.google.com/terms)
 * [Google Analytics pour Firebase](https://firebase.google.com/terms/analytics)
-* [Firebase Crashlytics] (https://firebase.google.com/terms/crashlytics)
+* [Firebase Crashlytics](https://firebase.google.com/terms/crashlytics)
 
 Vous devez savoir qu'il y a certaines choses dont la HES-SO Valais-Wallis ne prendra pas la responsabilité. Certaines fonctions de l'application requièrent une connexion Internet active. La connexion peut être Wi-Fi ou fournie par votre fournisseur de réseau mobile, mais la HES-SO Valais-Wallis ne peut pas être tenue responsable du fait que l'application ne fonctionne pas à pleine capacité si vous n'avez pas accès au Wi-Fi et qu'il ne vous reste plus de données autorisées.
 

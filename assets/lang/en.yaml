@@ -1,0 +1,30 @@
+#Global
+title: GMoria
+
+#User
+signIn_email: Email
+signIn_password: Password
+signIn_button: Sign in
+home_signOut: Sign out
+
+#Learn
+learn_title: 'Learn: '
+learn_error: Oops... something went wrong! Please try again.
+learn_emptyList: Your list is empty
+learn_gameButton: Ready to play ?
+
+list_title: 'List: '
+save: Save
+all_contacts_title: All Contacts
+delete_dialog_title: Delete
+delete_dialog_text_contact_permanently: The contact will be permanently deleted
+delete_dialog_ok: Ok
+delete_dialog_cancel: Cancel
+import_contacts_title: Import from all contacts
+import_contacts_button_label: Import
+
+#Erros
+unknown_error: Oops... something went wrong! Please try again.
+
+#Game
+game_title: 'Game :'

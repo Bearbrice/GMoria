@@ -1,0 +1,30 @@
+#Global
+title: GMoria
+
+#User
+signIn_email: Email
+signIn_password: Mot de passe
+signIn_button: Se connecter
+home_signOut: Se déconnecter
+
+#Learn
+learn_title: 'Mémoriser'
+learn_error: Oops... quelque chose ne s'est pas passé comme prévu! Veuillez réessayer.
+learn_emptyList: Votre liste est vide
+learn_gameButton: Prêt à jouer ?
+
+list_title: 'Liste: '
+save: Save
+all_contacts_title: Mes contacts
+delete_dialog_title: Supprimer
+delete_dialog_text_contact_permanently: Ce contact sera supprimé définitivement
+delete_dialog_ok: Continuer
+delete_dialog_cancel: Annuler
+import_contacts_title: Importer depuis mes contacts
+import_contacts_button_label: Importer
+
+#Erros
+unknown_error: Oops... quelque chose ne s'est pas passé comme prévu! Veuillez réessayer.
+
+#Game
+game_title: 'Jouer : '

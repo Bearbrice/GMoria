@@ -22,6 +22,8 @@ class ListPage extends StatefulWidget {
 class _ListPageState extends State<ListPage> {
   UserList userList;
   bool change;
+  int size;
+
   @override
   Widget build(BuildContext context) {
     final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -46,82 +48,87 @@ class _ListPageState extends State<ListPage> {
     }
 
     /// Prevent learn and game to launch if the list is empty
-    handleEmpty(action) {
-      if (userList.persons.isEmpty) {
+    handleEmpty(action,size) {
+      if (size==0) {
         return _showSnackBar(context, 'The list is empty');
       }
 
       if (action == 'Game') {
-        Navigator.pushNamed(context, '/game', arguments: InitialGameArguments(userList,false));
+        Navigator.pushNamed(context, '/game',
+            arguments: InitialGameArguments(userList, false));
       } else {
         Navigator.pushNamed(context, '/learn', arguments: userList);
       }
     }
 
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text(
-          AppLocalizations.of(context).translate('list_title') +
-              userList.listName,
-          style: TextStyle(color: Colors.white),
+    return BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
+      if(state is PersonLoaded){
+        size = state.person.length;
+      }
+      return Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBar(
+          title: Text(
+            AppLocalizations.of(context).translate('list_title') +
+                userList.listName,
+            style: TextStyle(color: Colors.white),
+          ),
         ),
-      ),
-      body: Center(child: conditionalRendering()),
-      floatingActionButton: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          FloatingActionButton(
+        body: Center(child: conditionalRendering()),
+        floatingActionButton: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            FloatingActionButton(
+                mini: true,
+                backgroundColor: Colors.indigo,
+                heroTag: null,
+                onPressed: () {
+                  handleEmpty('Game',size);
+                  // Navigator.pushNamed(context, '/personForm');
+                },
+                child: Icon(Icons.videogame_asset)),
+            SizedBox(height: 8.0),
+            FloatingActionButton(
               mini: true,
-              backgroundColor: Colors.indigo,
+              backgroundColor: Colors.green,
               heroTag: null,
               onPressed: () {
-                handleEmpty('Game');
+                handleEmpty('Learn',size);
                 // Navigator.pushNamed(context, '/personForm');
               },
-              child: Icon(Icons.videogame_asset)),
-          SizedBox(height: 8.0),
-          FloatingActionButton(
-            mini: true,
-            backgroundColor: Colors.green,
-            heroTag: null,
-            onPressed: () {
-              handleEmpty('Learn');
-              // Navigator.pushNamed(context, '/personForm');
-            },
-            child: Icon(Icons.school),
-          ),
-          SizedBox(height: 8.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              FloatingActionButton(
-                mini: true,
-                backgroundColor: Colors.blue,
-                heroTag: null,
-                onPressed: () {
-                  Navigator.pushNamed(context, '/importFromAllContacts',
-                      arguments: userList);
-                },
-                child: Icon(Icons.group_add),
-              ),
-              SizedBox(width: 8.0),
-              FloatingActionButton(
-                backgroundColor: Colors.blue,
-                heroTag: null,
-                onPressed: () {
-                  Navigator.pushNamed(context, '/personForm',
-                      arguments: new ScreenArguments(null, userList.id));
-                },
-                child: Icon(Icons.add),
-              ),
-            ],
-          )
-
-        ],
-      ),
-    );
+              child: Icon(Icons.school),
+            ),
+            SizedBox(height: 8.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                FloatingActionButton(
+                  mini: true,
+                  backgroundColor: Colors.blue,
+                  heroTag: null,
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/importFromAllContacts',
+                        arguments: userList);
+                  },
+                  child: Icon(Icons.group_add),
+                ),
+                SizedBox(width: 8.0),
+                FloatingActionButton(
+                  backgroundColor: Colors.blue,
+                  heroTag: null,
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/personForm',
+                        arguments: new ScreenArguments(null, userList.id));
+                  },
+                  child: Icon(Icons.add),
+                ),
+              ],
+            )
+          ],
+        ),
+      );
+    });
   }
 }
 
@@ -308,14 +315,19 @@ class VerticalListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, '/personDetails', // TODO remettre /personView après
+      onTap: () => Navigator.pushNamed(
+          context, '/personDetails', // TODO remettre /personView après
           arguments: new ScreenArguments(item, idUserList)),
       child: Container(
         color: Colors.white,
         child: ListTile(
           leading: CircleAvatar(
             backgroundColor: Colors.transparent,
-            backgroundImage: ExtendedImage.network(item.image_url, isAntiAlias: true, enableMemoryCache: true,).image,
+            backgroundImage: ExtendedImage.network(
+              item.image_url,
+              isAntiAlias: true,
+              enableMemoryCache: true,
+            ).image,
             //child: Text('${item.index}'),
             foregroundColor: Colors.white,
           ),

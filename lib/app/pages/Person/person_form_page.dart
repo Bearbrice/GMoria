@@ -1,12 +1,11 @@
 import 'dart:io';
-
 import 'package:extended_image/extended_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gmoria/app/utils/ScreenArguments.dart';
-import 'package:gmoria/data/repositories/DataUserListRepository.dart';
 import 'package:gmoria/domain/blocs/person/PersonBloc.dart';
 import 'package:gmoria/domain/blocs/person/PersonEvent.dart';
 import 'package:gmoria/domain/blocs/person/PersonState.dart';
@@ -134,7 +133,7 @@ class _TestFormState extends State<TestForm> {
   getImageURL() async {
     Reference storageReference = FirebaseStorage.instance
         .ref()
-        .child('persons/${user.uid}/${basename(_image.path)}');
+        .child('persons/${FirebaseAuth.instance.currentUser.uid}/${basename(_image.path)}');
     print("PATHHHHHHHHHHHHHH");
     print(basename(_image.path));
     UploadTask uploadTask = storageReference.putFile(_image);

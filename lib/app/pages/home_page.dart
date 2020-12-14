@@ -356,7 +356,7 @@ class VerticalListItem extends StatelessWidget {
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, '/list', arguments: item),
       child: Container(
-        color: Colors.grey[200],
+        color: Color(16448250),
         height: 80,
         child: Card(
             shape:

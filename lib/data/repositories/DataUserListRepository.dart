@@ -6,12 +6,11 @@ import 'package:gmoria/data/entities/UserListEntity.dart';
 import 'package:gmoria/domain/models/UserList.dart';
 import 'package:gmoria/domain/repositories/UserListRepository.dart';
 
-var user = FirebaseAuth.instance.currentUser;
-
 class DataUserListRepository implements UserListRepository {
   final db = FirebaseFirestore.instance;
   final userListCollection = FirebaseFirestore.instance.collection('lists');
   final personCollection = FirebaseFirestore.instance.collection('persons');
+  var user = FirebaseAuth.instance.currentUser;
 
   List<UserList> currentUserLists = new List<UserList>();
 

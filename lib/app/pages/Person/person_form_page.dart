@@ -134,7 +134,6 @@ class _TestFormState extends State<TestForm> {
     Reference storageReference = FirebaseStorage.instance
         .ref()
         .child('persons/${FirebaseAuth.instance.currentUser.uid}/${basename(_image.path)}');
-    print("PATHHHHHHHHHHHHHH");
     print(basename(_image.path));
     UploadTask uploadTask = storageReference.putFile(_image);
     await uploadTask.whenComplete(() => {print('File Uploaded')});

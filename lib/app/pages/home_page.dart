@@ -5,6 +5,10 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gmoria/app/utils/InitialGameArguments.dart';
 import 'package:gmoria/data/firebase/authentication_service.dart';
+import 'package:gmoria/data/repositories/DataPersonRepository.dart';
+import 'package:gmoria/data/repositories/DataUserListRepository.dart';
+import 'package:gmoria/domain/blocs/person/PersonBloc.dart';
+import 'package:gmoria/domain/blocs/person/PersonEvent.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListBloc.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListEvent.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListState.dart';
@@ -14,149 +18,161 @@ import 'package:gmoria/domain/models/UserList.dart';
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserListBloc, UserListState>(builder: (context, state) {
-      TextEditingController listController = new TextEditingController();
-      _showDialog() async {
-        await showDialog<String>(
-          context: context,
-          child: new AlertDialog(
-            contentPadding: const EdgeInsets.all(16.0),
-            content: new Row(
-              children: <Widget>[
-                new Expanded(
-                  child: new TextField(
-                    controller: listController,
-                    autofocus: true,
-                    decoration: new InputDecoration(
-                        labelText: 'List name', hintText: 'eg. Football team'),
-                  ),
-                )
+    return MultiBlocProvider(providers: [
+      BlocProvider<UserListBloc>(create: (context) {
+        return UserListBloc(
+          userListRepository: DataUserListRepository(),
+        )..add(LoadUserList());
+      }),
+      BlocProvider<PersonBloc>(create: (context) {
+        return PersonBloc(
+          personRepository: DataPersonRepository(),
+        )..add(LoadPerson());
+      }),
+    ], child: BlocBuilder<UserListBloc, UserListState>(builder: (context, state) {
+        TextEditingController listController = new TextEditingController();
+        _showDialog() async {
+          await showDialog<String>(
+            context: context,
+            child: new AlertDialog(
+              contentPadding: const EdgeInsets.all(16.0),
+              content: new Row(
+                children: <Widget>[
+                  new Expanded(
+                    child: new TextField(
+                      controller: listController,
+                      autofocus: true,
+                      decoration: new InputDecoration(
+                          labelText: 'List name', hintText: 'eg. Football team'),
+                    ),
+                  )
+                ],
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                    child: const Text('Cancel'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    }),
+                new FlatButton(
+                    child: const Text('Add'),
+                    onPressed: () {
+                      if (state is UserListLoading) {
+                        return Text("Loading !");
+                      } else if (state is UserListLoaded) {
+                        if (state.userList
+                                .where((element) =>
+                                    element.listName.toLowerCase() ==
+                                    listController.text.toLowerCase())
+                                .length ==
+                            0) {
+                          var item = UserList(listController.text);
+                          BlocProvider.of<UserListBloc>(context)
+                              .add(AddUserList(item));
+                          // Do not display the dialog anymore
+                          Navigator.pop(context);
+                          // Reset the TextField input
+                          listController.text = "";
+                        } else {
+                          Fluttertoast.showToast(
+                              msg: "List name already exists !",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.red,
+                              textColor: Colors.white,
+                              fontSize: 16.0);
+                        }
+                      } else {
+                        return Text("Problem :D");
+                      }
+                    })
               ],
             ),
+          );
+        }
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('User account'),
             actions: <Widget>[
-              new FlatButton(
-                  child: const Text('Cancel'),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  }),
-              new FlatButton(
-                  child: const Text('Add'),
-                  onPressed: () {
-                    if (state is UserListLoading) {
-                      return Text("Loading !");
-                    } else if (state is UserListLoaded) {
-                      if (state.userList
-                              .where((element) =>
-                                  element.listName.toLowerCase() ==
-                                  listController.text.toLowerCase())
-                              .length ==
-                          0) {
-                        var item = UserList(listController.text);
-                        BlocProvider.of<UserListBloc>(context)
-                            .add(AddUserList(item));
-                        // Do not display the dialog anymore
-                        Navigator.pop(context);
-                        // Reset the TextField input
-                        listController.text = "";
-                      } else {
-                        Fluttertoast.showToast(
-                            msg: "List name already exists !",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.CENTER,
-                            timeInSecForIosWeb: 1,
-                            backgroundColor: Colors.red,
-                            textColor: Colors.white,
-                            fontSize: 16.0);
-                      }
-                    } else {
-                      return Text("Problem :D");
-                    }
-                  })
+              IconButton(
+                icon: const Icon(Icons.engineering),
+                tooltip: 'My account',
+                onPressed: () {
+                  Navigator.pushNamed(context, '/userPage');
+
+                  // scaffoldKey.currentState.showSnackBar(snackBar);
+                },
+              ),
+              // IconButton(
+              //   icon: const Icon(Icons.navigate_next),
+              //   tooltip: 'Next page',
+              //   onPressed: () {
+              //     // openPage(context);
+              //   },
+              // ),
             ],
           ),
-        );
-      }
-
-      return Scaffold(
-        appBar: AppBar(
-          title: Text('User account'),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.engineering),
-              tooltip: 'My account',
-              onPressed: () {
-                Navigator.pushNamed(context, '/userPage');
-
-                // scaffoldKey.currentState.showSnackBar(snackBar);
-              },
-            ),
-            // IconButton(
-            //   icon: const Icon(Icons.navigate_next),
-            //   tooltip: 'Next page',
-            //   onPressed: () {
-            //     // openPage(context);
-            //   },
-            // ),
-          ],
-        ),
-        body: Center(
-          child: (() {
-            if (state is UserListLoading) {
-              return Text("Loading !");
-            } else if (state is UserListLoaded) {
-              //return Text(state.userList.toString());
-              final userLists = state.userList;
-              return WidgetListElement(list: userLists);
-            } else {
-              return Text("Problem :D");
-            }
-          }()),
-        ),
-        /* TEMPORARY */
-        floatingActionButton: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            FloatingActionButton(
-              mini: true,
-              backgroundColor: Colors.green,
-              heroTag: null,
-              onPressed: () {
-                context.read<AuthenticationService>().signOut();
-                // handleEmpty('Learn');
-                // Navigator.pushNamed(context, '/personForm');
-              },
-              child: Icon(Icons.logout),
-            ),
-            SizedBox(height: 8.0),
-            FloatingActionButton(
+          body: Center(
+            child: (() {
+              if (state is UserListLoading) {
+                return Text("Loading !");
+              } else if (state is UserListLoaded) {
+                //return Text(state.userList.toString());
+                final userLists = state.userList;
+                return WidgetListElement(list: userLists);
+              } else {
+                return Text("Problem :D");
+              }
+            }()),
+          ),
+          /* TEMPORARY */
+          floatingActionButton: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              FloatingActionButton(
                 mini: true,
                 backgroundColor: Colors.green,
                 heroTag: null,
                 onPressed: () {
-                  //;
-                  Navigator.pushNamed(context, '/allContacts');
+                  context.read<AuthenticationService>().signOut();
+                  // handleEmpty('Learn');
+                  // Navigator.pushNamed(context, '/personForm');
                 },
-                child: Icon(Icons.people_alt)),
-            SizedBox(height: 8.0),
-            FloatingActionButton(
-              mini: true,
-              backgroundColor: Colors.blue,
-              onPressed: _showDialog,
-              child: Icon(Icons.add),
+                child: Icon(Icons.logout),
+              ),
+              SizedBox(height: 8.0),
+              FloatingActionButton(
+                  mini: true,
+                  backgroundColor: Colors.green,
+                  heroTag: null,
+                  onPressed: () {
+                    //;
+                    Navigator.pushNamed(context, '/allContacts');
+                  },
+                  child: Icon(Icons.people_alt)),
+              SizedBox(height: 8.0),
+              FloatingActionButton(
+                mini: true,
+                backgroundColor: Colors.blue,
+                onPressed: _showDialog,
+                child: Icon(Icons.add),
 
-              // backgroundColor: Colors.indigo,
-              heroTag: null,
-            ),
-            // onPressed: () {
-            //   handleEmpty('Game');
-            // Navigator.pushNamed(context, '/personForm');
-            // },
-            // child: Icon(Icons.videogame_asset)),
-            SizedBox(height: 8.0),
-          ],
-        ),
-      );
-    });
+                // backgroundColor: Colors.indigo,
+                heroTag: null,
+              ),
+              // onPressed: () {
+              //   handleEmpty('Game');
+              // Navigator.pushNamed(context, '/personForm');
+              // },
+              // child: Icon(Icons.videogame_asset)),
+              SizedBox(height: 8.0),
+            ],
+          ),
+        );
+      }),
+    );
   }
 }
 

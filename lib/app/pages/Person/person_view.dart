@@ -160,15 +160,12 @@ class _DetailsPageState extends State<DetailsPage> {
   @override
   Widget build(BuildContext context) {
     final halfMediaWidth = MediaQuery.of(context).size.width / 2.0;
-    print("PERSONS : ${widget.persons}");
-    print("INDEXXXXXXX ACTUAL BORDEL : ${_currentIndex}");
     person = widget.persons[_currentIndex];
     idUserList = widget.userListId;
     _image = Image.network(person.image_url);
     return SwipeDetector(
         onSwipeLeft: () {
           setState(() {
-            print("LEFTTTTTT      ACTUAL INDEX : ${_currentIndex} and MAX INDEX : ${widget.persons.length}");
             if(_currentIndex<widget.persons.length-1){
               _currentIndex++;
             }else{
@@ -179,7 +176,6 @@ class _DetailsPageState extends State<DetailsPage> {
         },
         onSwipeRight:() {
           setState(() {
-            print("RIGGHHHHHTT     ACTUAL INDEX : ${_currentIndex} and MAX INDEX : ${widget.persons.length}");
             if(_currentIndex>0){
               _currentIndex--;
             }else{
@@ -251,35 +247,31 @@ class _DetailsPageState extends State<DetailsPage> {
                         label: 'Description',
                         text: widget.persons[_currentIndex].description,
                       )),
-                  SizedBox(height: 30.0),
-                  Container(
-                    margin: EdgeInsets.only(right: 20,top: 10),
-                    child: FloatingActionButton(
-                        mini: true,
-                        backgroundColor: Colors.blueAccent,
-                        heroTag: null,
-                        onPressed: () => Navigator.pushNamed(
-                            context, '/personForm',
-                            arguments: new ScreenArguments(widget.persons[_currentIndex], idUserList)),
-                        child: Icon(Icons.edit)),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(right: 20,top: 10),
-                    child: FloatingActionButton(
-                      mini: true,
-                      backgroundColor: Colors.red,
-                      heroTag: null,
-                      onPressed: () => deleteDialog(context),
-                      child: Icon(Icons.delete),
-                    ),
-                  ),
-
                 ],
               ),
             ),
           ),
-        )
-    );
+            floatingActionButton: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  FloatingActionButton(
+                      mini: true,
+                      backgroundColor: Colors.blueAccent,
+                      heroTag: null,
+                      onPressed: () => Navigator.pushNamed(
+                          context, '/personForm',
+                          arguments: new ScreenArguments(widget.persons[_currentIndex], idUserList)),
+                      child: Icon(Icons.edit)),
+                  SizedBox(height: 8.0),
+                  FloatingActionButton(
+                    mini: true,
+                    backgroundColor: Colors.red,
+                    heroTag: null,
+                    onPressed: () => deleteDialog(context),
+                    child: Icon(Icons.delete),
+                  ),
+                ]))
+        );
   }
 }
 

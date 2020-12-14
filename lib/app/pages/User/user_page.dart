@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
 import 'package:gmoria/data/firebase/authentication_service.dart';
 import 'package:provider/provider.dart';

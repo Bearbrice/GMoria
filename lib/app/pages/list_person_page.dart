@@ -22,7 +22,7 @@ class ListPage extends StatefulWidget {
 class _ListPageState extends State<ListPage> {
   UserList userList;
   bool change;
-  int size;
+  int size = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +49,7 @@ class _ListPageState extends State<ListPage> {
 
     /// Prevent learn and game to launch if the list is empty
     handleEmpty(action,size) {
+      print("SIZEEEEE : ${size}");
       if (size==0) {
         return _showSnackBar(context, 'The list is empty');
       }
@@ -63,8 +64,10 @@ class _ListPageState extends State<ListPage> {
 
     return BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
       if(state is PersonLoaded){
-        size = state.person.length;
+        var numbers = state.person.where((element) => element.lists.contains(userList.id));
+        size = numbers.length;
       }
+
       return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(

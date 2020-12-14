@@ -73,4 +73,15 @@ class AuthenticationService {
     // Once signed in, return the UserCredential
     return await _firebaseAuth.signInWithCredential(credential);
   }
+
+  Future<void> deleteUser() async {
+    try {
+      await _firebaseAuth.currentUser.delete();
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'requires-recent-login') {
+        print(
+            'The user must reauthenticate before this operation can be executed.');
+      }
+    }
+  }
 }

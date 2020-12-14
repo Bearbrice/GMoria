@@ -60,7 +60,6 @@ class _SignUpPageState extends State<SignUpPage> {
               print(false);
               return;
             }
-
             /// Sign up the new user
             context
                 .read<AuthenticationService>()
@@ -105,7 +104,6 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget _loginAccountLabel() {
     return InkWell(
       onTap: () {
-        // Navigator.pushNamed(context, '/signUp');
         Navigator.pop(context);
       },
       child: Container(
@@ -138,8 +136,6 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget _linkToTerms() {
     return InkWell(
       onTap: () {
-        // Navigator.pop(context);
-
         moveToAgreement();
       },
       child: Container(
@@ -230,12 +226,9 @@ class _SignUpPageState extends State<SignUpPage> {
             // secondary: new Icon(Icons.find_in_page_sharp),
             title: new Text(
                 'I have read and accept the privacy policy, the terms and conditions'),
-
             // subtitle: new Text('and I agree with the policy'),
           ),
-          // Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-          //   Flexible(
-          //     child:
+
           !showError
               ? Container()
               : Center(

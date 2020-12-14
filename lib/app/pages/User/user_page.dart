@@ -62,8 +62,6 @@ class _UserPageState extends State<UserPage> {
   Widget _linkToTerms() {
     return InkWell(
       onTap: () {
-        // Navigator.pop(context);
-
         Navigator.pushNamed(context, '/terms', arguments: true);
       },
       child: Container(

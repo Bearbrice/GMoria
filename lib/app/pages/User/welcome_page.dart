@@ -4,6 +4,8 @@ import 'package:gmoria/app/utils/app_localizations.dart';
 import 'package:gmoria/data/firebase/authentication_service.dart';
 import 'package:provider/provider.dart';
 
+import 'agreement_page.dart';
+
 class WelcomePage extends StatefulWidget {
   WelcomePage({Key key, this.title}) : super(key: key);
 
@@ -22,6 +24,45 @@ class _WelcomePageState extends State<WelcomePage> {
 
   bool error = false;
   String errorMessage = "";
+
+  bool accepted = false;
+
+  Widget _linkToTerms() {
+    return InkWell(
+      onTap: () {
+        // Navigator.pop(context);
+
+        Navigator.pushNamed(context, '/terms', arguments: true);
+      },
+      child: Container(
+        // margin: EdgeInsets.symmetric(vertical: 20),
+        padding: EdgeInsets.all(5),
+        alignment: Alignment.bottomCenter,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'By sign in with google you agree to our',
+              style: TextStyle(
+                  color: Colors.indigo[900],
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              'Privacy policy, terms and conditions',
+              style: TextStyle(
+                  color: Colors.indigo[800],
+                  fontSize: 15,
+                  decoration: TextDecoration.underline,
+                  decorationColor: Colors.indigo,
+                  fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget _signInButton() {
     return InkWell(
@@ -68,56 +109,54 @@ class _WelcomePageState extends State<WelcomePage> {
     );
   }
 
-  Widget _googleButton(){
+  Widget _googleButton() {
     return InkWell(
       child: Container(
 
           // width: deviceSize
-              // .width/2,
+          // .width/2,
           // height: deviceSize.height/18,
-          width: MediaQuery.of(context).size.width/1.5,
+          width: MediaQuery.of(context).size.width / 1.5,
           padding: EdgeInsets.symmetric(vertical: 10),
 
           // margin: EdgeInsets.only(top: 25),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              color:Colors.black
-          ),
+              borderRadius: BorderRadius.circular(5), color: Colors.black),
           child: Center(
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Container(
-                    height: 30.0,
-                    width: 30.0,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image:
-                          AssetImage('assets/picture/google.jpg'),
-                          fit: BoxFit.cover),
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  Text('Sign in with Google',
-                    style: TextStyle(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white
-                    ),
-                  ),
-                ],
-              )
-          )
-      ),
-      onTap: ()
-      async{
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Container(
+                height: 30.0,
+                width: 30.0,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage('assets/picture/google.jpg'),
+                      fit: BoxFit.cover),
+                  shape: BoxShape.circle,
+                ),
+              ),
+              Text(
+                'Sign in with Google',
+                style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+              ),
+            ],
+          ))),
+      onTap: () async {
         context
             .read<AuthenticationService>()
-            .signInWithGoogle();
-        //   Navigator.of(context).pushNamedAndRemoveUntil
-        //     (RouteName.Home, (Route<dynamic> route) => false
-        //   );}
-        // ).catchError((e) => print(e));
+            .signInWithGoogle()
+            .then((value) => {
+                  if (value.additionalUserInfo.isNewUser)
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Agreement()),
+                    )
+                  // {Navigator.pushNamed(context, '/terms', arguments: false)}
+                });
       },
     );
   }
@@ -248,6 +287,7 @@ class _WelcomePageState extends State<WelcomePage> {
                 height: 20,
               ),
               _googleButton(),
+              _linkToTerms(),
             ],
           ),
         ),

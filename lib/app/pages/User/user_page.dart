@@ -428,17 +428,17 @@ class _UserPageState extends State<UserPage> {
               SizedBox(
                 height: 20,
               ),
-              Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  // mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    _changeEmailButton(),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    _deleteAccountButton(),
-                  ]),
+              // Row(
+              //     crossAxisAlignment: CrossAxisAlignment.center,
+              //     // mainAxisAlignment: MainAxisAlignment.center,
+              //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //     children: <Widget>[
+              //       _changeEmailButton(),
+              //       SizedBox(
+              //         height: 20,
+              //       ),
+              //       _deleteAccountButton(),
+              //     ]),
             ],
           ),
         ),

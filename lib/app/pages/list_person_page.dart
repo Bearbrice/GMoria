@@ -163,22 +163,6 @@ class _ListPageState extends State<ListPage> {
             ),
           ),
         ),
-        //
-        //
-        // floatingActionButton: Container(
-        //   height: 65.0,
-        //   width: 65.0,
-        //   child: FittedBox(
-        //     child: FloatingActionButton(
-        //       onPressed: () {},
-        //       child: Icon(
-        //         Icons.add,
-        //         color: Colors.white,
-        //       ),
-        //       // elevation: 5.0,
-        //     ),
-        //   ),
-        // ),
 
         floatingActionButton:
         Container(
@@ -195,66 +179,6 @@ class _ListPageState extends State<ListPage> {
             parentButton: Icon(Icons.add),
             childButtons : childButtons),
        ),
-
-
-
-
-
-
-
-
-        /*floatingActionButton: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            FloatingActionButton(
-                mini: true,
-                backgroundColor: Colors.indigo,
-                heroTag: null,
-                onPressed: () {
-                  handleEmpty('Game',size);
-                  // Navigator.pushNamed(context, '/personForm');
-                },
-                child: Icon(Icons.videogame_asset)),
-            SizedBox(height: 8.0),
-            FloatingActionButton(
-              mini: true,
-              backgroundColor: Colors.green,
-              heroTag: null,
-              onPressed: () {
-                handleEmpty('Learn',size);
-                // Navigator.pushNamed(context, '/personForm');
-              },
-              child: Icon(Icons.school),
-            ),
-            SizedBox(height: 8.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                FloatingActionButton(
-                  mini: true,
-                  backgroundColor: Colors.blue,
-                  heroTag: null,
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/importFromAllContacts',
-                        arguments: userList);
-                  },
-                  child: Icon(Icons.group_add),
-                ),
-                SizedBox(width: 8.0),
-                FloatingActionButton(
-                  backgroundColor: Colors.blue,
-                  heroTag: null,
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/personForm',
-                        arguments: new ScreenArguments(null, userList.id));
-                  },
-                  child: Icon(Icons.add),
-                ),
-              ],
-            )
-          ],
-        ),*/
       );
     });
   }
@@ -446,7 +370,7 @@ class VerticalListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => Navigator.pushNamed(
-          context, '/personDetails', // TODO remettre /personView après
+          context, '/personDetails',
           arguments: new ScreenArguments(item, idUserList)),
       child: Container(
         color: Colors.white,

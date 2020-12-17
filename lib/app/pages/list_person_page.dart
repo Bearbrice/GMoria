@@ -12,6 +12,7 @@ import 'package:gmoria/domain/blocs/person/PersonEvent.dart';
 import 'package:gmoria/domain/blocs/person/PersonState.dart';
 import 'package:gmoria/domain/models/Person.dart';
 import 'package:gmoria/domain/models/UserList.dart';
+import 'package:unicorndial/unicorndial.dart';
 
 /// Page that display a specific list
 class ListPage extends StatefulWidget {
@@ -62,11 +63,48 @@ class _ListPageState extends State<ListPage> {
       }
     }
 
+
+
+
+    var childButtons = List<UnicornButton>();
+
+    childButtons.add(UnicornButton(
+      hasLabel: true,
+      labelText: "New contact",
+        currentButton: FloatingActionButton(
+          mini: true,
+          backgroundColor: Colors.blue,
+          heroTag: "add",
+          onPressed: () {
+            Navigator.pushNamed(context, '/personForm',
+                arguments: new ScreenArguments(null, userList.id));
+          },
+          child: Icon(Icons.add),
+        ),));
+
+    childButtons.add(UnicornButton(
+        hasLabel: true,
+        labelText: "Import contacts",
+        currentButton: FloatingActionButton(
+          heroTag: "phone",
+          backgroundColor: Colors.blue,
+          mini: true,
+          child: Icon(Icons.group_add),
+          onPressed: () {
+            Navigator.pushNamed(context, '/importFromAllContacts',
+                arguments: userList);
+          },
+        )));
+
+
+
+
     return BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
       if(state is PersonLoaded){
         var numbers = state.person.where((element) => element.lists.contains(userList.id));
         size = numbers.length;
       }
+
 
       return Scaffold(
         key: _scaffoldKey,
@@ -78,7 +116,94 @@ class _ListPageState extends State<ListPage> {
           ),
         ),
         body: Center(child: conditionalRendering()),
-        floatingActionButton: Column(
+
+
+
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+
+        bottomNavigationBar: BottomAppBar(
+          shape: CircularNotchedRectangle(),
+          notchMargin: -10,
+          clipBehavior: Clip.antiAlias,
+          color: Colors.grey,
+          child: Container(
+            color: Colors.blue,
+            height: 60,
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                FlatButton(
+                  onPressed: () {
+                    handleEmpty('Learn',size);
+                    // Navigator.pushNamed(context, '/personForm');
+                  },
+                  padding: EdgeInsets.all(10.0),
+                  child: Column( // Replace with a Row for horizontal icon + text
+                    children: <Widget>[
+                      Icon(Icons.school, color: Colors.white,),
+                      Text("Learn", style: TextStyle(color: Colors.white))
+                    ],
+                  ),
+                ),
+                FlatButton(
+                    onPressed: () {
+                      handleEmpty('Game',size);
+                      // Navigator.pushNamed(context, '/personForm');
+                    },
+                  padding: EdgeInsets.all(10.0),
+                  child: Column( // Replace with a Row for horizontal icon + text
+                    children: <Widget>[
+                      Icon(Icons.videogame_asset, color: Colors.white,),
+                      Text("Game", style: TextStyle(color: Colors.white))
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        //
+        //
+        // floatingActionButton: Container(
+        //   height: 65.0,
+        //   width: 65.0,
+        //   child: FittedBox(
+        //     child: FloatingActionButton(
+        //       onPressed: () {},
+        //       child: Icon(
+        //         Icons.add,
+        //         color: Colors.white,
+        //       ),
+        //       // elevation: 5.0,
+        //     ),
+        //   ),
+        // ),
+
+        floatingActionButton:
+        Container(
+          width: 95.0,
+          height: 200.0,
+         child:
+          UnicornDialer(
+
+            backgroundColor: Colors.transparent,
+            //hasBackground: false,
+            hasNotch: true,
+            parentButtonBackground: Colors.lightBlueAccent,
+            orientation: UnicornOrientation.VERTICAL,
+            parentButton: Icon(Icons.add),
+            childButtons : childButtons),
+       ),
+
+
+
+
+
+
+
+
+        /*floatingActionButton: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
@@ -129,11 +254,12 @@ class _ListPageState extends State<ListPage> {
               ],
             )
           ],
-        ),
+        ),*/
       );
     });
   }
 }
+
 
 class MyUserPeople extends StatelessWidget {
   final String userListId;
@@ -188,6 +314,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
     });
 
     return ListView.builder(
+      padding: EdgeInsets.only(bottom: kFloatingActionButtonMargin + 30),
       scrollDirection: direction,
       itemBuilder: (context, index) {
         final Axis slidableDirection =

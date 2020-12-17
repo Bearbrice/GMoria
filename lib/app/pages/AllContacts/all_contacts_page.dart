@@ -22,34 +22,7 @@ class _AllContactsState extends State<AllContacts> {
   bool change;
   @override
   Widget build(BuildContext context) {
-    final _scaffoldKey = GlobalKey<ScaffoldState>();
-
-    void _showSnackBar(BuildContext context, String text) {
-      final snackBar = SnackBar(content: Text(text));
-      _scaffoldKey.currentState.showSnackBar(snackBar); // edited line
-    }
-
-    /// Prevent learn and game to launch if the list is empty
-    handleEmpty(action) {
-      if (userList.persons.isEmpty) {
-        return _showSnackBar(context, 'The list is empty');
-      }
-
-      if (action == 'Game') {
-        _showSnackBar(context, 'Game');
-      } else {
-        Navigator.pushNamed(context, '/learn', arguments: userList);
-      }
-    }
-
     return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text(
-          AppLocalizations.of(context).translate('all_contacts_title'),
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
       body: Center(child: MyUserPeople()),
     );
   }
@@ -63,7 +36,7 @@ class MyUserPeople extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
       if (state is PersonLoading) {
-        return Text("Loading !");
+        return CircularProgressIndicator(backgroundColor: Colors.blue,);
       } else if (state is PersonLoaded) {
         if (state.person.isNotEmpty) {
           //If the list is not empty
@@ -76,7 +49,7 @@ class MyUserPeople extends StatelessWidget {
               Text("Your list is empty", style: TextStyle(fontSize: 20)));
         }
       } else {
-        return Text("Problem :D");
+        return Text(AppLocalizations.of(context).translate("unknown_error"));
       }
     });
   }
@@ -187,9 +160,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
           builder: (context, index, animation, renderingMode) {
             return IconSlideAction(
                 caption: 'Delete',
-                color: renderingMode == SlidableRenderingMode.slide
-                    ? Colors.red.withOpacity(animation.value)
-                    : Colors.red,
+                color: Colors.red,
                 icon: Icons.delete,
                 onTap: () => deleteDialog());
           }),

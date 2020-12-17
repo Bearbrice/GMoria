@@ -3,33 +3,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:gmoria/app/pages/AllContacts/all_contacts_page.dart';
 import 'package:gmoria/app/utils/InitialGameArguments.dart';
+import 'package:gmoria/app/utils/app_localizations.dart';
 import 'package:gmoria/data/firebase/authentication_service.dart';
-import 'package:gmoria/data/repositories/DataPersonRepository.dart';
-import 'package:gmoria/data/repositories/DataUserListRepository.dart';
-import 'package:gmoria/domain/blocs/person/PersonBloc.dart';
-import 'package:gmoria/domain/blocs/person/PersonEvent.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListBloc.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListEvent.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListState.dart';
 import 'package:gmoria/domain/models/UserList.dart';
 
 /// Page with all the lists of the user
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int _currentIndex;
+
+  @override
+  void initState() {
+    setState(() {
+      _currentIndex = 0;
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(providers: [
-      BlocProvider<UserListBloc>(create: (context) {
-        return UserListBloc(
-          userListRepository: DataUserListRepository(),
-        )..add(LoadUserList());
-      }),
-      BlocProvider<PersonBloc>(create: (context) {
-        return PersonBloc(
-          personRepository: DataPersonRepository(),
-        )..add(LoadPerson());
-      }),
-    ], child: BlocBuilder<UserListBloc, UserListState>(builder: (context, state) {
+    return BlocBuilder<UserListBloc, UserListState>(builder: (context, state) {
         TextEditingController listController = new TextEditingController();
         _showDialog() async {
           await showDialog<String>(
@@ -94,27 +96,18 @@ class MyHomePage extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            title: Text('User account'),
+            title: Text(AppLocalizations.of(context).translate("title")),
             actions: <Widget>[
               IconButton(
                 icon: const Icon(Icons.engineering),
                 tooltip: 'My account',
                 onPressed: () {
                   Navigator.pushNamed(context, '/userPage');
-
-                  // scaffoldKey.currentState.showSnackBar(snackBar);
                 },
               ),
-              // IconButton(
-              //   icon: const Icon(Icons.navigate_next),
-              //   tooltip: 'Next page',
-              //   onPressed: () {
-              //     // openPage(context);
-              //   },
-              // ),
             ],
           ),
-          body: Center(
+          body: _currentIndex==0?Center(
             child: (() {
               if (state is UserListLoading) {
                 return Text("Loading !");
@@ -126,52 +119,47 @@ class MyHomePage extends StatelessWidget {
                 return Text("Problem :D");
               }
             }()),
+          ):
+          AllContacts(),
+          bottomNavigationBar: BottomAppBar(
+            shape: CircularNotchedRectangle(),
+            color: Colors.white,
+            notchMargin: 4,
+            clipBehavior: Clip.antiAlias,
+            child: BottomNavigationBar(
+              backgroundColor: Colors.blue,
+              currentIndex: _currentIndex,
+              unselectedItemColor: Colors.grey[350],
+              selectedItemColor: Colors.white,
+              onTap: (int index){
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+              items: [
+                BottomNavigationBarItem(
+                  icon: new Icon(Icons.home),
+                  backgroundColor: Colors.white,
+                  label: "Home",
+                ),
+                BottomNavigationBarItem(
+                  icon: new Icon(Icons.people_alt),
+                  label: "My contacts",
+                ),
+              ],
+            ),
           ),
-          /* TEMPORARY */
-          floatingActionButton: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              FloatingActionButton(
-                mini: true,
-                backgroundColor: Colors.green,
-                heroTag: null,
-                onPressed: () {
-                  context.read<AuthenticationService>().signOut();
-                  // handleEmpty('Learn');
-                  // Navigator.pushNamed(context, '/personForm');
-                },
-                child: Icon(Icons.logout),
-              ),
-              SizedBox(height: 8.0),
-              FloatingActionButton(
-                  mini: true,
-                  backgroundColor: Colors.green,
-                  heroTag: null,
-                  onPressed: () {
-                    //;
-                    Navigator.pushNamed(context, '/allContacts');
-                  },
-                  child: Icon(Icons.people_alt)),
-              SizedBox(height: 8.0),
-              FloatingActionButton(
-                mini: true,
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+
+          floatingActionButton: _currentIndex==0 ? FloatingActionButton(
                 backgroundColor: Colors.blue,
                 onPressed: _showDialog,
                 child: Icon(Icons.add),
-
                 // backgroundColor: Colors.indigo,
                 heroTag: null,
-              ),
-              // onPressed: () {
-              //   handleEmpty('Game');
-              // Navigator.pushNamed(context, '/personForm');
-              // },
-              // child: Icon(Icons.videogame_asset)),
-              SizedBox(height: 8.0),
-            ],
-          ),
+              ):null,
         );
-      }),
+      }
     );
   }
 }
@@ -202,6 +190,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
     });
 
     return ListView.builder(
+      padding: EdgeInsets.only(bottom: 30.0),
       scrollDirection: direction,
       itemBuilder: (context, index) {
         final Axis slidableDirection =
@@ -298,18 +287,14 @@ class _WidgetListElementState extends State<WidgetListElement> {
             if (index == 0) {
               return IconSlideAction(
                 caption: 'Game',
-                color: renderingMode == SlidableRenderingMode.slide
-                    ? Colors.indigo.withOpacity(animation.value)
-                    : Colors.indigo,
+                color: Colors.indigo,
                 icon: Icons.videogame_asset,
                 onTap: () => handleEmpty('Game'),
               );
             } else {
               return IconSlideAction(
                 caption: 'Learn',
-                color: renderingMode == SlidableRenderingMode.slide
-                    ? Colors.green.withOpacity(animation.value)
-                    : Colors.green,
+                color: Colors.green,
                 icon: Icons.school,
                 onTap: () => handleEmpty('Learn'),
               );
@@ -320,9 +305,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
           builder: (context, index, animation, renderingMode) {
             return IconSlideAction(
                 caption: 'Delete',
-                color: renderingMode == SlidableRenderingMode.slide
-                    ? Colors.red.withOpacity(animation.value)
-                    : Colors.red,
+                color: Colors.red,
                 icon: Icons.delete,
                 onTap: () => deleteDialog());
           }),
@@ -377,10 +360,6 @@ class VerticalListItem extends StatelessWidget {
         child: Card(
             shape:
                 BeveledRectangleBorder(borderRadius: BorderRadius.circular(2)),
-            // decoration: BoxDecoration(
-            //   color: Colors.white,
-            //   border: Border(bottom: BorderSide(color: Colors.black12)) ,
-            // ),
             child: Center(
               child: new Column(
                 children: <Widget>[

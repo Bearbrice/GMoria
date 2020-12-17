@@ -108,8 +108,6 @@ class _UserPageState extends State<UserPage> {
   }
 
   Widget build(BuildContext context) {
-    // readMode = ModalRoute.of(context).settings.arguments;
-    print('READMODE' + readMode.toString());
     String name = context.watch<AuthenticationService>().getUser().email;
     String name2 = context
         .watch<AuthenticationService>()

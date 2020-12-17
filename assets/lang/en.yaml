@@ -2,6 +2,7 @@
 title: GMoria
 
 #User
+userAccount_title: User Account
 signIn_email: Email
 signIn_password: Password
 signIn_button: Sign in

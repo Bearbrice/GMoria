@@ -181,7 +181,6 @@ class _PeopleSwiperState extends State<PeopleSwiper> {
                 margin: EdgeInsets.only(top: 10.0),
                 child: RaisedButton(
                     onPressed: () {
-                      //TODO navigate to Play Game
                       Navigator.popAndPushNamed(context, '/game', arguments: InitialGameArguments(widget.userList,false));
                     },
                     color: Colors.green,

@@ -54,6 +54,9 @@ dependencies:
 
   path: ^1.7.0
 
+  #DateFormat
+  intl: ^0.16.1
+
   #Shared Preferences
   shared_preferences: ^0.5.12+4
 

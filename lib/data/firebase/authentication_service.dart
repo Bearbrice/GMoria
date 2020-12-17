@@ -13,6 +13,12 @@ class AuthenticationService {
   /// Navigator.of(context).pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
   /// after you called this method if you want to pop all routes.
   Future<void> signOut() async {
+    // Disconnect the user from google sign in as well
+    if (_firebaseAuth.currentUser.providerData.first.providerId ==
+        'google.com') {
+      await GoogleSignIn().disconnect();
+    }
+
     await _firebaseAuth.signOut();
   }
 
@@ -72,6 +78,18 @@ class AuthenticationService {
 
     // Once signed in, return the UserCredential
     return await _firebaseAuth.signInWithCredential(credential);
+  }
+
+  Future resetEmail(String newEmail) async {
+    var message;
+    User firebaseUser = _firebaseAuth.currentUser;
+    firebaseUser
+        .updateEmail(newEmail)
+        .then(
+          (value) => message = 'Success',
+        )
+        .catchError((onError) => message = 'error');
+    return message;
   }
 
   Future<void> deleteUser() async {

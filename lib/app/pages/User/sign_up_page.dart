@@ -22,8 +22,9 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController password2Controller = TextEditingController();
   bool isSwitched = false;
   bool showError = false;
+  bool showAlreadyExists = false;
 
-  var AppContext;
+  AppLocalizations appContext;
 
   Widget _backButton() {
     return InkWell(
@@ -60,6 +61,7 @@ class _SignUpPageState extends State<SignUpPage> {
               print(false);
               return;
             }
+
             /// Sign up the new user
             context
                 .read<AuthenticationService>()
@@ -67,7 +69,24 @@ class _SignUpPageState extends State<SignUpPage> {
                   email: emailController.text.trim(),
                   password: password2Controller.text.trim(),
                 )
-                .then((value) => {print(value), Navigator.pop(context)});
+                .then((value) => {
+                      if (value.toString() == 'email-already-in-use')
+                        {
+                          // print('PRINT->' + value),
+                          setState(() {
+                            showAlreadyExists = true;
+                          }),
+                          // print('ALREADY EXISTS')
+                        }
+                      else
+                        {
+                          // print(value),
+                          setState(() {
+                            showAlreadyExists = false;
+                          }),
+                          Navigator.pop(context)
+                        }
+                    });
           }
         } else {
           setState(() {
@@ -172,7 +191,7 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
           MyTextField(
             controller: emailController,
-            labelText: AppContext.translate('signIn_email'),
+            labelText: appContext.translate('signIn_email'),
             obscure: false,
             validator: (email) =>
                 EmailValidator.validate(email) ? null : "Invalid email address",
@@ -182,7 +201,7 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
           MyTextField(
             controller: passwordController,
-            labelText: AppContext.translate('signIn_password'),
+            labelText: appContext.translate('signIn_password'),
             obscure: true,
             validator: (String value) {
               if (value.isEmpty) {
@@ -242,6 +261,27 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     child: Text(
                       'You must accept the privacy policy, terms and conditions',
+                      style: new TextStyle(
+                        color: Colors.red,
+                        height: 1,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+          !showAlreadyExists
+              ? Container()
+              : Center(
+                  child: Container(
+                    width: 280.0,
+                    height: 42.0,
+                    alignment: Alignment(0.0, 0.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5.0),
+                      color: Colors.blue[200],
+                    ),
+                    child: Text(
+                      'User already exists, sign in, go to forgotten password or use another email',
                       style: new TextStyle(
                         color: Colors.red,
                         height: 1,
@@ -311,7 +351,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    AppContext = AppLocalizations.of(context);
+    appContext = AppLocalizations.of(context);
 
     return Scaffold(
       body: Stack(

@@ -59,6 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: const Text('Add'),
                   onPressed: () {
                     if (state is UserListLoading) {
+
                       return Text("Loading !");
                     } else if (state is UserListLoaded) {
                       if (state.userList
@@ -112,6 +113,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   if (state is UserListLoading) {
                     return Text("Loading !");
                   } else if (state is UserListLoaded) {
+                    if(state.userList.isEmpty){
+                      return Center(
+                          child:
+                          Text("Create a list to begin", style: TextStyle(fontSize: 20)));
+                    }
                     //return Text(state.userList.toString());
                     final userLists = state.userList;
                     return WidgetListElement(list: userLists);
@@ -356,7 +362,7 @@ class VerticalListItem extends StatelessWidget {
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, '/list', arguments: item),
       child: Container(
-        color: Color(16448250),
+        color: Color(15658734),
         height: 80,
         child: Card(
             shape:

@@ -62,77 +62,96 @@ class MyApp extends StatelessWidget {
               )..add(LoadPerson());
             }),
           ],
-          child: MultiProvider(
-            providers: [
-              Provider<AuthenticationService>(
-                create: (_) => AuthenticationService(FirebaseAuth.instance),
-              ),
-              StreamProvider(
-                create: (context) =>
-                    context.read<AuthenticationService>().authStateChanges,
-              )
-            ],
-            child: MaterialApp(
-              title: 'GMoria',
-              initialRoute: '/',
-              routes: {
-                '/signUp': (context) => SignUpPage(),
-                '/checkanswers': (context) => CheckAnswersPage(),
-                '/endgame': (context) => GameFinishedPage(),
-                '/game': (context) => GamePage(),
-                '/learn': (context) => LearnPage(),
-                '/list': (context) => ListPage(),
-                '/allContacts': (context) => AllContacts(),
-                '/importFromAllContacts': (context) => ImportFromAllContacts(),
-                '/personForm': (context) => PersonForm(),
-                '/personDetails': (context) => PersonDetailsPage(),
-                '/terms': (context) => Agreement(),
-                '/userPage': (context) => UserPage(),
-              },
-              theme: ThemeData(
-                primarySwatch: Colors.blue,
-                visualDensity: VisualDensity.adaptivePlatformDensity,
-              ),
-              home: AuthenticationWrapper(),
-              supportedLocales: [
-                const Locale('en', ''),
-                const Locale('fr', ''),
-              ],
-              localizationsDelegates: [
-                // A class which loads the translations from JSON files
-                AppLocalizations.delegate,
-                // Built-in localization of basic text for Material widgets
-                GlobalMaterialLocalizations.delegate,
-                // Built-in localization for text direction LTR/RTL
-                GlobalWidgetsLocalizations.delegate,
-              ],
-              // Returns a locale which will be used by the app
-              localeResolutionCallback: (locale, supportedLocales) {
-                // Check if the current device locale is supported
-                for (var supportedLocale in supportedLocales) {
-                  if (supportedLocale.languageCode == locale.languageCode) {
-                    return supportedLocale;
-                  }
-                }
-                // If the locale of the device is not supported, use the first one
-                // from the list (English, in this case).
-                return supportedLocales.first;
-              },
+          child: MaterialApp(
+            title: 'GMoria',
+            initialRoute: '/',
+            routes: {
+              '/signUp': (context) => SignUpPage(),
+              '/checkanswers': (context) => CheckAnswersPage(),
+              '/endgame': (context) => GameFinishedPage(),
+              '/game': (context) => GamePage(),
+              '/learn': (context) => LearnPage(),
+              '/list': (context) => ListPage(),
+              '/allContacts': (context) => AllContacts(),
+              '/importFromAllContacts': (context) => ImportFromAllContacts(),
+              '/personForm': (context) => PersonForm(),
+              '/personDetails': (context) => PersonDetailsPage(),
+              '/terms': (context) => Agreement(),
+              '/userPage': (context) => UserPage(),
+            },
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+              visualDensity: VisualDensity.adaptivePlatformDensity,
             ),
+            home: AuthenticationWrapper(),
+            supportedLocales: [
+              const Locale('en', ''),
+              const Locale('fr', ''),
+            ],
+            localizationsDelegates: [
+              // A class which loads the translations from JSON files
+              AppLocalizations.delegate,
+              // Built-in localization of basic text for Material widgets
+              GlobalMaterialLocalizations.delegate,
+              // Built-in localization for text direction LTR/RTL
+              GlobalWidgetsLocalizations.delegate,
+            ],
+            // Returns a locale which will be used by the app
+            localeResolutionCallback: (locale, supportedLocales) {
+              // Check if the current device locale is supported
+              for (var supportedLocale in supportedLocales) {
+                if (supportedLocale.languageCode == locale.languageCode) {
+                  return supportedLocale;
+                }
+              }
+              // If the locale of the device is not supported, use the first one
+              // from the list (English, in this case).
+              return supportedLocales.first;
+            },
           ),
         ));
   }
 }
 
-class AuthenticationWrapper extends StatelessWidget {
+class AuthenticationWrapper extends StatefulWidget {
+  @override
+  _AuthenticationWrapperState createState() => _AuthenticationWrapperState();
+}
+
+class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
+  bool isLoggedIn = false;
+
   @override
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User>();
     // final firebaseUser = context.watch<AuthenticationService>().getUser();
 
     if (firebaseUser != null) {
-      return MyHomePage();
+      if(isLoggedIn == false){
+        setState(() {
+          isLoggedIn = true;
+        });
+      }
+      return MultiBlocProvider(
+          providers: [
+            BlocProvider<UserListBloc>(create: (context) {
+              return UserListBloc(
+                userListRepository: DataUserListRepository(),
+              )..add(LoadUserList());
+            }),
+            BlocProvider<PersonBloc>(create: (context) {
+              return PersonBloc(
+                personRepository: DataPersonRepository(),
+              )..add(LoadPerson());
+            }),
+          ],
+          child: MyHomePage());
     } else {
+      if(isLoggedIn == true){
+        setState(() {
+          isLoggedIn = false;
+        });
+      }
       return WelcomePage();
     }
   }

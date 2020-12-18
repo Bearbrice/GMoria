@@ -158,79 +158,32 @@ class _TestFormState extends State<TestForm> {
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-              // IconButton(
-              //   icon: Icon(Icons.add_photo_alternate_outlined),
-              //   iconSize: 40,
-              //   tooltip: 'From gallery',
-              //   onPressed: getG,
-              // ),
-
-              GestureDetector(
-                  onTap: () {
-                    getG();
-                  },
-                  child: !editMode
-                      ? _image == null
-                          ? Container(
-                              margin: EdgeInsets.only(top: 10),
-                              decoration: BoxDecoration(
-                                color: Colors.grey[200],
-                                border: Border.all(color: Colors.black26),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5.0)),
-                              ),
-                              child: Icon(
-                                Icons.add_photo_alternate_outlined,
-                                color: Colors.blue,
-                                size: 200.0,
-                                semanticLabel:
-                                    'Text to announce in accessibility modes',
-                              ))
-
-                          // Image.asset(
-                          //   'assets/picture/unknown.jpg',
-                          //   width: 200.0,
-                          //   height: 200.0,
-                          // )
-                          : Image.file(_image, width: 280, height: 280)
-                      // Text(
-                      //         editMode ? 'No image available' : 'No image selected.')
-                      : _image == null
-                          ? ExtendedImage.network(person.image_url,
-                              fit: BoxFit.fill, width: 280, height: 280)
-                          : Image.file(_image, width: 280, height: 280)),
-
-              // IconButton(
-              //   iconSize: 40,
-              //   icon: Icon(Icons.add_a_photo_outlined),
-              //   tooltip: 'Take a photo',
-              //   onPressed: getC,
-              // ),
-            ]),
-
-            // Container(
-            //   child: Center(
-            //     child: GestureDetector(
-            //         onTap: () {
-            //           getG();
-            //         },
-            //         child: !editMode
-            //             ? _image == null
-            //                 ? Image.asset(
-            //                     'assets/picture/unknown.jpg',
-            //                     width: 200.0,
-            //                     height: 200.0,
-            //                   )
-            //                 : Image.file(_image, width: 280, height: 280)
-            //             // Text(
-            //             //         editMode ? 'No image available' : 'No image selected.')
-            //             : _image == null
-            //                 ? ExtendedImage.network(person.image_url,
-            //                     fit: BoxFit.fill, width: 280, height: 280)
-            //                 : Image.file(_image, width: 280, height: 280)),
-            //   ),
-            // ),
+            GestureDetector(
+                onTap: () {
+                  getG();
+                },
+                child: !editMode
+                    ? _image == null
+                        ? Container(
+                            margin: EdgeInsets.only(top: 10),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              border: Border.all(color: Colors.black26),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5.0)),
+                            ),
+                            child: Icon(
+                              Icons.add_photo_alternate_outlined,
+                              color: Colors.blue,
+                              size: 200.0,
+                              semanticLabel:
+                                  'Text to announce in accessibility modes',
+                            ))
+                        : Image.file(_image, width: 280, height: 280)
+                    : _image == null
+                        ? ExtendedImage.network(person.image_url,
+                            fit: BoxFit.fill, width: 280, height: 280)
+                        : Image.file(_image, width: 280, height: 280)),
             Container(
                 child: Center(
                     child: _image == null && !editMode
@@ -241,24 +194,6 @@ class _TestFormState extends State<TestForm> {
                             ),
                           )
                         : null)),
-
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.center,
-            //   children: <Widget>[ IconButton(
-            //     icon: Icon(Icons.add_photo_alternate_outlined),
-            //     iconSize: 40,
-            //     tooltip: 'From gallery',
-            //     onPressed: getG,
-            //   ),
-            //     IconButton(
-            //       iconSize: 40,
-            //       icon: Icon(Icons.add_a_photo_outlined),
-            //       tooltip: 'Take a photo',
-            //       onPressed: getC,
-            //     ),
-            //   ]
-            // ),
-
             Container(
               alignment: Alignment.topCenter,
               child: Row(
@@ -306,14 +241,7 @@ class _TestFormState extends State<TestForm> {
             MyTextFormField(
               hintText: 'Job (optional)',
               initialValue: person.job,
-              // controller: job,
               isEmail: false,
-              // validator: (String value) {
-              //   // if (value.isEmpty) {
-              //   //   return 'Please enter a valid email';
-              //   // }
-              //   // return null;
-              // },
               onSaved: (String value) {
                 model.job = value;
               },
@@ -323,27 +251,11 @@ class _TestFormState extends State<TestForm> {
               initialValue: person.description,
               isEmail: false,
               isLong: true,
-              // maxLines: 10,
-              // maxLines: 30,
               textInputType: TextInputType.multiline,
-              // controller: description,
-
-              // validator: (String value) {
-              //   if (value.isEmpty) {
-              //     return 'Please enter a valid email';
-              //   }
-              //   return null;
-              // },
               onSaved: (String value) {
                 model.description = value;
               },
             ),
-            // RaisedButton(
-            //   child: Text("Take Photo"),
-            //   onPressed: uploadPhoto,
-            //   textColor: Colors.lightGreenAccent,
-            // ),
-
             Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
               Column(
                 mainAxisSize: MainAxisSize.min,
@@ -374,22 +286,6 @@ class _TestFormState extends State<TestForm> {
                 ],
               ),
             ]),
-
-            // RaisedButton(
-            //   child: Text("From gallery"),
-            //   onPressed: getG,
-            //   // textColor: Colors.lightGreenAccent,
-            // ),
-            // RaisedButton(
-            //   child: Text("Take a photo"),
-            //   onPressed: getC,
-            //   // textColor: Colors.lightGreenAccent,
-            // ),
-            // RaisedButton(
-            //   child: Text("Native gallery crop"),
-            //   onPressed: native,
-            //   // textColor: Colors.lightGreenAccent,
-            // ),
             RaisedButton(
               color: Colors.blueAccent,
               onPressed: () async {

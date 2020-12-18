@@ -24,7 +24,7 @@ import_contacts_title: Importer depuis mes contacts
 import_contacts_button_label: Importer
 
 #Erros
-unknown_error: Oops... quelque chose ne s'est pas passé comme prévu! Veuillez réessayer.
+unknown_error: Oups... quelque chose ne s'est pas passé comme prévu! Veuillez réessayer.
 
 #Game
 game_title: 'Jouer : '

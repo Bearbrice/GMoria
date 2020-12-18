@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:extended_image/extended_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -131,9 +132,8 @@ class _TestFormState extends State<TestForm> {
   }
 
   getImageURL() async {
-    Reference storageReference = FirebaseStorage.instance
-        .ref()
-        .child('persons/${FirebaseAuth.instance.currentUser.uid}/${basename(_image.path)}');
+    Reference storageReference = FirebaseStorage.instance.ref().child(
+        'persons/${FirebaseAuth.instance.currentUser.uid}/${basename(_image.path)}');
     print(basename(_image.path));
     UploadTask uploadTask = storageReference.putFile(_image);
     await uploadTask.whenComplete(() => {print('File Uploaded')});
@@ -158,28 +158,79 @@ class _TestFormState extends State<TestForm> {
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Container(
-              child: Center(
-                child: GestureDetector(
-                    onTap: () {
-                      getG();
-                    },
-                    child: !editMode
-                        ? _image == null
-                            ? Image.asset(
-                                'assets/picture/unknown.jpg',
-                                width: 200.0,
-                                height: 200.0,
-                              )
-                            : Image.file(_image, width: 280, height: 280)
-                        // Text(
-                        //         editMode ? 'No image available' : 'No image selected.')
-                        : _image == null
-                            ? ExtendedImage.network(person.image_url,
-                                fit: BoxFit.fill, width: 280, height: 280)
-                            : Image.file(_image, width: 280, height: 280)),
-              ),
-            ),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+              // IconButton(
+              //   icon: Icon(Icons.add_photo_alternate_outlined),
+              //   iconSize: 40,
+              //   tooltip: 'From gallery',
+              //   onPressed: getG,
+              // ),
+
+              GestureDetector(
+                  onTap: () {
+                    getG();
+                  },
+                  child: !editMode
+                      ? _image == null
+                          ? Container(
+                              margin: EdgeInsets.only(top: 10),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                                border: Border.all(color: Colors.black26),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5.0)),
+                              ),
+                              child: Icon(
+                                Icons.add_photo_alternate_outlined,
+                                color: Colors.blue,
+                                size: 200.0,
+                                semanticLabel:
+                                    'Text to announce in accessibility modes',
+                              ))
+
+                          // Image.asset(
+                          //   'assets/picture/unknown.jpg',
+                          //   width: 200.0,
+                          //   height: 200.0,
+                          // )
+                          : Image.file(_image, width: 280, height: 280)
+                      // Text(
+                      //         editMode ? 'No image available' : 'No image selected.')
+                      : _image == null
+                          ? ExtendedImage.network(person.image_url,
+                              fit: BoxFit.fill, width: 280, height: 280)
+                          : Image.file(_image, width: 280, height: 280)),
+
+              // IconButton(
+              //   iconSize: 40,
+              //   icon: Icon(Icons.add_a_photo_outlined),
+              //   tooltip: 'Take a photo',
+              //   onPressed: getC,
+              // ),
+            ]),
+
+            // Container(
+            //   child: Center(
+            //     child: GestureDetector(
+            //         onTap: () {
+            //           getG();
+            //         },
+            //         child: !editMode
+            //             ? _image == null
+            //                 ? Image.asset(
+            //                     'assets/picture/unknown.jpg',
+            //                     width: 200.0,
+            //                     height: 200.0,
+            //                   )
+            //                 : Image.file(_image, width: 280, height: 280)
+            //             // Text(
+            //             //         editMode ? 'No image available' : 'No image selected.')
+            //             : _image == null
+            //                 ? ExtendedImage.network(person.image_url,
+            //                     fit: BoxFit.fill, width: 280, height: 280)
+            //                 : Image.file(_image, width: 280, height: 280)),
+            //   ),
+            // ),
             Container(
                 child: Center(
                     child: _image == null && !editMode
@@ -190,6 +241,24 @@ class _TestFormState extends State<TestForm> {
                             ),
                           )
                         : null)),
+
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: <Widget>[ IconButton(
+            //     icon: Icon(Icons.add_photo_alternate_outlined),
+            //     iconSize: 40,
+            //     tooltip: 'From gallery',
+            //     onPressed: getG,
+            //   ),
+            //     IconButton(
+            //       iconSize: 40,
+            //       icon: Icon(Icons.add_a_photo_outlined),
+            //       tooltip: 'Take a photo',
+            //       onPressed: getC,
+            //     ),
+            //   ]
+            // ),
+
             Container(
               alignment: Alignment.topCenter,
               child: Row(
@@ -274,16 +343,48 @@ class _TestFormState extends State<TestForm> {
             //   onPressed: uploadPhoto,
             //   textColor: Colors.lightGreenAccent,
             // ),
-            RaisedButton(
-              child: Text("From gallery"),
-              onPressed: getG,
-              // textColor: Colors.lightGreenAccent,
-            ),
-            RaisedButton(
-              child: Text("Take a photo"),
-              onPressed: getC,
-              // textColor: Colors.lightGreenAccent,
-            ),
+
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.add_photo_alternate_outlined),
+                    iconSize: 40,
+                    tooltip: 'From gallery',
+                    onPressed: getG,
+                  ),
+                  Text('From gallery')
+                ],
+              ),
+              SizedBox(
+                height: 100,
+                width: 50,
+              ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  IconButton(
+                    iconSize: 40,
+                    icon: Icon(Icons.add_a_photo_outlined),
+                    tooltip: 'Take a photo',
+                    onPressed: getC,
+                  ),
+                  Text('Take a photo')
+                ],
+              ),
+            ]),
+
+            // RaisedButton(
+            //   child: Text("From gallery"),
+            //   onPressed: getG,
+            //   // textColor: Colors.lightGreenAccent,
+            // ),
+            // RaisedButton(
+            //   child: Text("Take a photo"),
+            //   onPressed: getC,
+            //   // textColor: Colors.lightGreenAccent,
+            // ),
             // RaisedButton(
             //   child: Text("Native gallery crop"),
             //   onPressed: native,
@@ -297,8 +398,7 @@ class _TestFormState extends State<TestForm> {
                     Fluttertoast.showToast(
                         textColor: Colors.white,
                         backgroundColor: Colors.red,
-                        msg: "Please provide an image"
-                    );
+                        msg: "Please provide an image");
                     print('No image stop');
                     imageError = true;
                     return;
@@ -324,13 +424,13 @@ class _TestFormState extends State<TestForm> {
                         is_known: person.is_known,
                         imported_from: person.imported_from,
                         id: person.id,
-                        lists: person.lists, fk_user_id: person.fk_user_id);
+                        lists: person.lists,
+                        fk_user_id: person.fk_user_id);
                     BlocProvider.of<PersonBloc>(context).add(UpdatePerson(p));
                     Navigator.pop(context);
-                    Navigator.popAndPushNamed(
-                        context, '/personDetails',
-                        arguments: new ScreenArguments(widget.person, idUserList));
-
+                    Navigator.popAndPushNamed(context, '/personDetails',
+                        arguments:
+                            new ScreenArguments(widget.person, idUserList));
                   } else {
                     String imageURL = await getImageURL();
                     Person p = new Person(model.firstname, model.lastname,

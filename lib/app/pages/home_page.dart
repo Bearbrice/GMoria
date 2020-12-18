@@ -31,136 +31,137 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<UserListBloc, UserListState>(builder: (context, state) {
-        TextEditingController listController = new TextEditingController();
-        _showDialog() async {
-          await showDialog<String>(
-            context: context,
-            child: new AlertDialog(
-              contentPadding: const EdgeInsets.all(16.0),
-              content: new Row(
-                children: <Widget>[
-                  new Expanded(
-                    child: new TextField(
-                      controller: listController,
-                      autofocus: true,
-                      decoration: new InputDecoration(
-                          labelText: 'List name', hintText: 'eg. Football team'),
-                    ),
-                  )
-                ],
-              ),
-              actions: <Widget>[
-                new FlatButton(
-                    child: const Text('Cancel'),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    }),
-                new FlatButton(
-                    child: const Text('Add'),
-                    onPressed: () {
-                      if (state is UserListLoading) {
-                        return Text("Loading !");
-                      } else if (state is UserListLoaded) {
-                        if (state.userList
-                                .where((element) =>
-                                    element.listName.toLowerCase() ==
-                                    listController.text.toLowerCase())
-                                .length ==
-                            0) {
-                          var item = UserList(listController.text);
-                          BlocProvider.of<UserListBloc>(context)
-                              .add(AddUserList(item));
-                          // Do not display the dialog anymore
-                          Navigator.pop(context);
-                          // Reset the TextField input
-                          listController.text = "";
-                        } else {
-                          Fluttertoast.showToast(
-                              msg: "List name already exists !",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.CENTER,
-                              timeInSecForIosWeb: 1,
-                              backgroundColor: Colors.red,
-                              textColor: Colors.white,
-                              fontSize: 16.0);
-                        }
-                      } else {
-                        return Text("Problem :D");
-                      }
-                    })
+      TextEditingController listController = new TextEditingController();
+      _showDialog() async {
+        await showDialog<String>(
+          context: context,
+          child: new AlertDialog(
+            contentPadding: const EdgeInsets.all(16.0),
+            content: new Row(
+              children: <Widget>[
+                new Expanded(
+                  child: new TextField(
+                    controller: listController,
+                    autofocus: true,
+                    decoration: new InputDecoration(
+                        labelText: 'List name', hintText: 'eg. Football team'),
+                  ),
+                )
               ],
             ),
-          );
-        }
-
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(AppLocalizations.of(context).translate("title")),
             actions: <Widget>[
-              IconButton(
-                icon: const Icon(Icons.engineering),
-                tooltip: 'My account',
-                onPressed: () {
-                  Navigator.pushNamed(context, '/userPage');
-                },
+              new FlatButton(
+                  child: const Text('Cancel'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }),
+              new FlatButton(
+                  child: const Text('Add'),
+                  onPressed: () {
+                    if (state is UserListLoading) {
+                      return Text("Loading !");
+                    } else if (state is UserListLoaded) {
+                      if (state.userList
+                              .where((element) =>
+                                  element.listName.toLowerCase() ==
+                                  listController.text.toLowerCase())
+                              .length ==
+                          0) {
+                        var item = UserList(listController.text);
+                        BlocProvider.of<UserListBloc>(context)
+                            .add(AddUserList(item));
+                        // Do not display the dialog anymore
+                        Navigator.pop(context);
+                        // Reset the TextField input
+                        listController.text = "";
+                      } else {
+                        Fluttertoast.showToast(
+                            msg: "List name already exists !",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0);
+                      }
+                    } else {
+                      return Text("Problem :D");
+                    }
+                  })
+            ],
+          ),
+        );
+      }
+
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context).translate("title")),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.settings),
+              tooltip: 'My account',
+              onPressed: () {
+                Navigator.pushNamed(context, '/userPage');
+              },
+            ),
+          ],
+        ),
+        body: _currentIndex == 0
+            ? Center(
+                child: (() {
+                  if (state is UserListLoading) {
+                    return Text("Loading !");
+                  } else if (state is UserListLoaded) {
+                    //return Text(state.userList.toString());
+                    final userLists = state.userList;
+                    return WidgetListElement(list: userLists);
+                  } else {
+                    return Text("Problem :D");
+                  }
+                }()),
+              )
+            : AllContacts(),
+        bottomNavigationBar: BottomAppBar(
+          shape: CircularNotchedRectangle(),
+          color: Colors.white,
+          notchMargin: 4,
+          clipBehavior: Clip.antiAlias,
+          child: BottomNavigationBar(
+            elevation: 0,
+            backgroundColor: Colors.blue,
+            currentIndex: _currentIndex,
+            unselectedItemColor: Colors.grey[350],
+            selectedItemColor: Colors.white,
+            onTap: (int index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+            items: [
+              BottomNavigationBarItem(
+                icon: new Icon(Icons.home),
+                backgroundColor: Colors.white,
+                label: "Home",
+              ),
+              BottomNavigationBarItem(
+                icon: new Icon(Icons.people_alt),
+                label: "My contacts",
               ),
             ],
           ),
-          body: _currentIndex==0?Center(
-            child: (() {
-              if (state is UserListLoading) {
-                return Text("Loading !");
-              } else if (state is UserListLoaded) {
-                //return Text(state.userList.toString());
-                final userLists = state.userList;
-                return WidgetListElement(list: userLists);
-              } else {
-                return Text("Problem :D");
-              }
-            }()),
-          ):
-          AllContacts(),
-          bottomNavigationBar: BottomAppBar(
-            shape: CircularNotchedRectangle(),
-            color: Colors.white,
-            notchMargin: 4,
-            clipBehavior: Clip.antiAlias,
-            child: BottomNavigationBar(
-              elevation: 0,
-              backgroundColor: Colors.blue,
-              currentIndex: _currentIndex,
-              unselectedItemColor: Colors.grey[350],
-              selectedItemColor: Colors.white,
-              onTap: (int index){
-                setState(() {
-                  _currentIndex = index;
-                });
-              },
-              items: [
-                BottomNavigationBarItem(
-                  icon: new Icon(Icons.home),
-                  backgroundColor: Colors.white,
-                  label: "Home",
-                ),
-                BottomNavigationBarItem(
-                  icon: new Icon(Icons.people_alt),
-                  label: "My contacts",
-                ),
-              ],
-            ),
-          ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-
-          floatingActionButton: _currentIndex==0 ? FloatingActionButton(
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: _currentIndex == 0
+            ? FloatingActionButton(
                 backgroundColor: Colors.blue,
                 onPressed: _showDialog,
                 child: Icon(Icons.add),
                 // backgroundColor: Colors.indigo,
                 heroTag: null,
-              ):null,
-        );
-      }
-    );
+              )
+            : null,
+      );
+    });
   }
 }
 

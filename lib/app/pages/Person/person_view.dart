@@ -1,11 +1,9 @@
-import 'dart:async';
 import 'dart:ui';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:gmoria/app/utils/ScreenArguments.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
 import 'package:gmoria/data/repositories/DataPersonRepository.dart';
@@ -26,7 +24,7 @@ class PersonDetailsPage extends StatelessWidget {
     initialP = args.person;
 
     var elementToRender;
-    if(userListId != "allContacts"){
+    if (userListId != "allContacts") {
       return MultiBlocProvider(
           providers: [
             BlocProvider<PersonBloc>(
@@ -37,7 +35,8 @@ class PersonDetailsPage extends StatelessWidget {
               },
             )
           ],
-          child: BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
+          child:
+              BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
             if (state is PersonLoading) {
               return Center(child: CircularProgressIndicator());
             } else if (state is UserListPersonLoaded) {
@@ -45,23 +44,26 @@ class PersonDetailsPage extends StatelessWidget {
               if (state.person.isEmpty) {
                 elementToRender = Center(
                     child: Text(
-                        AppLocalizations.of(context).translate('learn_emptyList'),
+                        AppLocalizations.of(context)
+                            .translate('learn_emptyList'),
                         style: TextStyle(fontSize: 20)));
               } else {
                 List<Person> personsList = state.person;
-                personsList.sort((Person a,Person b) => a.firstname.toLowerCase().compareTo(b.firstname.toLowerCase()));
+                personsList.sort((Person a, Person b) => a.firstname
+                    .toLowerCase()
+                    .compareTo(b.firstname.toLowerCase()));
                 elementToRender = DetailsPage(
                     persons: personsList,
-                    userListId : userListId,
-                    initialPerson : initialP); //Quiz(person: state.person);
+                    userListId: userListId,
+                    initialPerson: initialP); //Quiz(person: state.person);
               }
-              return  elementToRender;
+              return elementToRender;
             } else {
               return Text(AppLocalizations.of(context).translate('learn_error'),
                   style: TextStyle(fontSize: 20));
             }
           }));
-    }else{
+    } else {
       return BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
         if (state is PersonLoading) {
           return Center(child: CircularProgressIndicator());
@@ -74,20 +76,20 @@ class PersonDetailsPage extends StatelessWidget {
                     style: TextStyle(fontSize: 20)));
           } else {
             List<Person> personsList = state.person;
-            personsList.sort((Person a,Person b) => a.firstname.toLowerCase().compareTo(b.firstname.toLowerCase()));
+            personsList.sort((Person a, Person b) =>
+                a.firstname.toLowerCase().compareTo(b.firstname.toLowerCase()));
             elementToRender = DetailsPage(
                 persons: personsList,
-                userListId : userListId,
-                initialPerson : initialP); //Quiz(person: state.person);
+                userListId: userListId,
+                initialPerson: initialP); //Quiz(person: state.person);
           }
-          return  elementToRender;
+          return elementToRender;
         } else {
           return Text(AppLocalizations.of(context).translate('learn_error'),
               style: TextStyle(fontSize: 20));
         }
       });
     }
-
   }
 }
 
@@ -96,7 +98,8 @@ class DetailsPage extends StatefulWidget {
   final String userListId;
   final Person initialPerson;
 
-  const DetailsPage({Key key, @required this.persons, this.userListId,this.initialPerson})
+  const DetailsPage(
+      {Key key, @required this.persons, this.userListId, this.initialPerson})
       : super(key: key);
 
   @override
@@ -120,7 +123,8 @@ class _DetailsPageState extends State<DetailsPage> {
   @protected
   void initState() {
     super.initState();
-    _currentIndex = widget.persons.indexWhere((element) => element.id == widget.initialPerson.id);
+    _currentIndex = widget.persons
+        .indexWhere((element) => element.id == widget.initialPerson.id);
   }
 
   deleteDialog(context) {
@@ -128,14 +132,17 @@ class _DetailsPageState extends State<DetailsPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Delete', style: TextStyle(color: Colors.red),),
+          title: Text(
+            'Delete',
+            style: TextStyle(color: Colors.red),
+          ),
           content: Text('This person will be deleted'),
           actions: <Widget>[
             FlatButton(
                 child: Text('Cancel'),
                 onPressed: () => {
-                  Navigator.of(context).pop(false),
-                }),
+                      Navigator.of(context).pop(false),
+                    }),
             FlatButton(
               child: Text('Ok'),
               onPressed: () => {
@@ -143,12 +150,13 @@ class _DetailsPageState extends State<DetailsPage> {
                 Navigator.of(context).pop(true),
                 // Pop the page
                 Navigator.of(context).pop(true),
-                idUserList == "allContacts"?
-                // Delete the person
-                BlocProvider.of<PersonBloc>(context)
-                    .add(ForceDeletePerson(widget.persons[_currentIndex])):
-                BlocProvider.of<PersonBloc>(context)
-                    .add(DeletePerson(widget.persons[_currentIndex], idUserList))
+                idUserList == "allContacts"
+                    ?
+                    // Delete the person
+                    BlocProvider.of<PersonBloc>(context)
+                        .add(ForceDeletePerson(widget.persons[_currentIndex]))
+                    : BlocProvider.of<PersonBloc>(context).add(
+                        DeletePerson(widget.persons[_currentIndex], idUserList))
               },
             ),
           ],
@@ -166,91 +174,95 @@ class _DetailsPageState extends State<DetailsPage> {
     return SwipeDetector(
         onSwipeLeft: () {
           setState(() {
-            if(_currentIndex<widget.persons.length-1){
+            if (_currentIndex < widget.persons.length - 1) {
               _currentIndex++;
-            }else{
-              _currentIndex=0;
+            } else {
+              _currentIndex = 0;
             }
-
           });
         },
-        onSwipeRight:() {
+        onSwipeRight: () {
           setState(() {
-            if(_currentIndex>0){
+            if (_currentIndex > 0) {
               _currentIndex--;
-            }else{
-              _currentIndex=widget.persons.length-1;
+            } else {
+              _currentIndex = widget.persons.length - 1;
             }
           });
         },
         child: Scaffold(
-          backgroundColor: Colors.white,
-          appBar: AppBar(
-            backgroundColor: Colors.blue,
-            title: Text(widget.persons[_currentIndex].firstname + " " + widget.persons[_currentIndex].lastname,
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-          body: Container(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  Container(
-                    child: Center(
-                      child: _image == null
-                          ? Text('Error, could not load image or a problem occured.')
-                          : Container(
-                        child: ExtendedImage.network(widget.persons[_currentIndex].image_url,
-                            fit: BoxFit.fill),
-                        width: 300,
-                        height: 300,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                            alignment: Alignment.center,
-                            width: halfMediaWidth,
-                            child: MyText(
-                              label: 'First name',
-                              text: widget.persons[_currentIndex].firstname,
-                            )),
-                        Container(
-                          // padding: EdgeInsets.all(16.0),
-                            alignment: Alignment.center,
-                            width: halfMediaWidth,
-                            child: MyText(
-                              label: 'Last name',
-                              text: widget.persons[_currentIndex].lastname,
-                            )),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    // padding: EdgeInsets.all(16.0),
-                      alignment: Alignment.center,
-                      // width: halfMediaWidth,
-                      child: MyText(
-                        label: 'Job',
-                        text: widget.persons[_currentIndex].job,
-                      )),
-
-                  Container(
-                      padding: EdgeInsets.fromLTRB(55, 16, 55, 16),
-                      alignment: Alignment.center,
-                      child: MyText(
-                        label: 'Description',
-                        text: widget.persons[_currentIndex].description,
-                      )),
-                ],
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              backgroundColor: Colors.blue,
+              title: Text(
+                widget.persons[_currentIndex].firstname +
+                    " " +
+                    widget.persons[_currentIndex].lastname,
+                style: TextStyle(color: Colors.white),
               ),
             ),
-          ),
+            body: Container(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(top: 10),
+                      child: Center(
+                        child: _image == null
+                            ? Text(
+                                'Error, could not load image or a problem occured.')
+                            : Container(
+                                child: ExtendedImage.network(
+                                    widget.persons[_currentIndex].image_url,
+                                    fit: BoxFit.fill),
+                                width: 300,
+                                height: 300,
+                              ),
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                              alignment: Alignment.center,
+                              width: halfMediaWidth,
+                              child: MyText(
+                                label: 'First name',
+                                text: widget.persons[_currentIndex].firstname,
+                              )),
+                          Container(
+                              // padding: EdgeInsets.all(16.0),
+                              alignment: Alignment.center,
+                              width: halfMediaWidth,
+                              child: MyText(
+                                label: 'Last name',
+                                text: widget.persons[_currentIndex].lastname,
+                              )),
+                        ],
+                      ),
+                    ),
+                    Container(
+                        // padding: EdgeInsets.all(16.0),
+                        alignment: Alignment.center,
+                        // width: halfMediaWidth,
+                        child: MyText(
+                          label: 'Job',
+                          text: widget.persons[_currentIndex].job,
+                        )),
+                    Container(
+                        padding: EdgeInsets.fromLTRB(55, 16, 55, 16),
+                        alignment: Alignment.center,
+                        child: MyText(
+                          label: 'Description',
+                          text: widget.persons[_currentIndex].description,
+                        )),
+                  ],
+                ),
+              ),
+            ),
             floatingActionButton: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
@@ -259,9 +271,10 @@ class _DetailsPageState extends State<DetailsPage> {
                       backgroundColor: Colors.blueAccent,
                       heroTag: null,
                       onPressed: () async {
-                         final index = await Navigator.pushNamed(
+                        final index = await Navigator.pushNamed(
                             context, '/personForm',
-                            arguments: new ScreenArguments(widget.persons[_currentIndex], idUserList));
+                            arguments: new ScreenArguments(
+                                widget.persons[_currentIndex], idUserList));
 
                         // setState(() {
                         //   print("INDEXXX + ${index} +   ${_currentIndex}");
@@ -277,8 +290,7 @@ class _DetailsPageState extends State<DetailsPage> {
                     onPressed: () => deleteDialog(context),
                     child: Icon(Icons.delete),
                   ),
-                ]))
-        );
+                ])));
   }
 }
 
@@ -309,7 +321,7 @@ class MyText extends StatelessWidget {
               TextSpan(
                   text: '\n$text',
                   style:
-                  TextStyle(fontWeight: FontWeight.w500, fontSize: 20.0)),
+                      TextStyle(fontWeight: FontWeight.w500, fontSize: 20.0)),
             ],
           ),
         ));

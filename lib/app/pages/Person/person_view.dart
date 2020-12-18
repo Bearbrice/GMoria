@@ -258,9 +258,16 @@ class _DetailsPageState extends State<DetailsPage> {
                       mini: true,
                       backgroundColor: Colors.blueAccent,
                       heroTag: null,
-                      onPressed: () => Navigator.pushNamed(
-                          context, '/personForm',
-                          arguments: new ScreenArguments(widget.persons[_currentIndex], idUserList)),
+                      onPressed: () async {
+                         final index = await Navigator.pushNamed(
+                            context, '/personForm',
+                            arguments: new ScreenArguments(widget.persons[_currentIndex], idUserList));
+
+                        // setState(() {
+                        //   print("INDEXXX + ${index} +   ${_currentIndex}");
+                        //   _currentIndex = widget.persons.indexWhere((element) => element.id == index);
+                        // });
+                      },
                       child: Icon(Icons.edit)),
                   SizedBox(height: 8.0),
                   FloatingActionButton(

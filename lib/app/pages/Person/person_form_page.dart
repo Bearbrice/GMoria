@@ -326,6 +326,11 @@ class _TestFormState extends State<TestForm> {
                         id: person.id,
                         lists: person.lists, fk_user_id: person.fk_user_id);
                     BlocProvider.of<PersonBloc>(context).add(UpdatePerson(p));
+                    Navigator.pop(context);
+                    Navigator.popAndPushNamed(
+                        context, '/personDetails',
+                        arguments: new ScreenArguments(widget.person, idUserList));
+
                   } else {
                     String imageURL = await getImageURL();
                     Person p = new Person(model.firstname, model.lastname,
@@ -333,12 +338,8 @@ class _TestFormState extends State<TestForm> {
                         lists: [idUserList]);
                     BlocProvider.of<PersonBloc>(context)
                         .add(AddPerson(p, idUserList));
+                    Navigator.of(context).pop();
                   }
-                  Navigator.of(context).pop();
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //         builder: (context) => Result(model: this.model)));
                 }
               },
               child: Text(

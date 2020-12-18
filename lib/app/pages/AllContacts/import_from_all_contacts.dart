@@ -81,31 +81,34 @@ class _AllContactsCheckboxesState extends State<AllContactsCheckboxes> {
           );
         }).toList(),
       ),
-      bottomNavigationBar: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          RaisedButton(
-              color: Colors.green,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Icon(Icons.group_add, color: Colors.white,),
-                  Text(
-                        " "
-                        +AppLocalizations.of(context).translate('import_contacts_button_label')
-                        +" ("
-                        + personsList.keys.where((element) => personsList[element] == true).toList().length.toString()
-                        +")",
-                    style: TextStyle(color: Colors.white)
-                    ,)
-                ]),
-              onPressed: personsList.keys.firstWhere((element) => personsList[element] == true, orElse: () => null)==null? null:(){
-                List<Person> personsToAdd = personsList.keys.where((element) => personsList[element] == true).toList();
-                BlocProvider.of<PersonBloc>(context).add(AddExistingPersonsToList(personsToAdd, userList));
-                Navigator.pop(context);
-              },
-            ),
-        ],
+      bottomNavigationBar: SafeArea(
+        bottom: true,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            RaisedButton(
+                color: Colors.green,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Icon(Icons.group_add, color: Colors.white,),
+                    Text(
+                          " "
+                          +AppLocalizations.of(context).translate('import_contacts_button_label')
+                          +" ("
+                          + personsList.keys.where((element) => personsList[element] == true).toList().length.toString()
+                          +")",
+                      style: TextStyle(color: Colors.white)
+                      ,)
+                  ]),
+                onPressed: personsList.keys.firstWhere((element) => personsList[element] == true, orElse: () => null)==null? null:(){
+                  List<Person> personsToAdd = personsList.keys.where((element) => personsList[element] == true).toList();
+                  BlocProvider.of<PersonBloc>(context).add(AddExistingPersonsToList(personsToAdd, userList));
+                  Navigator.pop(context);
+                },
+              ),
+          ],
+        ),
       ),
 
 

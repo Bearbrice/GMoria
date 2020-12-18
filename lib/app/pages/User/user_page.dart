@@ -117,7 +117,7 @@ class _UserPageState extends State<UserPage> {
     return InkWell(
       onTap: () {
         // Navigator.pushNamed(context, '/signUp', arguments: false);
-        deleteAccountDialog();
+        // deleteAccountDialog();
 
         // showDialog(
         //     context: context,
@@ -144,7 +144,7 @@ class _UserPageState extends State<UserPage> {
   Widget _changeEmailButton() {
     return InkWell(
       onTap: () {
-        changeEmailDialog();
+        // changeEmailDialog();
       },
       child: Container(
         // width: MediaQuery.of(context).size.width,
@@ -428,17 +428,17 @@ class _UserPageState extends State<UserPage> {
               SizedBox(
                 height: 20,
               ),
-              // Row(
-              //     crossAxisAlignment: CrossAxisAlignment.center,
-              //     // mainAxisAlignment: MainAxisAlignment.center,
-              //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              //     children: <Widget>[
-              //       _changeEmailButton(),
-              //       SizedBox(
-              //         height: 20,
-              //       ),
-              //       _deleteAccountButton(),
-              //     ]),
+              Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  // mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    _changeEmailButton(),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    _deleteAccountButton(),
+                  ]),
             ],
           ),
         ),

@@ -16,7 +16,8 @@ class AuthenticationService {
     // Disconnect the user from google sign in as well
     if (_firebaseAuth.currentUser.providerData.first.providerId ==
         'google.com') {
-      await GoogleSignIn().disconnect();
+      print('Disconnect google account');
+      // await GoogleSignIn().disconnect();
     }
 
     await _firebaseAuth.signOut();

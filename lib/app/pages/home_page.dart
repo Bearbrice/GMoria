@@ -6,7 +6,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gmoria/app/pages/AllContacts/all_contacts_page.dart';
 import 'package:gmoria/app/utils/InitialGameArguments.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
-import 'package:gmoria/data/firebase/authentication_service.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListBloc.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListEvent.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListState.dart';
@@ -127,6 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
             notchMargin: 4,
             clipBehavior: Clip.antiAlias,
             child: BottomNavigationBar(
+              elevation: 0,
               backgroundColor: Colors.blue,
               currentIndex: _currentIndex,
               unselectedItemColor: Colors.grey[350],

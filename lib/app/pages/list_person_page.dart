@@ -50,7 +50,6 @@ class _ListPageState extends State<ListPage> {
 
     /// Prevent learn and game to launch if the list is empty
     handleEmpty(action,size) {
-      print("SIZEEEEE : ${size}");
       if (size==0) {
         return _showSnackBar(context, 'The list is empty');
       }
@@ -116,51 +115,39 @@ class _ListPageState extends State<ListPage> {
           ),
         ),
         body: Center(child: conditionalRendering()),
-
-
-
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-
         bottomNavigationBar: BottomAppBar(
           shape: CircularNotchedRectangle(),
           notchMargin: -10,
           clipBehavior: Clip.antiAlias,
           color: Colors.grey,
-          child: Container(
-            color: Colors.blue,
-            height: 60,
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                FlatButton(
-                  onPressed: () {
-                    handleEmpty('Learn',size);
-                    // Navigator.pushNamed(context, '/personForm');
-                  },
-                  padding: EdgeInsets.all(10.0),
-                  child: Column( // Replace with a Row for horizontal icon + text
-                    children: <Widget>[
-                      Icon(Icons.school, color: Colors.white,),
-                      Text("Learn", style: TextStyle(color: Colors.white))
-                    ],
-                  ),
-                ),
-                FlatButton(
-                    onPressed: () {
-                      handleEmpty('Game',size);
-                      // Navigator.pushNamed(context, '/personForm');
-                    },
-                  padding: EdgeInsets.all(10.0),
-                  child: Column( // Replace with a Row for horizontal icon + text
-                    children: <Widget>[
-                      Icon(Icons.videogame_asset, color: Colors.white,),
-                      Text("Game", style: TextStyle(color: Colors.white))
-                    ],
-                  ),
-                ),
-              ],
-            ),
+          child:  BottomNavigationBar(
+            elevation: 0.0,
+            backgroundColor: Colors.blue,
+            currentIndex: 0,
+            unselectedItemColor: Colors.white,
+            selectedItemColor: Colors.white,
+            onTap: (int index){
+              switch(index){
+                case 0:
+                  handleEmpty("Game", size);
+                  break;
+                case 1:
+                  handleEmpty("Learn", size);
+                  break;
+              }
+
+            },
+            items: [
+              BottomNavigationBarItem(
+                icon: new Icon(Icons.videogame_asset),
+                backgroundColor: Colors.blue,
+                label: "Game",
+              ),
+              BottomNavigationBarItem(
+                icon: new Icon(Icons.school),
+                label: "Learn",
+              ),
+            ],
           ),
         ),
 
@@ -170,7 +157,6 @@ class _ListPageState extends State<ListPage> {
           height: 200.0,
          child:
           UnicornDialer(
-
             backgroundColor: Colors.transparent,
             //hasBackground: false,
             hasNotch: true,
@@ -238,7 +224,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
     });
 
     return ListView.builder(
-      padding: EdgeInsets.only(bottom: kFloatingActionButtonMargin + 30),
+      padding: EdgeInsets.only(bottom: 100),
       scrollDirection: direction,
       itemBuilder: (context, index) {
         final Axis slidableDirection =

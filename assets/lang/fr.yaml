@@ -8,12 +8,12 @@ signIn_button: Se connecter
 home_signOut: Se déconnecter
 
 #Learn
-learn_title: 'Mémoriser'
+learn_title: 'Mémoriser : '
 learn_error: Oops... quelque chose ne s'est pas passé comme prévu! Veuillez réessayer.
 learn_emptyList: Votre liste est vide
 learn_gameButton: Prêt à jouer ?
 
-list_title: 'Liste: '
+list_title: 'Liste : '
 save: Save
 all_contacts_title: Mes contacts
 delete_dialog_title: Supprimer

@@ -76,7 +76,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
   Widget _buildList(BuildContext context, Axis direction) {
     // Sort the list of person by first names
     widget.list.sort((a, b) {
-      return a.firstname.compareTo(b.firstname);
+      return a.firstname.toLowerCase().compareTo(b.firstname.toLowerCase());
     });
 
     return ListView.builder(

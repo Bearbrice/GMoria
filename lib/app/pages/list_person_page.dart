@@ -119,7 +119,7 @@ class _ListPageState extends State<ListPage> {
           shape: CircularNotchedRectangle(),
           notchMargin: -10,
           clipBehavior: Clip.antiAlias,
-          color: Colors.grey,
+          color: Colors.blue,
           child:  BottomNavigationBar(
             elevation: 0.0,
             backgroundColor: Colors.blue,

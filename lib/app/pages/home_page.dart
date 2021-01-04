@@ -129,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
             : AllContacts(),
         bottomNavigationBar: BottomAppBar(
           shape: CircularNotchedRectangle(),
-          color: Colors.white,
+          color: Colors.blue,
           notchMargin: 4,
           clipBehavior: Clip.antiAlias,
           child: BottomNavigationBar(

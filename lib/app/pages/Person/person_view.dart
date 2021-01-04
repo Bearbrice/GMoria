@@ -224,6 +224,7 @@ class _DetailsPageState extends State<DetailsPage> {
                     Container(
                       alignment: Alignment.center,
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Container(
@@ -234,24 +235,59 @@ class _DetailsPageState extends State<DetailsPage> {
                                 text: widget.persons[_currentIndex].firstname,
                               )),
                           Container(
-                              // padding: EdgeInsets.all(16.0),
                               alignment: Alignment.center,
                               width: halfMediaWidth,
                               child: MyText(
                                 label: 'Last name',
                                 text: widget.persons[_currentIndex].lastname,
-                              )),
+                              )
+                          ),
                         ],
                       ),
                     ),
                     Container(
-                        // padding: EdgeInsets.all(16.0),
-                        alignment: Alignment.center,
-                        // width: halfMediaWidth,
-                        child: MyText(
-                          label: 'Job',
-                          text: widget.persons[_currentIndex].job,
-                        )),
+                      alignment: Alignment.center,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          IconButton(
+                            iconSize:45,
+                            icon: Icon(Icons.chevron_left),
+                            onPressed: () {
+                              setState(() {
+                                if (_currentIndex > 0) {
+                                  _currentIndex--;
+                                } else {
+                                  _currentIndex = widget.persons.length - 1;
+                                }
+                              });
+                            },
+                          ),
+                          Container(
+                              // padding: EdgeInsets.all(16.0),
+                              alignment: Alignment.center,
+                              // width: halfMediaWidth,
+                              child: MyText(
+                                label: 'Job',
+                                text: widget.persons[_currentIndex].job,
+                              )),
+                          IconButton(
+                            iconSize:45,
+                            icon: Icon(Icons.chevron_right),
+                            onPressed: () {
+                              setState(() {
+                                if (_currentIndex < widget.persons.length - 1) {
+                                  _currentIndex++;
+                                } else {
+                                  _currentIndex = 0;
+                                }
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
                     Container(
                         padding: EdgeInsets.fromLTRB(55, 16, 55, 16),
                         alignment: Alignment.center,

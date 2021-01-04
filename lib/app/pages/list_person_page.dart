@@ -14,6 +14,8 @@ import 'package:gmoria/domain/models/Person.dart';
 import 'package:gmoria/domain/models/UserList.dart';
 import 'package:unicorndial/unicorndial.dart';
 
+import 'Game/game_options.dart';
+
 /// Page that display a specific list
 class ListPage extends StatefulWidget {
   @override
@@ -55,8 +57,21 @@ class _ListPageState extends State<ListPage> {
       }
 
       if (action == 'Game') {
-        Navigator.pushNamed(context, '/game',
-            arguments: InitialGameArguments(userList, false));
+        if(userList.persons.length==1){
+          Navigator.pushNamed(context, '/game',
+              arguments: InitialGameArguments(userList, false,1));
+        }else{
+          showModalBottomSheet(
+            context: context,
+            builder: (sheetContext) => BottomSheet(
+              builder: (_) => GameOptions(
+                userList: userList,
+              ),
+              onClosing: () {},
+            ),
+          );
+        }
+
       } else {
         Navigator.pushNamed(context, '/learn', arguments: userList);
       }
@@ -94,6 +109,20 @@ class _ListPageState extends State<ListPage> {
                 arguments: userList);
           },
         )));
+
+    childButtons.add(UnicornButton(
+      hasLabel: true,
+      labelText: "Import from phone",
+      currentButton: FloatingActionButton(
+        mini: true,
+        backgroundColor: Colors.blue,
+        heroTag: "contactPhone",
+        onPressed: () {
+          Navigator.pushNamed(context, '/personForm',
+              arguments: new ScreenArguments(null, userList.id));
+        },
+        child: Icon(Icons.smartphone),
+      ),));
 
 
 
@@ -154,7 +183,7 @@ class _ListPageState extends State<ListPage> {
         floatingActionButton:
         Container(
           width: 95.0,
-          height: 200.0,
+          height: 300.0,
          child:
           UnicornDialer(
             backgroundColor: Colors.transparent,

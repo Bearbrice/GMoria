@@ -48,7 +48,7 @@ class LearnPage extends StatelessWidget {
 }
 
 class PersonsList extends StatelessWidget {
-  final userList;
+  final UserList userList;
   final cardWidth;
   final cardHeight;
 
@@ -101,7 +101,7 @@ class PersonsList extends StatelessWidget {
               ,
                 RaisedButton(
                     onPressed: () {
-                      Navigator.popAndPushNamed(context, '/game', arguments: InitialGameArguments(userList,false));
+                      Navigator.popAndPushNamed(context, '/game', arguments: InitialGameArguments(userList,false,userList.persons.length));
                     },
                     color: Colors.green,
                     padding: const EdgeInsets.all(10.0),
@@ -181,7 +181,7 @@ class _PeopleSwiperState extends State<PeopleSwiper> {
                 margin: EdgeInsets.only(top: 10.0),
                 child: RaisedButton(
                     onPressed: () {
-                      Navigator.popAndPushNamed(context, '/game', arguments: InitialGameArguments(widget.userList,false));
+                      Navigator.popAndPushNamed(context, '/game', arguments: InitialGameArguments(widget.userList,false,widget.userList.persons.length));
                     },
                     color: Colors.green,
                     padding: const EdgeInsets.all(10.0),

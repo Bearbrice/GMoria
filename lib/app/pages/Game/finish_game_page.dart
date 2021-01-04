@@ -209,7 +209,7 @@ class GameFinishedPage extends StatelessWidget {
                       child: Text("Restart"),
                       onPressed: () {
                         Navigator.popAndPushNamed(context, '/game',
-                            arguments: InitialGameArguments(userList,true));
+                            arguments: InitialGameArguments(userList,true,userList.persons.length));
                       },
                     ) : Container(),
                   )

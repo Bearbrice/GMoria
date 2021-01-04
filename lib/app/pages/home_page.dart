@@ -11,6 +11,8 @@ import 'package:gmoria/domain/blocs/userlist/UserListEvent.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListState.dart';
 import 'package:gmoria/domain/models/UserList.dart';
 
+import 'Game/game_options.dart';
+
 /// Page with all the lists of the user
 class MyHomePage extends StatefulWidget {
   @override
@@ -247,8 +249,21 @@ class _WidgetListElementState extends State<WidgetListElement> {
       }
 
       if (action == 'Game') {
-        Navigator.pushNamed(context, '/game',
-            arguments: InitialGameArguments(item, false));
+        if(item.persons.length==1){
+            Navigator.pushNamed(context, '/game',
+            arguments: InitialGameArguments(item, false,1));
+        }else{
+          showModalBottomSheet(
+            context: context,
+            builder: (sheetContext) => BottomSheet(
+              builder: (_) => GameOptions(
+                userList: item,
+              ),
+              onClosing: () {},
+            ),
+          );
+        }
+
       } else {
         Navigator.pushNamed(context, '/learn', arguments: item);
       }

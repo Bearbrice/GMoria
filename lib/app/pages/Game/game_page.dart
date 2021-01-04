@@ -26,6 +26,7 @@ class GamePage extends StatelessWidget {
     args = ModalRoute.of(context).settings.arguments;
     final UserList userList = args.userList;
     final bool onlyMistakes = args.onlyMistakes;
+    final int quantity = args.quantity;
 
     var elementToRender;
     return MultiBlocProvider(
@@ -58,7 +59,12 @@ class GamePage extends StatelessWidget {
                 }
                 //persons = state.person.where((element) => !element.is_known);
               } else {
-                persons = state.person;
+                List<Person> tempList = state.person;
+                tempList.shuffle();
+                persons = new List<Person>();
+                for (int i = 0; i < quantity; i++) {
+                   persons.add(tempList[i]);
+                }
               }
               persons.shuffle();
               elementToRender = QuizPage(

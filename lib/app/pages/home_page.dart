@@ -61,7 +61,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: const Text('Add'),
                   onPressed: () {
                     if (state is UserListLoading) {
-
                       return Text("Loading !");
                     } else if (state is UserListLoaded) {
                       if (state.userList
@@ -115,10 +114,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   if (state is UserListLoading) {
                     return Text("Loading !");
                   } else if (state is UserListLoaded) {
-                    if(state.userList.isEmpty){
+                    if (state.userList.isEmpty) {
                       return Center(
-                          child:
-                          Text("Create a list to begin", style: TextStyle(fontSize: 20)));
+                          child: Text("Create a list to begin",
+                              style: TextStyle(fontSize: 20)));
                     }
                     //return Text(state.userList.toString());
                     final userLists = state.userList;
@@ -269,69 +268,148 @@ class _WidgetListElementState extends State<WidgetListElement> {
       }
     }
 
-    return Slidable.builder(
-      key: Key(item.listName),
-      controller: slidableController,
-      direction: direction,
-      dismissal: SlidableDismissal(
-        child: SlidableDrawerDismissal(),
-        closeOnCanceled: true,
+    return BlocBuilder<UserListBloc, UserListState>(builder: (context, state) {
+      TextEditingController listController = new TextEditingController();
+      editDialog(UserList list) async {
+        listController.text = list.listName;
+        await showDialog<String>(
+          context: context,
+          child: new AlertDialog(
+            contentPadding: const EdgeInsets.all(16.0),
+            content: new Row(
+              children: <Widget>[
+                new Expanded(
+                  child: new TextField(
+                    controller: listController,
+                    autofocus: true,
+                    decoration: new InputDecoration(
+                        labelText: 'List name', hintText: list.listName),
+                  ),
+                )
+              ],
+            ),
+            actions: <Widget>[
+              new FlatButton(
+                  child: const Text('Cancel'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }),
+              new FlatButton(
+                  child: const Text('Edit'),
+                  onPressed: () {
+                    if (state is UserListLoading) {
+                      return Text("Loading !");
+                    } else if (state is UserListLoaded) {
+                      if (state.userList
+                          .where((element) =>
+                      element.listName.toLowerCase() ==
+                          listController.text.toLowerCase())
+                          .length ==
+                          0) {
+                        UserList updatedUserList = new UserList(listController.text,
+                            bestScore: list.bestScore,
+                            creation_date: list.creation_date,
+                            id: list.id,
+                            persons: list.persons);
+                        BlocProvider.of<UserListBloc>(context)
+                            .add(UpdateUserList(updatedUserList));
+                        // Do not display the dialog anymore
+                        Navigator.pop(context);
+                        // Reset the TextField input
+                        listController.text = "";
+                      } else {
+                        Fluttertoast.showToast(
+                            msg: "List name already exists !",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0);
+                      }
+                    } else {
+                      return Text("Problem :D");
+                    }
 
-        // Allow only right side (delete) to be full slided
-        dismissThresholds: <SlideActionType, double>{
-          SlideActionType.primary: 1.0
-        },
-        onWillDismiss: (item == null)
-            ? null
-            : (actionType) {
-                return deleteDialog();
-              },
 
-        onDismissed: (actionType) {
-          _showSnackBar(
-              context,
-              actionType == SlideActionType.primary
-                  ? 'Dismiss Archive'
-                  : 'Dismiss Delete');
-          setState(() {
-            userlists.removeAt(index);
-          });
-        },
-      ),
-      actionPane: SlidableScrollActionPane(),
-      actionExtentRatio: 0.25,
-      child: direction == Axis.horizontal
-          ? VerticalListItem(userlists[index])
-          : HorizontalListItem(userlists[index]),
-      actionDelegate: SlideActionBuilderDelegate(
-          actionCount: 2,
-          builder: (context, index, animation, renderingMode) {
-            if (index == 0) {
-              return IconSlideAction(
-                caption: 'Game',
-                color: Colors.indigo,
-                icon: Icons.videogame_asset,
-                onTap: () => handleEmpty('Game'),
-              );
-            } else {
-              return IconSlideAction(
-                caption: 'Learn',
-                color: Colors.green,
-                icon: Icons.school,
-                onTap: () => handleEmpty('Learn'),
-              );
-            }
-          }),
-      secondaryActionDelegate: SlideActionBuilderDelegate(
-          actionCount: 1,
-          builder: (context, index, animation, renderingMode) {
-            return IconSlideAction(
-                caption: 'Delete',
-                color: Colors.red,
-                icon: Icons.delete,
-                onTap: () => deleteDialog());
-          }),
-    );
+                  })
+            ],
+          ),
+        );
+      }
+      return Slidable.builder(
+        key: Key(item.listName),
+        controller: slidableController,
+        direction: direction,
+        dismissal: SlidableDismissal(
+          child: SlidableDrawerDismissal(),
+          closeOnCanceled: true,
+
+          // Allow only right side (delete) to be full slided
+          dismissThresholds: <SlideActionType, double>{
+            SlideActionType.primary: 1.0
+          },
+          onWillDismiss: (item == null)
+              ? null
+              : (actionType) {
+                  return deleteDialog();
+                },
+
+          onDismissed: (actionType) {
+            _showSnackBar(
+                context,
+                actionType == SlideActionType.primary
+                    ? 'Dismiss Archive'
+                    : 'Dismiss Delete');
+            setState(() {
+              userlists.removeAt(index);
+            });
+          },
+        ),
+        actionPane: SlidableScrollActionPane(),
+        actionExtentRatio: 0.25,
+        child: direction == Axis.horizontal
+            ? VerticalListItem(userlists[index])
+            : HorizontalListItem(userlists[index]),
+        actionDelegate: SlideActionBuilderDelegate(
+            actionCount: 2,
+            builder: (context, index, animation, renderingMode) {
+              if (index == 0) {
+                return IconSlideAction(
+                  caption: 'Game',
+                  color: Colors.indigo,
+                  icon: Icons.videogame_asset,
+                  onTap: () => handleEmpty('Game'),
+                );
+              } else {
+                return IconSlideAction(
+                  caption: 'Learn',
+                  color: Colors.green,
+                  icon: Icons.school,
+                  onTap: () => handleEmpty('Learn'),
+                );
+              }
+            }),
+        secondaryActionDelegate: SlideActionBuilderDelegate(
+            actionCount: 2,
+            builder: (context, index, animation, renderingMode) {
+              if (index == 0) {
+                return IconSlideAction(
+                  caption: 'Edit',
+                  color: Colors.blue,
+                  icon: Icons.edit,
+                  onTap: () => editDialog(item),
+                );
+              } else {
+                return IconSlideAction(
+                    caption: 'Delete',
+                    color: Colors.red,
+                    icon: Icons.delete,
+                    onTap: () => deleteDialog());
+              }
+            }),
+      );
+    });
   }
 
   static Color _getAvatarColor(int index) {

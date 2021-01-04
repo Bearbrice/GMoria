@@ -6,6 +6,9 @@ class AuthenticationService {
 
   AuthenticationService(this._firebaseAuth);
 
+  // Create a credential
+  EmailAuthCredential credential;
+
   /// Changed to idTokenChanges as it updates depending on more cases.
   Stream<User> get authStateChanges => _firebaseAuth.idTokenChanges();
 
@@ -17,7 +20,7 @@ class AuthenticationService {
     if (_firebaseAuth.currentUser.providerData.first.providerId ==
         'google.com') {
       print('Disconnect google account');
-      // await GoogleSignIn().disconnect();
+      await GoogleSignIn().disconnect();
     }
 
     await _firebaseAuth.signOut();
@@ -31,12 +34,15 @@ class AuthenticationService {
     try {
       await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
+      credential =
+          EmailAuthProvider.credential(email: email, password: password);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print('No user found for that email.');
       } else if (e.code == 'wrong-password') {
         print('Wrong password provided for that user.');
       }
+
       return e.code;
     }
   }
@@ -49,6 +55,8 @@ class AuthenticationService {
     try {
       await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
+      credential =
+          EmailAuthProvider.credential(email: email, password: password);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         print('The password provided is too weak.');
@@ -81,26 +89,35 @@ class AuthenticationService {
     return await _firebaseAuth.signInWithCredential(credential);
   }
 
-  Future resetEmail(String newEmail) async {
+  Future updateEmail(String newEmail) async {
     var message;
     User firebaseUser = _firebaseAuth.currentUser;
-    firebaseUser
+
+    await firebaseUser
         .updateEmail(newEmail)
         .then(
           (value) => message = 'Success',
         )
         .catchError((onError) => message = 'error');
-    return message;
+    return message.toString();
   }
 
-  Future<void> deleteUser() async {
+  // Reauthenticate
+  Future reAuthenticateUser() async {
+    await FirebaseAuth.instance.currentUser
+        .reauthenticateWithCredential(credential);
+  }
+
+  Future deleteUser() async {
     try {
       await _firebaseAuth.currentUser.delete();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'requires-recent-login') {
         print(
-            'The user must reauthenticate before this operation can be executed.');
+            'The user must re-authenticate before this operation can be executed.');
+        return e.code.toString();
       }
     }
+    return "";
   }
 }

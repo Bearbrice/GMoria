@@ -117,7 +117,7 @@ class _UserPageState extends State<UserPage> {
     return InkWell(
       onTap: () {
         // Navigator.pushNamed(context, '/signUp', arguments: false);
-        // deleteAccountDialog();
+        deleteAccountDialog();
 
         // showDialog(
         //     context: context,
@@ -144,7 +144,7 @@ class _UserPageState extends State<UserPage> {
   Widget _changeEmailButton() {
     return InkWell(
       onTap: () {
-        // changeEmailDialog();
+        changeEmailDialog();
       },
       child: Container(
         // width: MediaQuery.of(context).size.width,
@@ -219,11 +219,19 @@ class _UserPageState extends State<UserPage> {
   }
 
   deleteAccountDialog() {
+    String provider = context
+        .read<AuthenticationService>()
+        .getUser()
+        .providerData
+        .first
+        .providerId;
+
     return showDialog<bool>(
       context: context,
       builder: (context) {
         bool isSwitched = false;
         bool showError = false;
+        var message = null;
         return StatefulBuilder(builder: (context, setState) {
           return AlertDialog(
             title: Text('Delete account'),
@@ -274,7 +282,20 @@ class _UserPageState extends State<UserPage> {
                       //Pop user page
                       Navigator.pop(context),
                       //DELETE ACCOUNT
-                      context.read<AuthenticationService>().deleteUser()
+                      //Check if not connected with google firebase ask for a re authentication
+                      message =
+                          context.read<AuthenticationService>().deleteUser(),
+
+                      print('Delete error (if one):' + message.toString()),
+
+                      if (message == 'requires-recent-login' &&
+                          provider == 'password')
+                        {
+                          context
+                              .read<AuthenticationService>()
+                              .reAuthenticateUser(),
+                          context.read<AuthenticationService>().deleteUser(),
+                        }
                     }
                   else
                     {
@@ -293,8 +314,9 @@ class _UserPageState extends State<UserPage> {
 
   changeEmailDialog() {
     final _formKey = GlobalKey<FormState>();
-    TextEditingController listController = new TextEditingController();
+    TextEditingController emailController = new TextEditingController();
     String current = context.read<AuthenticationService>().getUser().email;
+
     return showDialog<String>(
       context: context,
       child: AlertDialog(
@@ -314,7 +336,7 @@ class _UserPageState extends State<UserPage> {
                       decoration: TextDecoration.underline,
                     )),
                 TextFormField(
-                  controller: listController,
+                  controller: emailController,
                   autofocus: true,
                   decoration:
                       InputDecoration(labelText: 'Enter your new email:'),
@@ -322,19 +344,11 @@ class _UserPageState extends State<UserPage> {
                     if (email == current) {
                       return 'Same email as current email';
                     }
-                    if (EmailValidator.validate(email) != null) {
+                    if (!EmailValidator.validate(email)) {
                       return "Invalid email address";
                     }
                     return null;
                   },
-                  //           validator: (email) =>
-                  //           if(email==null){
-                  //
-                  // }
-                  //
-                  //           EmailValidator.validate(email)
-                  //               ? null
-                  //               : "Invalid email address",
                 ),
               ],
             )),
@@ -346,43 +360,34 @@ class _UserPageState extends State<UserPage> {
               }),
           FlatButton(
               child: const Text('Change'),
-              onPressed: () {
+              onPressed: () async {
                 if (_formKey.currentState.validate()) {
+
                   print('FORM VALIDATED!!');
+                  print(emailController.text);
+
+                  var message = await context
+                      .read<AuthenticationService>()
+                      .updateEmail(emailController.text);
+                  print(message);
+
+                  Navigator.pop(context);
                 }
                 // listController.text = "";
               })
         ],
       ),
     );
-
-    //   return showDialog<bool>(
-    //     context: context,
-    //     builder: (context) {
-    //       return AlertDialog(
-    //         title: Text('Delete'),
-    //         content: Text('The list selected will be deleted'),
-    //         actions: <Widget>[
-    //           FlatButton(
-    //             child: Text('Cancel'),
-    //             onPressed: () => Navigator.of(context).pop(false),
-    //           ),
-    //           FlatButton(
-    //             child: Text('Ok'),
-    //             onPressed: () => {
-    //               // Navigator.of(context).pop(true),
-    //               // print("NOM : " + item.listName),
-    //               // BlocProvider.of<UserListBloc>(context)
-    //               //     .add(DeleteUserList(item)),
-    //             },
-    //           ),
-    //         ],
-    //       );
-    //     },
-    //   );
   }
 
   Widget build(BuildContext context) {
+    String provider = context
+        .watch<AuthenticationService>()
+        .getUser()
+        .providerData
+        .first
+        .providerId;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).translate('title')),
@@ -428,17 +433,19 @@ class _UserPageState extends State<UserPage> {
               SizedBox(
                 height: 20,
               ),
-              Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  // mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    _changeEmailButton(),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    _deleteAccountButton(),
-                  ]),
+              provider == 'password'
+                  ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      // mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                          _changeEmailButton(),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          _deleteAccountButton(),
+                        ])
+                  : _deleteAccountButton(),
             ],
           ),
         ),

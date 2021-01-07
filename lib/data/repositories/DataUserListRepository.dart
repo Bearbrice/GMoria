@@ -2,7 +2,9 @@ import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:gmoria/data/entities/UserListEntity.dart';
+import 'package:gmoria/domain/models/Person.dart';
 import 'package:gmoria/domain/models/UserList.dart';
 import 'package:gmoria/domain/repositories/UserListRepository.dart';
 
@@ -26,7 +28,6 @@ class DataUserListRepository implements UserListRepository {
     });
   }
 
-
   @override
   Future<void> addNewUserList(UserList userList) {
     Map<String, Object> newList = {
@@ -41,16 +42,39 @@ class DataUserListRepository implements UserListRepository {
 
   @override
   Future<void> deleteUserList(UserList userList) {
-    //Get a new batch
-    var batch = db.batch();
     //Delete each person of UserList
     if (userList.persons != null) {
       for (int i = 0; i < userList.persons.length; i++) {
+        //Get a new batch
+        var batch = db.batch();
         DocumentReference documentReference =
             personCollection.doc(userList.persons[i]);
-        batch.delete(documentReference);
+        List<dynamic> idList;
+        Map<String, dynamic> data;
+        documentReference.get().then((doc) {
+          if (doc.exists) {
+            data = doc.data();
+            idList = data["lists"];
+            //Check if the person is used in another list
+            if (idList.length == 1) {
+              //If used only in this list, delete it
+              batch.delete(documentReference);
+              //Delete person picture
+              Reference photoRef = FirebaseStorage.instance
+                  .ref()
+                  .storage
+                  .refFromURL(data["image_url"]);
+              photoRef.delete();
+            } else {
+              //Update lists in person to remove the id of the deleted list
+              idList.remove(userList.id);
+              data["lists"] = idList;
+              batch.update(documentReference, data);
+            }
+            batch.commit();
+          }
+        });
       }
-      batch.commit();
     }
     return userListCollection.doc(userList.id).delete();
   }

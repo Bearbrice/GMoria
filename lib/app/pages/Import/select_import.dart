@@ -1,14 +1,19 @@
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gmoria/app/utils/ImportArguments.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
 import 'package:gmoria/domain/models/Person.dart';
+import 'package:gmoria/domain/models/UserList.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 
 class ImportSelectionPage extends StatelessWidget{
+
   @override
   Widget build(BuildContext context) {
+    UserList userList = ModalRoute.of(context).settings.arguments;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -30,13 +35,14 @@ class ImportSelectionPage extends StatelessWidget{
                     final PermissionStatus permissionStatus = await _getPermission();
                     if (permissionStatus == PermissionStatus.granted) {
                       final Iterable<Contact> contactslist = await ContactsService.getContacts();
-                      List<Person> persons;
-                      print("CONTACT EXAMPLE");
-                      print(contactslist.first.jobTitle);
+                      List<Person> persons = new List();
                       for(Contact contact in contactslist){
-                        Person person = new Person(contact.givenName,contact.familyName,contact.jobTitle, "","IMAGE URL");
+                        Person person = new Person(contact.givenName,contact.familyName,contact.jobTitle, "","");
                         persons.add(person);
                       }
+
+                      Navigator.pushNamed(context, '/importSelectionContacts',
+                          arguments: ImportArguments(persons,userList));
                       //We can now access our contacts here
                     } else {
                       //If permissions have been denied show standard cupertino alert dialog

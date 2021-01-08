@@ -3,6 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:gmoria/app/pages/Import/creation_import_contacts.dart';
+import 'package:gmoria/app/pages/Import/import_selection_contact.dart';
 import 'package:gmoria/app/pages/Import/select_import.dart';
 import 'package:gmoria/app/pages/Person/person_form_page.dart';
 import 'package:gmoria/app/pages/User/sign_up_page.dart';
@@ -82,6 +84,8 @@ class MyApp extends StatelessWidget {
               '/userPage': (context) => UserPage(),
               '/introPage': (context) => IntroPage(),
               '/importSelectionScreen': (context) => ImportSelectionPage(),
+              '/importSelectionContacts': (context) => ImportSelectionContacts(),
+              '/createImportContacts' : (context) => CreationImportContact(),
             },
             theme: ThemeData(
               primarySwatch: Colors.blue,

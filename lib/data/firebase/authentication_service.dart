@@ -108,7 +108,7 @@ class AuthenticationService {
         .reauthenticateWithCredential(credential);
   }
 
-  Future deleteUser() async {
+  Future<String> deleteUser() async {
     try {
       await _firebaseAuth.currentUser.delete();
     } on FirebaseAuthException catch (e) {
@@ -118,6 +118,6 @@ class AuthenticationService {
         return e.code.toString();
       }
     }
-    return "";
+    return "Success";
   }
 }

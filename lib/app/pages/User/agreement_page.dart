@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:gmoria/app/pages/User/intro_page.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
 import 'package:gmoria/data/firebase/authentication_service.dart';
 import 'package:provider/provider.dart';
@@ -107,8 +108,9 @@ class Agreement extends StatelessWidget {
                           : FlatButton(
                               onPressed: () {
                                 accepted = true;
-                                // Navigator.of(context).pop(accepted);
-                                Navigator.pop(context, accepted);
+
+                                Navigator.pushNamed(context, '/introPage');
+
                                 print("POPED->" + accepted.toString());
                               },
                               child: Text('AGREE',

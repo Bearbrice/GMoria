@@ -103,7 +103,13 @@ class _MyHomePageState extends State<MyHomePage> {
               icon: const Icon(Icons.settings),
               tooltip: 'My account',
               onPressed: () {
-                Navigator.pushNamed(context, '/userPage');
+                if (state is UserListLoaded) {
+                  Navigator.pushNamed(context, '/userPage',
+                      arguments: state.userList);
+                }
+                else{
+                  Navigator.pushNamed(context, '/userPage');
+                }
               },
             ),
           ],
@@ -248,10 +254,10 @@ class _WidgetListElementState extends State<WidgetListElement> {
       }
 
       if (action == 'Game') {
-        if(item.persons.length==1){
-            Navigator.pushNamed(context, '/game',
-            arguments: InitialGameArguments(item, false,1));
-        }else{
+        if (item.persons.length == 1) {
+          Navigator.pushNamed(context, '/game',
+              arguments: InitialGameArguments(item, false, 1));
+        } else {
           showModalBottomSheet(
             context: context,
             builder: (sheetContext) => BottomSheet(
@@ -262,7 +268,6 @@ class _WidgetListElementState extends State<WidgetListElement> {
             ),
           );
         }
-
       } else {
         Navigator.pushNamed(context, '/learn', arguments: item);
       }
@@ -301,12 +306,13 @@ class _WidgetListElementState extends State<WidgetListElement> {
                       return Text("Loading !");
                     } else if (state is UserListLoaded) {
                       if (state.userList
-                          .where((element) =>
-                      element.listName.toLowerCase() ==
-                          listController.text.toLowerCase())
-                          .length ==
+                              .where((element) =>
+                                  element.listName.toLowerCase() ==
+                                  listController.text.toLowerCase())
+                              .length ==
                           0) {
-                        UserList updatedUserList = new UserList(listController.text,
+                        UserList updatedUserList = new UserList(
+                            listController.text,
                             bestScore: list.bestScore,
                             creation_date: list.creation_date,
                             id: list.id,
@@ -330,13 +336,12 @@ class _WidgetListElementState extends State<WidgetListElement> {
                     } else {
                       return Text("Problem :D");
                     }
-
-
                   })
             ],
           ),
         );
       }
+
       return Slidable.builder(
         key: Key(item.listName),
         controller: slidableController,

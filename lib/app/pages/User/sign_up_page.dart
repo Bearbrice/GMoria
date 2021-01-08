@@ -84,7 +84,8 @@ class _SignUpPageState extends State<SignUpPage> {
                           setState(() {
                             showAlreadyExists = false;
                           }),
-                          Navigator.pop(context)
+                          // The user is sign up and login, pop the page
+                          Navigator.pushNamed(context, '/introPage'),
                         }
                     });
           }

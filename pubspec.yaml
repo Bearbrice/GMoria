@@ -57,6 +57,9 @@ dependencies:
 
   path: ^1.7.0
 
+  #Welcome
+  intro_views_flutter: ^2.8.2
+
   #DateFormat
   intl: ^0.16.1
 
@@ -111,6 +114,9 @@ flutter:
     - assets/lang/en.yaml
     - assets/picture/unknown.jpg
     - assets/picture/google.jpg
+    - assets/picture/Game.jpeg
+    - assets/picture/Learn.jpeg
+    - assets/picture/List.jpeg
     - assets/text/PrivacyPolicy.md
     - assets/text/TermsConditions.md
     - assets/text/PrivacyPolicy_FR.md

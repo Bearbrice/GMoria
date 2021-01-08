@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
 import 'package:gmoria/data/firebase/authentication_service.dart';
+import 'package:gmoria/domain/blocs/userlist/UserListBloc.dart';
+import 'package:gmoria/domain/blocs/userlist/UserListEvent.dart';
+import 'package:gmoria/domain/models/UserList.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -113,11 +116,11 @@ class _UserPageState extends State<UserPage> {
   //   setState(() => {isSwitched = accepted, showError = false});
   // }
 
-  Widget _deleteAccountButton() {
+  Widget _deleteAccountButton(List<UserList> userLists) {
     return InkWell(
       onTap: () {
         // Navigator.pushNamed(context, '/signUp', arguments: false);
-        deleteAccountDialog();
+        deleteAccountDialog(userLists);
 
         // showDialog(
         //     context: context,
@@ -218,7 +221,16 @@ class _UserPageState extends State<UserPage> {
         ]));
   }
 
-  deleteAccountDialog() {
+
+  deleteLists(userLists) async{
+    for (UserList ul in userLists)
+    {
+      BlocProvider.of<UserListBloc>(context)
+          .add(DeleteUserList(ul));
+    }
+  }
+
+  deleteAccountDialog(List<UserList> userLists) {
     String provider = context
         .read<AuthenticationService>()
         .getUser()
@@ -274,28 +286,41 @@ class _UserPageState extends State<UserPage> {
               ),
               FlatButton(
                 child: Text('Yes, delete'),
-                onPressed: () => {
+                onPressed: () async => {
                   if (isSwitched == true)
                     {
                       //Pop dialog
                       Navigator.pop(context),
                       //Pop user page
                       Navigator.pop(context),
-                      //DELETE ACCOUNT
-                      //Check if not connected with google firebase ask for a re authentication
-                      message =
-                          context.read<AuthenticationService>().deleteUser(),
 
-                      print('Delete error (if one):' + message.toString()),
+                      // await deleteLists(userLists),
+                      // for (UserList ul in userLists)
+                      //   {
+                      //     BlocProvider.of<UserListBloc>(context)
+                      //         .add(DeleteUserList(ul))
+                      //   },
 
-                      if (message == 'requires-recent-login' &&
-                          provider == 'password')
-                        {
-                          context
-                              .read<AuthenticationService>()
-                              .reAuthenticateUser(),
-                          context.read<AuthenticationService>().deleteUser(),
-                        }
+                      // //DELETE ACCOUNT, message will get if an error occurs
+                      // message = await context
+                      //     .read<AuthenticationService>()
+                      //     .deleteUser(),
+                      //
+                      // print('Delete error (if one):' + message),
+                      //
+                      // //Check if ask for a re authentication
+                      // if (message == 'requires-recent-login')
+                      //   // &&
+                      //   // provider == 'password')
+                      //   {
+                      //     context
+                      //         .read<AuthenticationService>()
+                      //         .reAuthenticateUser(),
+                      //     context.read<AuthenticationService>().deleteUser(),
+                      //   },
+                      //
+                      // //If firebase auth has successfully delete the account then delete the user data
+                      // if (message == 'success') {}
                     }
                   else
                     {
@@ -362,7 +387,6 @@ class _UserPageState extends State<UserPage> {
               child: const Text('Change'),
               onPressed: () async {
                 if (_formKey.currentState.validate()) {
-
                   print('FORM VALIDATED!!');
                   print(emailController.text);
 
@@ -387,6 +411,8 @@ class _UserPageState extends State<UserPage> {
         .providerData
         .first
         .providerId;
+
+    final List<UserList> userLists = ModalRoute.of(context).settings.arguments;
 
     return Scaffold(
       appBar: AppBar(
@@ -443,9 +469,9 @@ class _UserPageState extends State<UserPage> {
                           SizedBox(
                             height: 20,
                           ),
-                          _deleteAccountButton(),
+                          _deleteAccountButton(userLists),
                         ])
-                  : _deleteAccountButton(),
+                  : _deleteAccountButton(userLists),
             ],
           ),
         ),

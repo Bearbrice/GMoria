@@ -22,6 +22,7 @@ import 'app/pages/Game/finish_game_page.dart';
 import 'app/pages/Game/game_page.dart';
 import 'app/pages/Person/person_view.dart';
 import 'app/pages/User/agreement_page.dart';
+import 'app/pages/User/intro_page.dart';
 import 'app/pages/home_page.dart';
 import 'app/pages/learn_page.dart';
 import 'app/utils/app_localizations.dart';
@@ -79,6 +80,7 @@ class MyApp extends StatelessWidget {
               '/personDetails': (context) => PersonDetailsPage(),
               '/terms': (context) => Agreement(),
               '/userPage': (context) => UserPage(),
+              '/introPage': (context) => IntroPage(),
               '/importSelectionScreen': (context) => ImportSelectionPage(),
             },
             theme: ThemeData(

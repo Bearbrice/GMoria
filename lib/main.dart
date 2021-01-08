@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:gmoria/app/pages/Import/creation_import_contacts.dart';
 import 'package:gmoria/app/pages/Import/import_selection_contact.dart';
-import 'package:gmoria/app/pages/Import/select_import.dart';
+import 'package:gmoria/app/pages/Import/select_import_page.dart';
 import 'package:gmoria/app/pages/Person/person_form_page.dart';
 import 'package:gmoria/app/pages/User/sign_up_page.dart';
 import 'package:gmoria/app/pages/User/user_page.dart';
@@ -22,7 +22,6 @@ import 'app/pages/AllContacts/import_from_all_contacts.dart';
 import 'app/pages/Game/check_game_answers_page.dart';
 import 'app/pages/Game/finish_game_page.dart';
 import 'app/pages/Game/game_page.dart';
-import 'app/pages/Import/vcard_page.dart';
 import 'app/pages/Person/person_view.dart';
 import 'app/pages/User/agreement_page.dart';
 import 'app/pages/User/intro_page.dart';
@@ -87,7 +86,6 @@ class MyApp extends StatelessWidget {
               '/importSelectionScreen': (context) => ImportSelectionPage(),
               '/importSelectionContacts': (context) => ImportSelectionContacts(),
               '/createImportContacts' : (context) => CreationImportContact(),
-              '/importVCard': (context) => VCardPage(),
             },
             theme: ThemeData(
               primarySwatch: Colors.blue,

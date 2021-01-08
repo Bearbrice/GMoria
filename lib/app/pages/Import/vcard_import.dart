@@ -46,42 +46,37 @@ class _VCardPageState extends State<VCardPage> {
 
     VcardParser vcp;
 
+    LineSplitter.split(content).forEach((line) => {
+          pos = line.indexOf(':'),
 
-    LineSplitter.split(content).forEach((line) =>
-    {
-      pos = line.indexOf(':'),
+          //Add line
+          data += line + '\n',
 
-      //add line
-      data += line + '\n',
-
-      //keep reading next line
-      if (pos == -1)
-        {
-          // data+=line,
-          keepReading = true,
-        }
-      //Else: Means it is a new line
-      else
-        {
-          //If keepReading was true we save the data and the identifier
-          if (keepReading = true)
+          //Keep reading next line
+          if (pos == -1)
             {
-              keepReading = false,
-            },
-
-          identifier = line.substring(0, pos),
-
-
-          if (identifier == 'END')
-            {
-              print('-----------END SPOTTED--------------------'),
-
-              vcp = VcardParser(data),
-              data = "",
-              people.add(getPerson(vcp)),
+              keepReading = true,
             }
-        }
-    });
+          //Else: Means it is a new line
+          else
+            {
+              //If keepReading was true we save the data and the identifier
+              if (keepReading = true)
+                {
+                  keepReading = false,
+                },
+
+              identifier = line.substring(0, pos),
+
+              if (identifier == 'END')
+                {
+                  print('-----------END SPOTTED--------------------'),
+                  vcp = VcardParser(data),
+                  data = "",
+                  people.add(getPerson(vcp)),
+                }
+            }
+        });
   }
 
   Person getPerson(VcardParser vcp) {
@@ -105,49 +100,34 @@ class _VCardPageState extends State<VCardPage> {
 
   @override
   Widget build(BuildContext context) {
-    UserList userList = ModalRoute
-        .of(context)
-        .settings
-        .arguments;
+    UserList userList = ModalRoute.of(context).settings.arguments;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Vcard (.vcf) importer'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.open_in_new),
+    return _pickFileInProgress == false
+        ? RaisedButton.icon(
             onPressed: _pickFileInProgress
                 ? null
                 : () async {
-              await _pickDocument().then((value) =>
-                  Navigator.popAndPushNamed(
-                      context, '/importSelectionContacts',
-                      arguments: new ImportArguments(people, userList)));
-              // Timer(Duration(milliseconds: 500), () {
-              // print('people' + people.toString());
+                    await _pickDocument().then((value) => Navigator.pushNamed(
+                        context, '/importSelectionContacts',
+                        arguments: new ImportArguments(people, userList)));
+                  },
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+            label: Text(
+              'Import from VCARD',
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            //TODO Translate
 
-              // });
-              // print('people' + people.toString());
-            },
+            icon: Icon(
+              Icons.file_present,
+              color: Colors.white,
+            ),
+            textColor: Colors.white,
+            splashColor: Colors.blueAccent,
+            color: Colors.blue,
           )
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                'Picked file path:',
-              ),
-              Text('$_path'),
-              _pickFileInProgress ? CircularProgressIndicator() : Container(),
-            ],
-          ),
-        ),
-      ),
-    );
+        : CircularProgressIndicator();
   }
 
   Future<void> _pickDocument() async {

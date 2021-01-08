@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gmoria/app/utils/ImportArguments.dart';
+import 'package:gmoria/app/utils/MyTextFormField.dart';
 import 'package:gmoria/domain/blocs/person/PersonBloc.dart';
 import 'package:gmoria/domain/blocs/person/PersonEvent.dart';
 import 'package:gmoria/domain/blocs/person/PersonState.dart';
@@ -337,51 +338,51 @@ class _TestFormState extends State<TestForm> {
   }
 }
 
-class MyTextFormField extends StatelessWidget {
-  final String hintText;
-  final String initialValue;
-  final Function validator;
-  final TextEditingController controller;
-  final Function onSaved;
-  final bool isPassword;
-  final bool isEmail;
-  final bool isLong;
-  final int maxLines;
-  final TextInputType textInputType;
-
-  MyTextFormField(
-      {this.initialValue,
-        this.controller,
-        this.hintText,
-        this.validator,
-        this.onSaved,
-        this.isPassword = false,
-        this.isEmail = false,
-        this.isLong = false,
-        this.maxLines,
-        this.textInputType = TextInputType.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(8.0),
-      child: TextFormField(
-        decoration: InputDecoration(
-          hintText: hintText,
-          contentPadding: EdgeInsets.all(15.0),
-          border: InputBorder.none,
-          filled: true,
-          fillColor: Colors.grey[200],
-        ),
-        minLines: isLong ? 3 : 1,
-        controller: controller,
-        obscureText: isPassword ? true : false,
-        validator: validator,
-        maxLines: maxLines,
-        onSaved: onSaved,
-        initialValue: initialValue,
-        keyboardType: isEmail ? TextInputType.emailAddress : textInputType,
-      ),
-    );
-  }
-}
+// class MyTextFormField extends StatelessWidget {
+//   final String hintText;
+//   final String initialValue;
+//   final Function validator;
+//   final TextEditingController controller;
+//   final Function onSaved;
+//   final bool isPassword;
+//   final bool isEmail;
+//   final bool isLong;
+//   final int maxLines;
+//   final TextInputType textInputType;
+//
+//   MyTextFormField(
+//       {this.initialValue,
+//         this.controller,
+//         this.hintText,
+//         this.validator,
+//         this.onSaved,
+//         this.isPassword = false,
+//         this.isEmail = false,
+//         this.isLong = false,
+//         this.maxLines,
+//         this.textInputType = TextInputType.text});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Padding(
+//       padding: EdgeInsets.all(8.0),
+//       child: TextFormField(
+//         decoration: InputDecoration(
+//           hintText: hintText,
+//           contentPadding: EdgeInsets.all(15.0),
+//           border: InputBorder.none,
+//           filled: true,
+//           fillColor: Colors.grey[200],
+//         ),
+//         minLines: isLong ? 3 : 1,
+//         controller: controller,
+//         obscureText: isPassword ? true : false,
+//         validator: validator,
+//         maxLines: maxLines,
+//         onSaved: onSaved,
+//         initialValue: initialValue,
+//         keyboardType: isEmail ? TextInputType.emailAddress : textInputType,
+//       ),
+//     );
+//   }
+// }

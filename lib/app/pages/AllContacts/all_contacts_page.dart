@@ -66,33 +66,70 @@ class WidgetListElement extends StatefulWidget {
 
 class _WidgetListElementState extends State<WidgetListElement> {
   SlidableController slidableController;
+  List<Person> peopleToShow;
 
   @protected
   void initState() {
     slidableController = SlidableController();
+    widget.list.sort((a, b) {
+      String firstnameLastnameA = a.firstname + a.lastname;
+      String firstnameLastnameB = b.firstname + b.lastname;
+      return firstnameLastnameA.toLowerCase().compareTo(firstnameLastnameB.toLowerCase());
+    });
+    peopleToShow = widget.list;
     super.initState();
   }
 
   Widget _buildList(BuildContext context, Axis direction) {
-    // Sort the list of person by first names
-    widget.list.sort((a, b) {
-      return a.firstname.toLowerCase().compareTo(b.firstname.toLowerCase());
-    });
-
     return ListView.builder(
       scrollDirection: direction,
       itemBuilder: (context, index) {
         final Axis slidableDirection =
         direction == Axis.horizontal ? Axis.vertical : Axis.horizontal;
-        return _getSlidableWithDelegates(context, index, slidableDirection);
+        if(index==0){
+          return _searchBar(context, index, slidableDirection);
+        }else{
+          return _getSlidableWithDelegates(context, index-1, slidableDirection);
+        }
       },
-      itemCount: widget.list.length,
+      itemCount: peopleToShow.length+1,
+    );
+  }
+  _searchBar(BuildContext context, int index, Axis slidableDirection){
+    return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: TextField(
+          decoration: InputDecoration(
+              prefixIcon: Icon(Icons.search),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.lightBlue, width: 2.0),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.lightBlue, width: 2.0),
+              ),
+              fillColor: Colors.white,
+              filled: true,
+              hintText: 'Search' //TODO
+          ),
+          onChanged: (text){
+            text = text.toLowerCase();
+            setState(() {
+              peopleToShow = widget.list.where((person){
+                var firstname = person.firstname.toLowerCase();
+                var lastname = person.lastname.toLowerCase();
+                var firstnameLastname = firstname+" "+lastname;
+                var lastnameFirstname = lastname+" "+firstname;
+                return firstname.contains(text) || lastname.contains(text) || firstnameLastname.contains(text) || lastnameFirstname.contains(text);
+              }).toList();
+            });
+          },
+        )
     );
   }
 
   Widget _getSlidableWithDelegates(
       BuildContext context, int index, Axis direction) {
-    final Person item = widget.list[index];
+    final Person item = peopleToShow[index];
 
     deleteDialog() {
       return showDialog<bool>(
@@ -146,15 +183,15 @@ class _WidgetListElementState extends State<WidgetListElement> {
                   ? 'Dismiss Archive'
                   : 'Dismiss Delete');
           setState(() {
-            widget.list.removeAt(index);
+            peopleToShow.removeAt(index);
           });
         },
       ),
       actionPane: SlidableScrollActionPane(),
       actionExtentRatio: 0.25,
       child: direction == Axis.horizontal
-          ? VerticalListItem(widget.list[index])
-          : HorizontalListItem(widget.list[index]),
+          ? VerticalListItem(peopleToShow[index])
+          : HorizontalListItem(peopleToShow[index]),
       secondaryActionDelegate: SlideActionBuilderDelegate(
           actionCount: 1,
           builder: (context, index, animation, renderingMode) {

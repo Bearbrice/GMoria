@@ -112,14 +112,14 @@ class _ListPageState extends State<ListPage> {
 
     childButtons.add(UnicornButton(
       hasLabel: true,
-      labelText: "Import from phone",
+      labelText: "Import from other",
       currentButton: FloatingActionButton(
         mini: true,
         backgroundColor: Colors.blue,
-        heroTag: "contactPhone",
+        heroTag: "external",
         onPressed: () {
-          Navigator.pushNamed(context, '/personForm',
-              arguments: new ScreenArguments(null, userList.id));
+          Navigator.pushNamed(context, '/importSelectionScreen',
+              arguments:  userList);
         },
         child: Icon(Icons.smartphone),
       ),));

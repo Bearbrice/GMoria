@@ -28,3 +28,6 @@ unknown_error: Oups... quelque chose ne s'est pas passé comme prévu! Veuillez 
 
 #Game
 game_title: 'Jouer : '
+
+#Import
+import_title: 'Choisi un import'

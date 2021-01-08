@@ -29,3 +29,6 @@ unknown_error: Oops... something went wrong! Please try again.
 
 #Game
 game_title: 'Game :'
+
+#Import
+import_title: 'Select import'

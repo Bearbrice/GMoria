@@ -22,6 +22,7 @@ import 'app/pages/AllContacts/import_from_all_contacts.dart';
 import 'app/pages/Game/check_game_answers_page.dart';
 import 'app/pages/Game/finish_game_page.dart';
 import 'app/pages/Game/game_page.dart';
+import 'app/pages/Import/vcard_page.dart';
 import 'app/pages/Person/person_view.dart';
 import 'app/pages/User/agreement_page.dart';
 import 'app/pages/User/intro_page.dart';
@@ -86,6 +87,7 @@ class MyApp extends StatelessWidget {
               '/importSelectionScreen': (context) => ImportSelectionPage(),
               '/importSelectionContacts': (context) => ImportSelectionContacts(),
               '/createImportContacts' : (context) => CreationImportContact(),
+              '/importVCard': (context) => VCardPage(),
             },
             theme: ThemeData(
               primarySwatch: Colors.blue,

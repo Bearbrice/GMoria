@@ -69,6 +69,9 @@ dependencies:
   contacts_service: ^0.4.6
   permission_handler: ^5.0.1+1
 
+  flutter_document_picker: ^4.0.0
+  simple_vcard_parser: ^0.1.6
+
   #Firebase
   firebase_core: ^0.5.2
   firebase_auth: ^0.18.3

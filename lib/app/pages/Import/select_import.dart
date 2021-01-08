@@ -75,7 +75,9 @@ class ImportSelectionPage extends StatelessWidget{
               height: 70,
               minWidth: 240,
               child: RaisedButton.icon(
-                onPressed: (){ print('Button Clicked.'); },
+                onPressed: (){
+                  Navigator.pushNamed(context, '/importVCard');
+                },
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10.0))),
                 label: Text('Import from VCARD',

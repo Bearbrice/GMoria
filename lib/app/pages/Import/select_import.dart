@@ -34,9 +34,9 @@ class ImportSelectionPage extends StatelessWidget{
                   onPressed: () async {
                     final PermissionStatus permissionStatus = await _getPermission();
                     if (permissionStatus == PermissionStatus.granted) {
-                      final Iterable<Contact> contactslist = await ContactsService.getContacts();
+                      final Iterable<Contact> contactsList = await ContactsService.getContacts();
                       List<Person> persons = new List();
-                      for(Contact contact in contactslist){
+                      for(Contact contact in contactsList){
                         Person person = new Person(contact.givenName,contact.familyName,contact.jobTitle, "","");
                         persons.add(person);
                       }
@@ -76,7 +76,7 @@ class ImportSelectionPage extends StatelessWidget{
               minWidth: 240,
               child: RaisedButton.icon(
                 onPressed: (){
-                  Navigator.pushNamed(context, '/importVCard');
+                  Navigator.pushNamed(context, '/importVCard', arguments: userList);
                 },
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10.0))),

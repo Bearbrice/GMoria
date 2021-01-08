@@ -71,6 +71,7 @@ dependencies:
 
   flutter_document_picker: ^4.0.0
   simple_vcard_parser: ^0.1.6
+  vcard_parser: ^0.1.6
 
   #Firebase
   firebase_core: ^0.5.2

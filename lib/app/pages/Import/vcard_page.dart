@@ -1,8 +1,13 @@
-import 'dart:io';
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_document_picker/flutter_document_picker.dart';
+import 'package:gmoria/app/utils/ImportArguments.dart';
 import 'package:gmoria/domain/models/Person.dart';
+import 'package:gmoria/domain/models/UserList.dart';
+import 'package:vcard_parser/vcard_parser.dart';
 
 class VCardPage extends StatefulWidget {
   @override
@@ -14,117 +19,138 @@ class VCardPage extends StatefulWidget {
 class _VCardPageState extends State<VCardPage> {
   String _path = '-';
   bool _pickFileInProgress = false;
-  Person p;
+  List<Person> people = new List<Person>();
 
-  setPerson(){
-
+  Future<void> setPerson() async {
     File f = new File(_path);
-    readCounter(f);
-
+    await readFile(f);
   }
 
-  Future<void> readCounter(_file) async {
-
+  Future<void> readFile(_file) async {
     String content;
-    List<Person> people;
 
     try {
       final file = await _file;
 
-
-      // Read the file.
+      // Read the file
       content = await file.readAsString();
-
-
-
-      // print('------------------'+contents);
     } catch (e) {
       // If encountering an error, return 0.
       return;
     }
 
-    Person p;
     int pos;
     String identifier;
-    String data;
-    LineSplitter.split(content).forEach((line) => {
-      pos=line.indexOf(':'),
-      identifier=line.substring(0, pos),
-      data=line.substring(pos+1, line.length),
+    String data = "";
+    bool keepReading = false;
 
-      print("ID->" + identifier),
-      print("Data->" + data),
-
-      // p=test(identifier, data);
+    VcardParser vcp;
 
 
+    LineSplitter.split(content).forEach((line) =>
+    {
+      pos = line.indexOf(':'),
+
+      //add line
+      data += line + '\n',
+
+      //keep reading next line
+      if (pos == -1)
+        {
+          // data+=line,
+          keepReading = true,
+        }
+      //Else: Means it is a new line
+      else
+        {
+          //If keepReading was true we save the data and the identifier
+          if (keepReading = true)
+            {
+              keepReading = false,
+            },
+
+          identifier = line.substring(0, pos),
 
 
-  });
+          if (identifier == 'END')
+            {
+              print('-----------END SPOTTED--------------------'),
 
-
-
-
+              vcp = VcardParser(data),
+              data = "",
+              people.add(getPerson(vcp)),
+            }
+        }
+    });
   }
 
-  // test(identifier, data){
-  //   Person p;
-  //   switch (identifier) {
-  //     case 'N':
-  //       {
-  //         p.firstname=data;
-  //         p.lastname=data;
-  //       }
-  //       break;
-  //
-  //     case TWO:
-  //       {
-  //         statement(s);
-  //       }
-  //       break;
-  //
-  //     default:
-  //       {
-  //         statement(s);
-  //       }
-  //   }
-  // }
+  Person getPerson(VcardParser vcp) {
+    print('-----------GET PERSON--------------------');
+    Map<String, Object> tags = vcp.parse();
 
+    String name = tags['N'];
+    var arr = name.split(';');
+
+    print('LENGTH' + arr.length.toString());
+
+    print('-----COMPLETE PERSON----');
+    Person p = new Person(arr[1], arr[0], tags['ORG'], tags['NOTE'], "");
+    print(p.firstname);
+    print(p.lastname);
+    print(p.job);
+    print(p.description);
+
+    return p;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Vcard (.vcf) importer'),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.open_in_new),
-              onPressed: _pickFileInProgress ? null : _pickDocument,
-            )
-          ],
-        ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  'Picked file path:',
-                ),
-                Text('$_path'),
-                _pickFileInProgress ? CircularProgressIndicator() : Container(),
-              ],
-            ),
+    UserList userList = ModalRoute
+        .of(context)
+        .settings
+        .arguments;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Vcard (.vcf) importer'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.open_in_new),
+            onPressed: _pickFileInProgress
+                ? null
+                : () async {
+              await _pickDocument().then((value) =>
+                  Navigator.popAndPushNamed(
+                      context, '/importSelectionContacts',
+                      arguments: new ImportArguments(people, userList)));
+              // Timer(Duration(milliseconds: 500), () {
+              // print('people' + people.toString());
+
+              // });
+              // print('people' + people.toString());
+            },
+          )
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                'Picked file path:',
+              ),
+              Text('$_path'),
+              _pickFileInProgress ? CircularProgressIndicator() : Container(),
+            ],
           ),
         ),
       ),
     );
   }
 
-  _pickDocument() async {
+  Future<void> _pickDocument() async {
     String result;
     try {
       setState(() {
@@ -150,7 +176,6 @@ class _VCardPageState extends State<VCardPage> {
       _path = result;
     });
 
-    setPerson();
+    await setPerson();
   }
 }
-

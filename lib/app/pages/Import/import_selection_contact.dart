@@ -62,7 +62,11 @@ class _AllContactsCheckboxesState extends State<AllContactsCheckboxes> {
       body: new ListView(
         children: personsList.keys.map((Person p) {
           return new CheckboxListTile(
-            title: Text(p.firstname+" "+p.lastname),
+            title: p.lastname==null ?
+            p.firstname==null ?
+            Text("No name found !") : Text(p.firstname)
+                : p.firstname==null ?
+            Text(p.lastname) : Text(p.firstname + " " + p.lastname),
             value: personsList[p],
             onChanged: (bool selected){
               setState(() {

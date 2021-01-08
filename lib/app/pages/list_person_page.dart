@@ -227,10 +227,16 @@ class WidgetListElement extends StatefulWidget {
 class _WidgetListElementState extends State<WidgetListElement> {
   SlidableController slidableController;
   List<Person> peopleToShow;
+  List<Person> currentAllPeople;
 
   @protected
   void initState() {
     slidableController = SlidableController();
+    setPeopleToShow();
+    super.initState();
+  }
+
+  setPeopleToShow(){
     // Sort the list of person by first names and lastnames
     widget.list.sort((a, b) {
       String firstnameLastnameA = a.firstname + a.lastname;
@@ -238,10 +244,13 @@ class _WidgetListElementState extends State<WidgetListElement> {
       return firstnameLastnameA.toLowerCase().compareTo(firstnameLastnameB.toLowerCase());
     });
     peopleToShow = widget.list;
-    super.initState();
+    currentAllPeople = widget.list;
   }
 
   Widget _buildList(BuildContext context, Axis direction) {
+    if(currentAllPeople.length != widget.list.length){
+      setPeopleToShow();
+    }
     return ListView.builder(
       padding: EdgeInsets.only(bottom: 100),
       scrollDirection: direction,
@@ -299,8 +308,8 @@ class _WidgetListElementState extends State<WidgetListElement> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Delete'),
-            content: Text('This person will be deleted'),
+            title: Text(AppLocalizations.of(context).translate('delete_dialog_title'), style: TextStyle(color: Colors.red),),
+            content: Text(AppLocalizations.of(context).translate('delete_dialog_text_contact_permanently')),
             actions: <Widget>[
               FlatButton(
                   child: Text('Cancel'),
@@ -347,6 +356,8 @@ class _WidgetListElementState extends State<WidgetListElement> {
                   : 'Dismiss Delete');
           setState(() {
             peopleToShow.removeAt(index);
+            currentAllPeople.remove(item);
+            widget.list.remove(item);
           });
         },
       ),
@@ -364,7 +375,13 @@ class _WidgetListElementState extends State<WidgetListElement> {
                     ? Colors.red.withOpacity(animation.value)
                     : Colors.red,
                 icon: Icons.delete,
-                onTap: () => deleteDialog());
+                onTap: () => item.lists.length == 1 ? deleteDialog() : {
+                    peopleToShow.remove(item),
+                    currentAllPeople.remove(item),
+                    widget.list.remove(item),
+                    BlocProvider.of<PersonBloc>(context).add(DeletePerson(item, widget.idUserList))
+                }
+            );
           }),
     );
   }

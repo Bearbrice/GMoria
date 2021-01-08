@@ -81,12 +81,10 @@ class DataUserListRepository implements UserListRepository {
 
   @override
   Future<void> deleteAllDataFromUser(List<UserList> userLists) async{
-
     for (UserList ul in userLists)
     {
       await deleteUserList(ul);
     }
-
   }
 
   @override

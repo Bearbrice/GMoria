@@ -221,12 +221,9 @@ class _UserPageState extends State<UserPage> {
         ]));
   }
 
-
-  deleteLists(userLists) async{
-    for (UserList ul in userLists)
-    {
-      BlocProvider.of<UserListBloc>(context)
-          .add(DeleteUserList(ul));
+  Future<void> deleteLists(userLists) async {
+    for (UserList ul in userLists) {
+      BlocProvider.of<UserListBloc>(context).add(DeleteUserList(ul));
     }
   }
 
@@ -294,33 +291,18 @@ class _UserPageState extends State<UserPage> {
                       //Pop user page
                       Navigator.pop(context),
 
-                      // await deleteLists(userLists),
-                      // for (UserList ul in userLists)
-                      //   {
-                      //     BlocProvider.of<UserListBloc>(context)
-                      //         .add(DeleteUserList(ul))
-                      //   },
+                      BlocProvider.of<UserListBloc>(context)
+                          .add(DeleteAllDataFromUser(userLists)),
 
-                      // //DELETE ACCOUNT, message will get if an error occurs
-                      // message = await context
-                      //     .read<AuthenticationService>()
-                      //     .deleteUser(),
-                      //
-                      // print('Delete error (if one):' + message),
-                      //
-                      // //Check if ask for a re authentication
-                      // if (message == 'requires-recent-login')
-                      //   // &&
-                      //   // provider == 'password')
-                      //   {
-                      //     context
-                      //         .read<AuthenticationService>()
-                      //         .reAuthenticateUser(),
-                      //     context.read<AuthenticationService>().deleteUser(),
-                      //   },
-                      //
-                      // //If firebase auth has successfully delete the account then delete the user data
-                      // if (message == 'success') {}
+                      context
+                          .read<AuthenticationService>()
+                          .reAuthenticateUser(),
+
+                      message = await context
+                          .read<AuthenticationService>()
+                          .deleteUser(),
+
+                      print('State of the deletion:' + message),
                     }
                   else
                     {

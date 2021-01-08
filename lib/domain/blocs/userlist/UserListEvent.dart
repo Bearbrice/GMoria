@@ -58,6 +58,18 @@ class DeleteUserList extends UserListEvent {
   String toString() => 'UserListDeleted { userList: $userList }';
 }
 
+class DeleteAllDataFromUser extends UserListEvent {
+  final List<UserList> userLists;
+
+  const DeleteAllDataFromUser(this.userLists);
+
+  @override
+  List<Object> get props => [userLists];
+
+  @override
+  String toString() => 'UserListDeleted { userList: $userLists }';
+}
+
 class UserListUpdated extends UserListEvent {
   final List<UserList> userList;
 

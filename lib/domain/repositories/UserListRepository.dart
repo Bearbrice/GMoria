@@ -5,6 +5,8 @@ abstract class UserListRepository {
 
   Future<void> deleteUserList(UserList userList);
 
+  Future<void> deleteAllDataFromUser(List<UserList> userLists);
+
   Future<void> updateUserList(UserList userList);
 
   Stream<List<UserList>> getUserLists();

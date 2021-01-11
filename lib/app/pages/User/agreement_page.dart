@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:gmoria/app/pages/User/intro_page.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
 import 'package:gmoria/data/firebase/authentication_service.dart';
 import 'package:provider/provider.dart';
@@ -9,10 +8,15 @@ import 'package:url_launcher/url_launcher.dart';
 
 /// Mode : signup (readmode = false), readonly (readmode = true), mandatory (mandatory=true)
 class Agreement extends StatelessWidget {
+  AppLocalizations appLoc;
   bool readMode;
   bool mandatoryMode = false;
 
   String agreed = "false";
+
+  setAppLoc(context) {
+    appLoc = AppLocalizations.of(context);
+  }
 
   Widget _showMarkdown(ctx) {
     switch (AppLocalizations.of(ctx).locale.toString()) {
@@ -45,6 +49,8 @@ class Agreement extends StatelessWidget {
   }
 
   Widget build(BuildContext context) {
+    setAppLoc(context);
+
     if (ModalRoute.of(context).settings.arguments != null) {
       readMode = ModalRoute.of(context).settings.arguments;
     } else {
@@ -62,17 +68,16 @@ class Agreement extends StatelessWidget {
               context: context,
               builder: (context) {
                 return AlertDialog(
-                  content: Text(
-                      'Are you sure you want to exit? (you will need to recreate your account and the data will be lost)'),
+                  content: Text(appLoc.translate("dialog_confirm_exit")),
                   actions: <Widget>[
                     FlatButton(
-                      child: Text('No'),
+                      child: Text(appLoc.translate("no")),
                       onPressed: () {
                         Navigator.of(context).pop(false);
                       },
                     ),
                     FlatButton(
-                      child: Text('Yes, exit '),
+                      child: Text(appLoc.translate("yes_exit")),
                       onPressed: () {
                         Navigator.of(context).pop(true);
                         // Delete user
@@ -91,15 +96,15 @@ class Agreement extends StatelessWidget {
         child: SafeArea(
             child: Scaffold(
                 appBar: AppBar(
-                    title: const Text('Terms and conditions'),
+                    title: Text(appLoc.translate("terms_conditions")),
                     bottom: TabBar(
                       tabs: [
                         Tab(
                             icon: Icon(Icons.privacy_tip),
-                            text: 'Privacy Policy'),
+                            text: appLoc.translate("privacy_policy")),
                         Tab(
                             icon: Icon(Icons.warning_amber_rounded),
-                            text: 'Terms and conditions'),
+                            text: appLoc.translate("terms_conditions")),
                       ],
                     ),
                     actions: [
@@ -113,7 +118,7 @@ class Agreement extends StatelessWidget {
 
                                 print("POPED->" + accepted.toString());
                               },
-                              child: Text('AGREE',
+                              child: Text(appLoc.translate("agree"),
                                   style: TextStyle(color: Colors.white)))
                     ]),
                 backgroundColor: Colors.white,

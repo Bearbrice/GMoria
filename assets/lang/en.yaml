@@ -1,12 +1,35 @@
 #Global
 title: GMoria
+yes_exit: Yes, exit
+no: No
+lists: Lists
+learn: Learn
+game: Game
 
+
+
+#pages
 #User
+##
 userAccount_title: User Account
 signIn_email: Email
 signIn_password: Password
 signIn_button: Sign in
 home_signOut: Sign out
+
+##agreement_page
+dialog_confirm_exit: 'Are you sure you want to exit? (you will need to recreate your account and the data will be lost)'
+terms_conditions: Terms and conditions
+privacy_policy:  Privacy Policy
+agree: AGREE
+
+##intro_page
+intro_list: Create your own lists and swipe on the list to do quick actions
+intro_learn: Take time to learn the people you want to memorize
+intro_game: Test your knowledge and get a score on your lists to track your improvements
+
+##sign_up_page
+
 
 #Learn
 learn_title: 'Learn: '
@@ -32,3 +55,5 @@ game_title: 'Game :'
 
 #Import
 import_title: 'Select import'
+
+

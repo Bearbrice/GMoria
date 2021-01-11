@@ -4,8 +4,9 @@ import 'package:gmoria/domain/models/UserList.dart';
 
 class GameOptions extends StatefulWidget {
   final UserList userList;
+  final int number;
 
-  const GameOptions({Key key, this.userList}) : super(key: key);
+  const GameOptions({Key key, this.userList,this.number}) : super(key: key);
 
   @override
   _QuizOptionsDialogState createState() => _QuizOptionsDialogState();
@@ -19,7 +20,7 @@ class _QuizOptionsDialogState extends State<GameOptions> {
   @override
   void initState() {
     super.initState();
-    _noOfQuestions = widget.userList.persons.length;
+    _noOfQuestions = widget.number;
     _difficulty = "easy";
     processing = false;
   }
@@ -46,29 +47,29 @@ class _QuizOptionsDialogState extends State<GameOptions> {
               spacing: 16.0,
               children: <Widget>[
                 SizedBox(width: 0.0),
-                widget.userList.persons.length>10 ? ActionChip(
-                  label: Text(" ${(widget.userList.persons.length/4).round()}"),
+                widget.number>10 ? ActionChip(
+                  label: Text(" ${(widget.number/4).round()}"),
                   labelStyle: TextStyle(color: Colors.white),
-                  backgroundColor: _noOfQuestions == (widget.userList.persons.length/4).round() ? Colors.blue : Colors.grey.shade600,
-                  onPressed: () => _selectNumberOfQuestions((widget.userList.persons.length/4).round()),
+                  backgroundColor: _noOfQuestions == (widget.number/4).round() ? Colors.blue : Colors.grey.shade600,
+                  onPressed: () => _selectNumberOfQuestions((widget.number/4).round()),
                 ) : Container(),
-                widget.userList.persons.length>3 ? ActionChip(
-                  label: Text(" ${(widget.userList.persons.length/3).round()}"),
+                widget.number>3 ? ActionChip(
+                  label: Text(" ${(widget.number/3).round()}"),
                   labelStyle: TextStyle(color: Colors.white),
-                  backgroundColor: _noOfQuestions == (widget.userList.persons.length/3).round() ? Colors.blue : Colors.grey.shade600,
-                  onPressed: () => _selectNumberOfQuestions((widget.userList.persons.length/3).round()),
+                  backgroundColor: _noOfQuestions == (widget.number/3).round() ? Colors.blue : Colors.grey.shade600,
+                  onPressed: () => _selectNumberOfQuestions((widget.number/3).round()),
                 ) : SizedBox(width: 0.0),
                 ActionChip(
-                  label: Text(" ${(widget.userList.persons.length/2).round()}"),
+                  label: Text(" ${(widget.number/2).round()}"),
                   labelStyle: TextStyle(color: Colors.white),
-                  backgroundColor: _noOfQuestions == (widget.userList.persons.length/2).round() ? Colors.blue : Colors.grey.shade600,
-                  onPressed: () => _selectNumberOfQuestions((widget.userList.persons.length/2).round()),
+                  backgroundColor: _noOfQuestions == (widget.number/2).round() ? Colors.blue : Colors.grey.shade600,
+                  onPressed: () => _selectNumberOfQuestions((widget.number/2).round()),
                 ),
                 ActionChip(
                   label: Text("All"),
                   labelStyle: TextStyle(color: Colors.white),
-                  backgroundColor: _noOfQuestions == widget.userList.persons.length ? Colors.blue : Colors.grey.shade600,
-                  onPressed: () => _selectNumberOfQuestions(widget.userList.persons.length),
+                  backgroundColor: _noOfQuestions == widget.number ? Colors.blue : Colors.grey.shade600,
+                  onPressed: () => _selectNumberOfQuestions(widget.number),
                 ),
               ],
             ),

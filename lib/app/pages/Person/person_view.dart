@@ -64,7 +64,17 @@ class PersonDetailsPage extends StatelessWidget {
             }
           }));
     } else {
-      return BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
+      return MultiBlocProvider(
+          providers: [
+            BlocProvider<PersonBloc>(
+              create: (context) {
+                return PersonBloc(
+                  personRepository: DataPersonRepository(),
+                )..add(LoadPerson());
+              },
+            )
+          ],
+      child: BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
         if (state is PersonLoading) {
           return Center(child: CircularProgressIndicator());
         } else if (state is PersonLoaded) {
@@ -88,7 +98,7 @@ class PersonDetailsPage extends StatelessWidget {
           return Text(AppLocalizations.of(context).translate('learn_error'),
               style: TextStyle(fontSize: 20));
         }
-      });
+      }));
     }
   }
 }

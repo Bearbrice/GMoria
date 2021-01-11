@@ -22,14 +22,14 @@ class LearnPage extends StatelessWidget {
     final cardWidth = 400.0;
 
     //Check the size of the person list and manage exceptions
-    if (userList.persons.isEmpty) {
-      elementToRender = Center(
-          child: Text(AppLocalizations.of(context).translate('learn_emptyList'),
-              style: TextStyle(fontSize: 20)));
-    } else {
+    // if (userList.persons.isEmpty) {
+    //   elementToRender = Center(
+    //       child: Text(AppLocalizations.of(context).translate('learn_emptyList'),
+    //           style: TextStyle(fontSize: 20)));
+    // } else {
       elementToRender = PersonsList(
           userList: userList, cardHeight: cardHeight, cardWidth: cardWidth);
-    }
+    // }
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(

@@ -10,6 +10,8 @@ import 'package:gmoria/data/repositories/DataPersonRepository.dart';
 import 'package:gmoria/domain/blocs/person/PersonBloc.dart';
 import 'package:gmoria/domain/blocs/person/PersonEvent.dart';
 import 'package:gmoria/domain/blocs/person/PersonState.dart';
+import 'package:gmoria/domain/blocs/userlist/UserListBloc.dart';
+import 'package:gmoria/domain/blocs/userlist/UserListState.dart';
 import 'package:gmoria/domain/models/Person.dart';
 import 'package:gmoria/domain/models/UserList.dart';
 import 'package:unicorndial/unicorndial.dart';
@@ -30,9 +32,9 @@ class _ListPageState extends State<ListPage> {
   @override
   Widget build(BuildContext context) {
     final _scaffoldKey = GlobalKey<ScaffoldState>();
-    setState(() {
+    //setState(() {
       userList = ModalRoute.of(context).settings.arguments;
-    });
+    //});
 
     void _showSnackBar(BuildContext context, String text) {
       final snackBar = SnackBar(content: Text(text));
@@ -46,7 +48,8 @@ class _ListPageState extends State<ListPage> {
       }
 
       if (action == 'Game') {
-        if (userList.persons.length == 1) {
+        print("SIZE SIZE + ${size}");
+        if (size == 1) {
           Navigator.pushNamed(context, '/game',
               arguments: InitialGameArguments(userList, false, 1));
         } else {
@@ -55,6 +58,7 @@ class _ListPageState extends State<ListPage> {
             builder: (sheetContext) => BottomSheet(
               builder: (_) => GameOptions(
                 userList: userList,
+                number: size,
               ),
               onClosing: () {},
             ),
@@ -113,9 +117,9 @@ class _ListPageState extends State<ListPage> {
 
     return BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
       if (state is PersonLoaded) {
-        var numbers = state.person
-            .where((element) => element.lists.contains(userList.id));
-        size = numbers.length;
+        size = state.person
+           .where((element) => element.lists.contains(userList.id)).length;
+        print("SIZE + ${size}");
       }
 
       return Scaffold(
@@ -134,7 +138,9 @@ class _ListPageState extends State<ListPage> {
               personRepository: DataPersonRepository(),
             )..add(LoadUserListPersons(userList.id));
           },
-          child: MyUserPeople(userList.id),
+          child:MyUserPeople(defineSize : (int size) {
+                this.size = size;
+          },userListId: userList.id)                     //MyUserPeople(userList.id),
         )),
         bottomNavigationBar: BottomAppBar(
           shape: CircularNotchedRectangle(),
@@ -188,16 +194,19 @@ class _ListPageState extends State<ListPage> {
 }
 
 class MyUserPeople extends StatelessWidget {
+  MyUserPeople({this.defineSize, this.userListId});
+  final SizeCallback defineSize;
   final String userListId;
 
   // MyUserPeople({Key key, this.userList}) : super(key: key);
-  MyUserPeople(this.userListId, {Key key}) : super(key: key);
+  //MyUserPeople(this.userListId, {Key key}) : super(key: key);
 
   Widget build(BuildContext context) {
     return BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
       if (state is PersonLoading) {
         return Text("Loading !");
       } else if (state is UserListPersonLoaded) {
+        defineSize(state.person.length);
         if (state.person.isNotEmpty) {
           //If the list is not empty
           return WidgetListElement(userListId, list: state.person);
@@ -481,3 +490,5 @@ class HorizontalListItem extends StatelessWidget {
     );
   }
 }
+
+typedef SizeCallback = void Function(int size);

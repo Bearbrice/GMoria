@@ -17,19 +17,9 @@ class LearnPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final UserList userList = ModalRoute.of(context).settings.arguments;
-    var elementToRender;
     final cardHeight = 400.0;
     final cardWidth = 400.0;
 
-    //Check the size of the person list and manage exceptions
-    // if (userList.persons.isEmpty) {
-    //   elementToRender = Center(
-    //       child: Text(AppLocalizations.of(context).translate('learn_emptyList'),
-    //           style: TextStyle(fontSize: 20)));
-    // } else {
-      elementToRender = PersonsList(
-          userList: userList, cardHeight: cardHeight, cardWidth: cardWidth);
-    // }
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -40,8 +30,11 @@ class LearnPage extends StatelessWidget {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: Container(
-        child: elementToRender,
+      body: SingleChildScrollView(
+        child: Container(
+          child: PersonsList(
+              userList: userList, cardHeight: cardHeight, cardWidth: cardWidth),
+        ),
       ),
     );
   }
@@ -96,12 +89,13 @@ class PersonsList extends StatelessWidget {
                 Center(
                     child: Container(
                         width: cardWidth * 0.9,
-                        height: cardHeight*1.1,
-                        child: PersonCard(state.person.first)))
-              ,
+                        height: cardHeight * 1.1,
+                        child: PersonCard(state.person.first))),
                 RaisedButton(
                     onPressed: () {
-                      Navigator.popAndPushNamed(context, '/game', arguments: InitialGameArguments(userList,false,userList.persons.length));
+                      Navigator.popAndPushNamed(context, '/game',
+                          arguments: InitialGameArguments(
+                              userList, false, userList.persons.length));
                     },
                     color: Colors.green,
                     padding: const EdgeInsets.all(10.0),
@@ -109,7 +103,8 @@ class PersonsList extends StatelessWidget {
                     child: Text(
                         AppLocalizations.of(context)
                             .translate('learn_gameButton'),
-                        style: TextStyle(fontSize: 20)))]);
+                        style: TextStyle(fontSize: 20)))
+              ]);
             }
             List<Person> personsList = state.person;
             personsList.shuffle();
@@ -126,7 +121,8 @@ class PeopleSwiper extends StatefulWidget {
   final List<Person> personsList;
   final UserList userList;
 
-  const PeopleSwiper(this.personsList,this.userList, {Key key}) : super(key: key);
+  const PeopleSwiper(this.personsList, this.userList, {Key key})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _PeopleSwiperState();
@@ -181,7 +177,9 @@ class _PeopleSwiperState extends State<PeopleSwiper> {
                 margin: EdgeInsets.only(top: 10.0),
                 child: RaisedButton(
                     onPressed: () {
-                      Navigator.popAndPushNamed(context, '/game', arguments: InitialGameArguments(widget.userList,false,widget.userList.persons.length));
+                      Navigator.popAndPushNamed(context, '/game',
+                          arguments: InitialGameArguments(widget.userList,
+                              false, widget.userList.persons.length));
                     },
                     color: Colors.green,
                     padding: const EdgeInsets.all(10.0),
@@ -214,37 +212,39 @@ class PersonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(20.0)),
-          ),
-          child: Column(
-            children: [
-              ClipRRect(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20.0),
-                      topRight: Radius.circular(20.0)),
-                  child: ExtendedImage.network(
-                    person.image_url,
-                    fit: BoxFit.fill,
-                    enableMemoryCache: true,
-                    handleLoadingProgress: false,
-                  )),
-              Container(
-                height: 70.0,
-                width: 400.0,
-                decoration: BoxDecoration(
-                  color: Colors.lightBlue,
-                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20.0), bottomRight: Radius.circular(20.0)),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+        ),
+        child: Column(
+          children: [
+            ClipRRect(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20.0),
+                    topRight: Radius.circular(20.0)),
+                child: ExtendedImage.network(
+                  person.image_url,
+                  fit: BoxFit.fill,
+                  enableMemoryCache: true,
+                  handleLoadingProgress: false,
+                )),
+            Container(
+              height: 70.0,
+              width: 400.0,
+              decoration: BoxDecoration(
+                color: Colors.lightBlue,
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(20.0),
+                    bottomRight: Radius.circular(20.0)),
+              ),
+              child: Center(
+                child: Text(
+                  person.firstname + " " + person.lastname,
+                  style: TextStyle(color: Colors.white, fontSize: 30),
                 ),
-                child: Center(
-                  child: Text(
-                    person.firstname+" "+person.lastname,
-                    style: TextStyle(color: Colors.white, fontSize: 30),
-                  ),
-                ),
-              )
-            ],
-          ));
+              ),
+            )
+          ],
+        ));
   }
 }

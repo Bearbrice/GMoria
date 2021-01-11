@@ -67,6 +67,30 @@ class WidgetListElement extends StatefulWidget {
 class _WidgetListElementState extends State<WidgetListElement> {
   SlidableController slidableController;
   List<Person> peopleToShow;
+  List<Person> currentAllPeople;
+
+  bool compareLists(List<Person> list1, List<Person> list2){
+    if(list1.length!=list2.length){
+      return false;
+    }
+    for(Person p in list1){
+      if(!list2.contains(p)){
+        return false;
+      }
+    }
+    return true;
+  }
+
+  setPeopleToShow(){
+    // Sort the list of person by first names and lastnames
+    widget.list.sort((a, b) {
+      String firstnameLastnameA = a.firstname + a.lastname;
+      String firstnameLastnameB = b.firstname + b.lastname;
+      return firstnameLastnameA.toLowerCase().compareTo(firstnameLastnameB.toLowerCase());
+    });
+    peopleToShow = widget.list;
+    currentAllPeople = widget.list;
+  }
 
   @protected
   void initState() {
@@ -77,10 +101,14 @@ class _WidgetListElementState extends State<WidgetListElement> {
       return firstnameLastnameA.toLowerCase().compareTo(firstnameLastnameB.toLowerCase());
     });
     peopleToShow = widget.list;
+    currentAllPeople = widget.list;
     super.initState();
   }
 
   Widget _buildList(BuildContext context, Axis direction) {
+    if(!compareLists(currentAllPeople, widget.list)){
+      setPeopleToShow();
+    }
     return ListView.builder(
       scrollDirection: direction,
       itemBuilder: (context, index) {
@@ -183,7 +211,9 @@ class _WidgetListElementState extends State<WidgetListElement> {
                   ? 'Dismiss Archive'
                   : 'Dismiss Delete');
           setState(() {
-            peopleToShow.removeAt(index);
+            peopleToShow.remove(item);
+            currentAllPeople.remove(item);
+            widget.list.remove(item);
           });
         },
       ),

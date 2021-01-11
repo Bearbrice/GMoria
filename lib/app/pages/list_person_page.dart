@@ -256,8 +256,20 @@ class _WidgetListElementState extends State<WidgetListElement> {
     currentAllPeople = widget.list;
   }
 
+  bool compareLists(List<Person> list1, List<Person> list2){
+    if(list1.length!=list2.length){
+      return false;
+    }
+    for(Person p in list1){
+      if(!list2.contains(p)){
+        return false;
+      }
+    }
+    return true;
+  }
+
   Widget _buildList(BuildContext context, Axis direction) {
-    if(currentAllPeople.length != widget.list.length){
+    if(!compareLists(currentAllPeople, widget.list)){
       setPeopleToShow();
     }
     return ListView.builder(

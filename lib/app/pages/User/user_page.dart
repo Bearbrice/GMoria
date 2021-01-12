@@ -1,6 +1,9 @@
 import 'package:email_validator/email_validator.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:gmoria/app/utils/MyTextFormField.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
 import 'package:gmoria/data/firebase/authentication_service.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListBloc.dart';
@@ -20,6 +23,7 @@ class UserPage extends StatefulWidget {
 
 class _UserPageState extends State<UserPage> {
   // bool isSwitched = false;
+  final TextEditingController passwordController = TextEditingController();
 
   Widget _title() {
     return RichText(
@@ -228,6 +232,8 @@ class _UserPageState extends State<UserPage> {
   }
 
   deleteAccountDialog(List<UserList> userLists) {
+    final _formKey = GlobalKey<FormState>();
+
     String provider = context
         .read<AuthenticationService>()
         .getUser()
@@ -235,46 +241,87 @@ class _UserPageState extends State<UserPage> {
         .first
         .providerId;
 
+    String message;
+    String messageDelete;
+
+    Future<String> reAuthenticate() async {
+      String errorMessage = '';
+      if (_formKey.currentState.validate()) {
+        errorMessage = await context
+            .read<AuthenticationService>()
+            .reAuthenticateUser(passwordController.text.trim());
+        // print('MSG RCVD' + message.toString());
+        passwordController.text = "";
+      }
+      return errorMessage;
+    }
+
     return showDialog<bool>(
       context: context,
       builder: (context) {
         bool isSwitched = false;
         bool showError = false;
-        var message = null;
+
+        bool showPwdError = false;
+
         return StatefulBuilder(builder: (context, setState) {
           return AlertDialog(
             title: Text('Delete account'),
-            content: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              //position
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(
-                  'Warning: your account and all the data will be lost if you confirm this action',
-                  style: TextStyle(fontSize: 15, color: Colors.deepOrange[900]),
-                ),
-                SwitchListTile(
-                  value: isSwitched,
-                  onChanged: (value) {
-                    setState(() {
-                      isSwitched = value;
-                      showError = !value;
-                      print('Agree:' + isSwitched.toString());
-                    });
-                  },
-                  activeColor: Colors.lightGreenAccent,
-                  // secondary: new Icon(Icons.find_in_page_sharp),
-                  title: new Text(
-                      'I have read the warning and confirm I want to delete my account',
-                      style: TextStyle(fontSize: 14)),
-                  // subtitle: new Text('and I agree with the policy'),
-                ),
-                !showError
-                    ? Container()
-                    : Text('Error: you must confirm you have read the warning',
-                        style: TextStyle(color: Colors.red, fontSize: 12),
-                        textAlign: TextAlign.center),
-              ],
+            content: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                //position
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    'Warning: your account and all the data will be lost if you confirm this action',
+                    style:
+                        TextStyle(fontSize: 15, color: Colors.deepOrange[900]),
+                  ),
+                  SwitchListTile(
+                    value: isSwitched,
+                    onChanged: (value) {
+                      setState(() {
+                        isSwitched = value;
+                        showError = !value;
+                        print('Agree:' + isSwitched.toString());
+                      });
+                    },
+                    activeColor: Colors.lightGreenAccent,
+                    // secondary: new Icon(Icons.find_in_page_sharp),
+                    title: new Text(
+                        'I have read the warning and confirm I want to delete my account',
+                        style: TextStyle(fontSize: 14)),
+                    // subtitle: new Text('and I agree with the policy'),
+                  ),
+                  !showError
+                      ? Container()
+                      : Text(
+                          'Error: you must confirm you have read the warning',
+                          style: TextStyle(color: Colors.red, fontSize: 12),
+                          textAlign: TextAlign.center),
+                  provider == 'password'
+                      ? MyTextFormField(
+                          controller: passwordController,
+                          isPassword: true,
+                          hintText: "Password",
+                          maxLines: 1,
+                          validator: (String value) {
+                            if (value.isEmpty) {
+                              return 'You must provide a password';
+                            }
+                            return null;
+                          },
+                        )
+                      : Container(),
+                  showPwdError
+                      ? Text('Error: $message',
+                          style: TextStyle(color: Colors.red, fontSize: 12),
+                          textAlign: TextAlign.center)
+                      : Container()
+                ],
+              ),
             ),
             actions: <Widget>[
               FlatButton(
@@ -286,23 +333,57 @@ class _UserPageState extends State<UserPage> {
                 onPressed: () async => {
                   if (isSwitched == true)
                     {
-                      //Pop dialog
-                      Navigator.pop(context),
-                      //Pop user page
-                      Navigator.pop(context),
+                      // If the user is logged in with email and password, re-authenticate him
+                      if (provider == 'password')
+                        {
+                          message = await reAuthenticate(),
+                        },
+                      //If the user has been correctly re-authenticate (Email-password)
+                      if (message == 'Success' || provider == 'google.com')
+                        {
+                          print("HERE THE MESSAGE" + message.toString()),
 
-                      BlocProvider.of<UserListBloc>(context)
-                          .add(DeleteAllDataFromUser(userLists)),
+                          // Delete all data stored in cloud firestore for a user
+                          BlocProvider.of<UserListBloc>(context)
+                              .add(DeleteAllDataFromUser(userLists)),
 
-                      context
-                          .read<AuthenticationService>()
-                          .reAuthenticateUser(),
+                          // Email-password: delete the user because re-authentication has already been handled
+                          // Google: re-authenticate and delete the user
+                          messageDelete = await context
+                              .read<AuthenticationService>()
+                              .deleteUser(),
 
-                      message = await context
-                          .read<AuthenticationService>()
-                          .deleteUser(),
+                          print('State of the deletion:' +
+                              messageDelete.toString()),
 
-                      print('State of the deletion:' + message),
+                          // Pop dialog
+                          Navigator.pop(context),
+                          //Pop user page
+                          Navigator.pop(context),
+
+                          Fluttertoast.showToast(
+                              msg: "Account and all data successfully deleted",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.green,
+                              textColor: Colors.white,
+                              fontSize: 16.0),
+                        }
+                      else
+                        {
+                          setState(() {
+                            showPwdError = true;
+                          }),
+                          print('Error triggered / set state ' + message),
+                          if (message == 'wrong-password')
+                            {message = 'Wrong password'},
+                          if (message == 'too-many-requests')
+                            {
+                              message =
+                                  'Unexpected error, most probably because too many requests have been sent. Try again later or contact administrator'
+                            },
+                        }
                     }
                   else
                     {
@@ -445,7 +526,7 @@ class _UserPageState extends State<UserPage> {
                   ? Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       // mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                           _changeEmailButton(),
                           SizedBox(

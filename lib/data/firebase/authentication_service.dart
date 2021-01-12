@@ -89,6 +89,25 @@ class AuthenticationService {
     return await _firebaseAuth.signInWithCredential(credential);
   }
 
+  Future<UserCredential> reAuthenticateGoogle() async {
+    // Trigger the authentication flow
+    final GoogleSignInAccount googleUser =
+        await GoogleSignIn().signInSilently(suppressErrors: false);
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+
+    // Create a new credential
+    final GoogleAuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    // Once signed in, return the UserCredential
+    return await _firebaseAuth.signInWithCredential(credential);
+  }
+
   Future updateEmail(String newEmail) async {
     var message;
     User firebaseUser = _firebaseAuth.currentUser;
@@ -103,12 +122,30 @@ class AuthenticationService {
   }
 
   // Reauthenticate
-  Future reAuthenticateUser() async {
-    await FirebaseAuth.instance.currentUser
-        .reauthenticateWithCredential(credential);
+  Future<String> reAuthenticateUser(password) async {
+    User user = _firebaseAuth.currentUser;
+    try {
+      await FirebaseAuth.instance.currentUser.reauthenticateWithCredential(
+        EmailAuthProvider.credential(
+          email: user.email,
+          password: password,
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      print(e.message);
+      print(e.code.toString());
+      return e.code.toString();
+    }
+
+    return "Success";
   }
 
   Future<String> deleteUser() async {
+    if (FirebaseAuth.instance.currentUser.providerData.first.providerId ==
+        'google.com') {
+      await reAuthenticateGoogle();
+    }
+
     try {
       await _firebaseAuth.currentUser.delete();
     } on FirebaseAuthException catch (e) {

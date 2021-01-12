@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_document_picker/flutter_document_picker.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gmoria/app/utils/ImportArguments.dart';
 import 'package:gmoria/domain/models/Person.dart';
 import 'package:gmoria/domain/models/UserList.dart';
@@ -107,9 +108,26 @@ class _VCardPageState extends State<VCardPage> {
             onPressed: _pickFileInProgress
                 ? null
                 : () async {
-                    await _pickDocument().then((value) => Navigator.pushNamed(
-                        context, '/importSelectionContacts',
-                        arguments: new ImportArguments(people, userList)));
+                    await _pickDocument().then((value) => {
+                          if (people.isEmpty)
+                            {
+                              Fluttertoast.showToast(
+                                  msg: "Only vCard file (.vcf) are allowed",
+                                  toastLength: Toast.LENGTH_LONG,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor: Colors.red,
+                                  textColor: Colors.white,
+                                  fontSize: 16.0),
+                            }
+                          else
+                            {
+                              Navigator.pushNamed(
+                                  context, '/importSelectionContacts',
+                                  arguments:
+                                      new ImportArguments(people, userList)),
+                            }
+                        });
                   },
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10.0))),
@@ -146,6 +164,7 @@ class _VCardPageState extends State<VCardPage> {
     } catch (e) {
       print(e);
       result = 'Error: $e';
+      Navigator.pop(context);
     } finally {
       setState(() {
         _pickFileInProgress = false;

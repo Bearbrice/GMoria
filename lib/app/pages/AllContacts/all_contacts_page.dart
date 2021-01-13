@@ -46,7 +46,8 @@ class MyUserPeople extends StatelessWidget {
           //If the list is empty
           return Center(
               child:
-              Text("Your list is empty", style: TextStyle(fontSize: 20)));
+              Text(AppLocalizations.of(context).translate("empty_list"),
+                  style: TextStyle(fontSize: 20)));
         }
       } else {
         return Text(AppLocalizations.of(context).translate("unknown_error"));
@@ -137,7 +138,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
               ),
               fillColor: Colors.white,
               filled: true,
-              hintText: 'Search' //TODO
+              hintText: AppLocalizations.of(context).translate("search")
           ),
           onChanged: (text){
             text = text.toLowerCase();
@@ -165,15 +166,15 @@ class _WidgetListElementState extends State<WidgetListElement> {
         builder: (context) {
           return AlertDialog(
             title: Text(AppLocalizations.of(context).translate('delete_dialog_title'), style: TextStyle(color: Colors.red),),
-            content: Text(AppLocalizations.of(context).translate('delete_dialog_text_contact_permanently')),
+            content: Text(AppLocalizations.of(context).translate('delete_dialog_permanently')),
             actions: <Widget>[
               FlatButton(
-                  child: Text(AppLocalizations.of(context).translate('delete_dialog_cancel')),
+                  child: Text(AppLocalizations.of(context).translate('cancel')),
                   onPressed: () => {
                     Navigator.of(context).pop(false),
                   }),
               FlatButton(
-                child: Text(AppLocalizations.of(context).translate('delete_dialog_ok')),
+                child: Text(AppLocalizations.of(context).translate('ok')),
                 onPressed: () => {
                   Navigator.of(context).pop(true),
                   BlocProvider.of<PersonBloc>(context)
@@ -226,7 +227,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
           actionCount: 1,
           builder: (context, index, animation, renderingMode) {
             return IconSlideAction(
-                caption: 'Delete',
+                caption: AppLocalizations.of(context).translate("delete"),
                 color: Colors.red,
                 icon: Icons.delete,
                 onTap: () => deleteDialog());
@@ -280,7 +281,6 @@ class VerticalListItem extends StatelessWidget {
         child: ListTile(
           leading: CircleAvatar(
             backgroundColor: Colors.blue,
-            //child: Text('${item.index}'),
             backgroundImage: ExtendedImage.network(item.image_url).image,
             foregroundColor: Colors.white,
           ),
@@ -307,7 +307,6 @@ class HorizontalListItem extends StatelessWidget {
           Expanded(
             child: CircleAvatar(
               backgroundColor: Colors.blue,
-              //child: Text('${item.index}'),
               foregroundColor: Colors.white,
             ),
           ),

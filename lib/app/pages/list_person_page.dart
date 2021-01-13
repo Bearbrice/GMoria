@@ -10,8 +10,6 @@ import 'package:gmoria/data/repositories/DataPersonRepository.dart';
 import 'package:gmoria/domain/blocs/person/PersonBloc.dart';
 import 'package:gmoria/domain/blocs/person/PersonEvent.dart';
 import 'package:gmoria/domain/blocs/person/PersonState.dart';
-import 'package:gmoria/domain/blocs/userlist/UserListBloc.dart';
-import 'package:gmoria/domain/blocs/userlist/UserListState.dart';
 import 'package:gmoria/domain/models/Person.dart';
 import 'package:gmoria/domain/models/UserList.dart';
 import 'package:unicorndial/unicorndial.dart';
@@ -44,11 +42,10 @@ class _ListPageState extends State<ListPage> {
     /// Prevent learn and game to launch if the list is empty
     handleEmpty(action, size) {
       if (size == 0) {
-        return _showSnackBar(context, 'The list is empty');
+        return _showSnackBar(context, AppLocalizations.of(context).translate("list_person_snackbar_message"));
       }
 
       if (action == 'Game') {
-        print("SIZE SIZE + ${size}");
         if (size == 1) {
           Navigator.pushNamed(context, '/game',
               arguments: InitialGameArguments(userList, false, 1));
@@ -73,7 +70,7 @@ class _ListPageState extends State<ListPage> {
 
     childButtons.add(UnicornButton(
       hasLabel: true,
-      labelText: "New contact",
+      labelText: AppLocalizations.of(context).translate("list_person_create_contact"),
       currentButton: FloatingActionButton(
         mini: true,
         backgroundColor: Colors.blue,
@@ -88,7 +85,7 @@ class _ListPageState extends State<ListPage> {
 
     childButtons.add(UnicornButton(
         hasLabel: true,
-        labelText: "Import contacts",
+        labelText: AppLocalizations.of(context).translate("list_person_internal_import"),
         currentButton: FloatingActionButton(
           heroTag: "phone",
           backgroundColor: Colors.blue,
@@ -102,7 +99,7 @@ class _ListPageState extends State<ListPage> {
 
     childButtons.add(UnicornButton(
       hasLabel: true,
-      labelText: "Import from other",
+      labelText: AppLocalizations.of(context).translate("list_person_external_import"),
       currentButton: FloatingActionButton(
         mini: true,
         backgroundColor: Colors.blue,
@@ -119,14 +116,12 @@ class _ListPageState extends State<ListPage> {
       if (state is PersonLoaded) {
         size = state.person
            .where((element) => element.lists.contains(userList.id)).length;
-        print("SIZE + ${size}");
       }
 
       return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
           title: Text(
-            AppLocalizations.of(context).translate('list_title') +
                 userList.listName,
             style: TextStyle(color: Colors.white),
           ),
@@ -167,11 +162,11 @@ class _ListPageState extends State<ListPage> {
               BottomNavigationBarItem(
                 icon: new Icon(Icons.videogame_asset),
                 backgroundColor: Colors.blue,
-                label: "Game",
+                label: AppLocalizations.of(context).translate("game"),
               ),
               BottomNavigationBarItem(
                 icon: new Icon(Icons.school),
-                label: "Learn",
+                label: AppLocalizations.of(context).translate("learn"),
               ),
             ],
           ),
@@ -198,13 +193,10 @@ class MyUserPeople extends StatelessWidget {
   final SizeCallback defineSize;
   final String userListId;
 
-  // MyUserPeople({Key key, this.userList}) : super(key: key);
-  //MyUserPeople(this.userListId, {Key key}) : super(key: key);
-
   Widget build(BuildContext context) {
     return BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
       if (state is PersonLoading) {
-        return Text("Loading !");
+        return Text(AppLocalizations.of(context).translate("list_person_loading"));
       } else if (state is UserListPersonLoaded) {
         defineSize(state.person.length);
         if (state.person.isNotEmpty) {
@@ -213,11 +205,11 @@ class MyUserPeople extends StatelessWidget {
         } else {
           //If the list is empty
           return Center(
-              child:
-                  Text("Your list is empty", style: TextStyle(fontSize: 20)));
+              child: Text(AppLocalizations.of(context).translate("empty_list"))
+          );
         }
       } else {
-        return Text("Problem :D");
+        return Text(AppLocalizations.of(context).translate("unknown_error"));
       }
     });
   }
@@ -302,7 +294,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
           ),
           fillColor: Colors.white,
           filled: true,
-          hintText: 'Search' //TODO
+          hintText: AppLocalizations.of(context).translate("search")
         ),
         onChanged: (text){
           text = text.toLowerCase();
@@ -330,15 +322,15 @@ class _WidgetListElementState extends State<WidgetListElement> {
         builder: (context) {
           return AlertDialog(
             title: Text(AppLocalizations.of(context).translate('delete_dialog_title'), style: TextStyle(color: Colors.red),),
-            content: Text(AppLocalizations.of(context).translate('delete_dialog_text_contact_permanently')),
+            content: Text(AppLocalizations.of(context).translate('delete_dialog_permanently')),
             actions: <Widget>[
               FlatButton(
-                  child: Text('Cancel'),
+                  child: Text(AppLocalizations.of(context).translate('cancel')),
                   onPressed: () => {
                         Navigator.of(context).pop(false),
                       }),
               FlatButton(
-                child: Text('Ok'),
+                child: Text(AppLocalizations.of(context).translate('ok')),
                 onPressed: () => {
                   Navigator.of(context).pop(true),
                   BlocProvider.of<PersonBloc>(context)
@@ -391,7 +383,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
           actionCount: 1,
           builder: (context, index, animation, renderingMode) {
             return IconSlideAction(
-                caption: 'Delete',
+                caption: AppLocalizations.of(context).translate("delete"),
                 color: renderingMode == SlidableRenderingMode.slide
                     ? Colors.red.withOpacity(animation.value)
                     : Colors.red,
@@ -460,7 +452,6 @@ class VerticalListItem extends StatelessWidget {
               isAntiAlias: true,
               enableMemoryCache: true,
             ).image,
-            //child: Text('${item.index}'),
             foregroundColor: Colors.white,
           ),
           title: Text(item.firstname + " " + item.lastname),
@@ -486,7 +477,6 @@ class HorizontalListItem extends StatelessWidget {
           Expanded(
             child: CircleAvatar(
               backgroundColor: Colors.blue,
-              //child: Text('${item.index}'),
               foregroundColor: Colors.white,
             ),
           ),

@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gmoria/app/utils/ImportArguments.dart';
 import 'package:gmoria/app/utils/MyTextFormField.dart';
+import 'package:gmoria/app/utils/app_localizations.dart';
 import 'package:gmoria/domain/blocs/person/PersonBloc.dart';
 import 'package:gmoria/domain/blocs/person/PersonEvent.dart';
 import 'package:gmoria/domain/blocs/person/PersonState.dart';
@@ -22,16 +23,12 @@ class CreationImportContact extends StatelessWidget {
   List<Person> persons;
   UserList userList;
   ImportArguments args;
-  String title;
 
   @override
   Widget build(BuildContext context) {
     args = ModalRoute.of(context).settings.arguments;
     persons = args.persons;
     userList = args.userList;
-
-    title = "Add : ";
-
 
     return BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
       return WillPopScope(
@@ -40,18 +37,19 @@ class CreationImportContact extends StatelessWidget {
               context: context,
               builder: (_) {
                 return AlertDialog(
-                  content: Text(
-                      "Are you sure you want to quit the import? All the left contacts won't be added."),
-                  title: Text("Warning!"),
+                  content: Text(AppLocalizations.of(context).translate("creation_import_warning")),
+                  title: Text(
+                    AppLocalizations.of(context).translate("creation_import_warning_title"),
+                    style: TextStyle(color: Colors.red),),
                   actions: <Widget>[
                     FlatButton(
-                      child: Text("Yes"),
+                      child: Text(AppLocalizations.of(context).translate("yes")),
                       onPressed: () {
                         Navigator.popUntil(context, ModalRoute.withName('/list'));
                       },
                     ),
                     FlatButton(
-                      child: Text("No"),
+                      child: Text(AppLocalizations.of(context).translate("no")),
                       onPressed: () {
                         Navigator.pop(context, false);
                       },
@@ -62,7 +60,7 @@ class CreationImportContact extends StatelessWidget {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: Text(title),
+            title: Text(AppLocalizations.of(context).translate("creation_import_title")),
           ),
           body: TestForm(userList: userList, persons: persons),
         ),
@@ -127,7 +125,6 @@ class _TestFormState extends State<TestForm> {
         // _image = compressedFile;
         imageError = false;
       } else {
-        print('No image selected.');
         imageError = true;
       }
     });
@@ -184,14 +181,14 @@ class _TestFormState extends State<TestForm> {
                       color: Colors.blue,
                       size: 200.0,
                       semanticLabel:
-                      'Text to announce in accessibility modes',
+                      'Text to announce in accessibility modes', //TODO ?????????????
                     ))
                     : Image.file(_image, width: 280, height: 280)),
             Container(
                 child: Center(
                     child: _image == null
                         ? Text(
-                      'Please provide an image',
+                      AppLocalizations.of(context).translate("creation_import_image_error"),
                       style: TextStyle(
                         color: Colors.red[900],
                       ),
@@ -207,10 +204,10 @@ class _TestFormState extends State<TestForm> {
                     width: halfMediaWidth,
                     child: MyTextFormField(
                       controller: _firstnameEditingController,
-                      hintText: 'First Name',
+                      hintText: AppLocalizations.of(context).translate("firstname"),
                       validator: (String value) {
                         if (value.isEmpty) {
-                          return 'Enter the first name';
+                          return AppLocalizations.of(context).translate("firstname_validator");
                         }
                         return null;
                       },
@@ -223,11 +220,11 @@ class _TestFormState extends State<TestForm> {
                     alignment: Alignment.topCenter,
                     width: halfMediaWidth,
                     child: MyTextFormField(
-                      hintText: 'Last Name',
+                      hintText: AppLocalizations.of(context).translate("lastname"),
                       controller: _lastnameEditingController,
                       validator: (String value) {
                         if (value.isEmpty) {
-                          return 'Enter the last name';
+                          return AppLocalizations.of(context).translate("lastname_validator");
                         }
                         return null;
                       },
@@ -240,7 +237,7 @@ class _TestFormState extends State<TestForm> {
               ),
             ),
             MyTextFormField(
-              hintText: 'Job (optional)',
+              hintText: AppLocalizations.of(context).translate("job"),
               controller: _jobEditingController,
               isEmail: false,
               onSaved: (String value) {
@@ -248,7 +245,7 @@ class _TestFormState extends State<TestForm> {
               },
             ),
             MyTextFormField(
-              hintText: 'Description (optional)',
+              hintText: AppLocalizations.of(context).translate("description"),
               controller: _descriptionEditingController,
               isEmail: false,
               isLong: true,
@@ -264,10 +261,10 @@ class _TestFormState extends State<TestForm> {
                   IconButton(
                     icon: Icon(Icons.add_photo_alternate_outlined),
                     iconSize: 40,
-                    tooltip: 'From gallery',
+                    tooltip: AppLocalizations.of(context).translate("creation_import_from_gallery"),
                     onPressed: getG,
                   ),
-                  Text('From gallery')
+                  Text(AppLocalizations.of(context).translate("creation_import_from_gallery"))
                 ],
               ),
               SizedBox(
@@ -280,10 +277,10 @@ class _TestFormState extends State<TestForm> {
                   IconButton(
                     iconSize: 40,
                     icon: Icon(Icons.add_a_photo_outlined),
-                    tooltip: 'Take a photo',
+                    tooltip: AppLocalizations.of(context).translate("creation_import_from_camera"),
                     onPressed: getC,
                   ),
-                  Text('Take a photo')
+                  Text(AppLocalizations.of(context).translate("creation_import_from_camera"))
                 ],
               ),
             ]),
@@ -295,14 +292,11 @@ class _TestFormState extends State<TestForm> {
                     Fluttertoast.showToast(
                         textColor: Colors.white,
                         backgroundColor: Colors.red,
-                        msg: "Please provide an image");
-                    print('No image stop');
+                        msg: AppLocalizations.of(context).translate("creation_import_image_error"));
                     imageError = true;
                     return;
                   }
-                  print('Image OK - GO');
                   _formKey.currentState.save();
-                  print(this.model.firstname);
 
                     String imageURL = await getImageURL();
                     Person p = new Person(model.firstname, model.lastname,
@@ -318,12 +312,10 @@ class _TestFormState extends State<TestForm> {
                     }else{
                       Navigator.popUntil(context,ModalRoute.withName('/list'));
                     }
-
-
                 }
               },
               child: Text(
-                'Save',
+                AppLocalizations.of(context).translate("save"),
                 style: TextStyle(
                   color: Colors.white,
                 ),

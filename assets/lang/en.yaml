@@ -5,11 +5,17 @@ title: GMoria
 yes_exit: Yes, exit
 yes_delete: Yes, delete
 no: No
+yes: Yes
+save: Save
+ok: Ok
 cancel: Cancel
 
 lists: Lists
 learn: Learn
 game: Game
+
+search: Search
+delete: Delete
 
 login: Login
 link_privacy_policy_text: Privacy policy & Terms and conditions
@@ -23,6 +29,23 @@ invalid_email: Invalid email address
 must_provide_pwd: You must provide a password
 register_now: Register now
 
+empty_list: There are no people to display yet
+
+#Delete dialogs
+delete_dialog_title: Delete
+delete_dialog_permanently: The contact will be permanently deleted
+
+#Contact form
+firstname: First Name
+firstname_validator: Enter the first name
+lastname: Last Name
+lastname_validator: Enter the last name
+job: Job (optional)
+description: Description
+
+#Errors
+unknown_error: Oops... something went wrong! Please try again.
+permissions_error: Permissions error
 
 
 #pages
@@ -79,31 +102,50 @@ error_signin: No user found for that email or wrong password provided
 signIn_button: Sign in
 signIn_google: Sign in with Google
 
-
-
-#Learn
-learn_title: 'Learn: '
-learn_error: Oops... something went wrong! Please try again.
-learn_emptyList: Your list is empty
+#learn_page
+learn_title: 'Learn : '
 learn_gameButton: Ready to play ?
-
-list_title: 'List: '
-save: Save
-all_contacts_title: All Contacts
-delete_dialog_title: Delete
-delete_dialog_text_contact_permanently: The contact will be permanently deleted
-delete_dialog_ok: Ok
-delete_dialog_cancel: Cancel
-import_contacts_title: Import from all contacts
-import_contacts_button_label: Import
-
-#Erros
-unknown_error: Oops... something went wrong! Please try again.
 
 #Game
 game_title: 'Game :'
 
-#Import
-import_title: 'Select import'
+#all_contacts_page
+all_contacts_title: All Contacts
+
+#import_from_all_contacts
+import_contacts_title: Import from all contacts
+import_contacts_button_label: Import
+
+#list_person_page
+list_person_loading: Loading...
+list_person_snackbar_message: Your list is empty
+list_person_create_contact: Create contact
+list_person_internal_import: Import from contacts
+list_person_external_import: External import
+
+#creation_import_contacts
+creation_import_title: Create contact
+creation_import_warning: "Are you sure you want to quit the import? All the left contacts won't be added."
+creation_import_warning_title: Warning !
+creation_import_image_error: Please provide an image !
+creation_import_from_gallery: Gallery
+creation_import_from_camera: Camera
+creation_import_: Camera
+
+#import_selection_contact
+import_selection_title: External import
+import_selection_name_not_found: No name found !
+
+#select_import_page
+select_import_title: External import
+select_import_permissions_error: Please enable contacts access permission in system settings
+select_import_phone: Import from phone
+select_import_csv_error: Wrong csv file format
+select_import_csv_error_message: 'The column delimiter should be \";\" and the columns : Firstname, Lastname, Job, Description'
+select_import_csv: Import from CSV
+
+
+
+
 
 

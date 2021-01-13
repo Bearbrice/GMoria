@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_document_picker/flutter_document_picker.dart';
 import 'package:gmoria/app/pages/Import/vcard_import.dart';
 import 'package:gmoria/app/utils/ImportArguments.dart';
+import 'package:gmoria/app/utils/app_localizations.dart';
 import 'package:gmoria/domain/models/Person.dart';
 import 'package:gmoria/domain/models/UserList.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -20,7 +21,7 @@ class ImportSelectionPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: Text(
-          'Choose import',
+          AppLocalizations.of(context).translate("select_import_title"),
           style: TextStyle(color: Colors.white),
         ),
       ),
@@ -53,14 +54,11 @@ class ImportSelectionPage extends StatelessWidget {
                       showDialog(
                           context: context,
                           builder: (BuildContext context) => AlertDialog(
-                                title: Text('Permissions error'),
-                                //TODO Translate
-                                content: Text(
-                                    'Please enable contacts access ' //TODO Translate
-                                    'permission in system settings'),
+                                title: Text(AppLocalizations.of(context).translate("permissions_error")),
+                                content: Text(AppLocalizations.of(context).translate("select_import_permissions_error")),
                                 actions: <Widget>[
                                   FlatButton(
-                                      child: Text('OK'),
+                                      child: Text(AppLocalizations.of(context).translate("ok")),
                                       onPressed: () =>
                                           Navigator.of(context).pop())
                                 ],
@@ -70,10 +68,9 @@ class ImportSelectionPage extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10.0))),
                   label: Text(
-                    'Import from phone',
+                    AppLocalizations.of(context).translate("select_import_phone"),
                     style: TextStyle(color: Colors.white, fontSize: 20),
                   ),
-                  //TODO Translate
                   icon: Icon(
                     Icons.smartphone,
                     color: Colors.white,
@@ -96,14 +93,13 @@ class ImportSelectionPage extends StatelessWidget {
                     showDialog(
                         context: context,
                         builder: (BuildContext context) => AlertDialog(
-                              title: Text('Wrong csv file format'),
-                              //TODO Translate
+                              title: Text(AppLocalizations.of(context).translate("select_import_csv_error"),
+                                style: TextStyle(color: Colors.red),),
                               content: Text(
-                                  'The column delimiter should be \";\" and the columns : Firstname, Lastname, Job, Description'),
-                              //TODO Translate
+                                  AppLocalizations.of(context).translate("select_import_csv_error_message")),
                               actions: <Widget>[
                                 FlatButton(
-                                    child: Text('OK'),
+                                    child: Text(AppLocalizations.of(context).translate("ok")),
                                     onPressed: () =>
                                         Navigator.of(context).pop())
                               ],
@@ -116,10 +112,9 @@ class ImportSelectionPage extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10.0))),
                 label: Text(
-                  'Import from CSV',
+                  AppLocalizations.of(context).translate("select_import_csv"),
                   style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
-                //TODO Translate
                 icon: Icon(
                   Icons.upload_file,
                   color: Colors.white,

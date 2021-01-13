@@ -110,7 +110,7 @@ class PersonsList extends StatelessWidget {
             personsList.shuffle();
             return PeopleSwiper(personsList, userList);
           } else {
-            return Text(AppLocalizations.of(context).translate('learn_error'),
+            return Text(AppLocalizations.of(context).translate("unknown_error"),
                 style: TextStyle(fontSize: 20));
           }
         }));
@@ -240,7 +240,7 @@ class PersonCard extends StatelessWidget {
               child: Center(
                 child: Text(
                   person.firstname + " " + person.lastname,
-                  style: TextStyle(color: Colors.white, fontSize: 30),
+                  style: TextStyle(color: Colors.white, fontSize: 25),
                 ),
               ),
             )

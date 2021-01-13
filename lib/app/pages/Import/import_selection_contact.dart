@@ -55,7 +55,7 @@ class _AllContactsCheckboxesState extends State<AllContactsCheckboxes> {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: Text(
-          "Import",
+          AppLocalizations.of(context).translate("import_selection_title"),
           style: TextStyle(color: Colors.white),
         ),
       ),
@@ -64,7 +64,7 @@ class _AllContactsCheckboxesState extends State<AllContactsCheckboxes> {
           return new CheckboxListTile(
             title: p.lastname==null ?
             p.firstname==null ?
-            Text("No name found !") : Text(p.firstname)
+            Text(AppLocalizations.of(context).translate("import_selection_no_name_found")) : Text(p.firstname)
                 : p.firstname==null ?
             Text(p.lastname) : Text(p.firstname + " " + p.lastname),
             value: personsList[p],

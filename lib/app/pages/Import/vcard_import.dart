@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_document_picker/flutter_document_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gmoria/app/utils/ImportArguments.dart';
+import 'package:gmoria/app/utils/app_localizations.dart';
 import 'package:gmoria/domain/models/Person.dart';
 import 'package:gmoria/domain/models/UserList.dart';
 import 'package:vcard_parser/vcard_parser.dart';
@@ -18,6 +19,7 @@ class VCardPage extends StatefulWidget {
 }
 
 class _VCardPageState extends State<VCardPage> {
+  AppLocalizations appLoc;
   String _path = '-';
   bool _pickFileInProgress = false;
   List<Person> people = new List<Person>();
@@ -36,7 +38,7 @@ class _VCardPageState extends State<VCardPage> {
       // Read the file
       content = await file.readAsString();
     } catch (e) {
-      // If encountering an error, return 0.
+      // If encountering an error, return.
       return;
     }
 
@@ -44,7 +46,6 @@ class _VCardPageState extends State<VCardPage> {
     String identifier;
     String data = "";
     bool keepReading = false;
-
     VcardParser vcp;
 
     LineSplitter.split(content).forEach((line) => {
@@ -62,7 +63,7 @@ class _VCardPageState extends State<VCardPage> {
           else
             {
               //If keepReading was true we save the data and the identifier
-              if (keepReading = true)
+              if (keepReading == true)
                 {
                   keepReading = false,
                 },
@@ -102,6 +103,7 @@ class _VCardPageState extends State<VCardPage> {
   @override
   Widget build(BuildContext context) {
     UserList userList = ModalRoute.of(context).settings.arguments;
+    appLoc = AppLocalizations.of(context);
 
     return _pickFileInProgress == false
         ? RaisedButton.icon(
@@ -112,7 +114,7 @@ class _VCardPageState extends State<VCardPage> {
                           if (people.isEmpty)
                             {
                               Fluttertoast.showToast(
-                                  msg: "Only vCard file (.vcf) are allowed",
+                                  msg: appLoc.translate('only_vcf'),
                                   toastLength: Toast.LENGTH_LONG,
                                   gravity: ToastGravity.BOTTOM,
                                   timeInSecForIosWeb: 1,
@@ -136,11 +138,9 @@ class _VCardPageState extends State<VCardPage> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10.0))),
             label: Text(
-              'Import from VCARD',
+              appLoc.translate('import_vcard'),
               style: TextStyle(color: Colors.white, fontSize: 20),
             ),
-            //TODO Translate
-
             icon: Icon(
               Icons.file_present,
               color: Colors.white,

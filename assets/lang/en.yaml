@@ -35,27 +35,20 @@ empty_list: There are no people to display yet
 delete_dialog_title: Delete
 delete_dialog_permanently: The contact will be permanently deleted
 
-#Contact form
-firstname: First Name
-firstname_validator: Enter the first name
-lastname: Last Name
-lastname_validator: Enter the last name
-job: Job (optional)
-description: Description
+
 
 #Errors
 unknown_error: Oops... something went wrong! Please try again.
 permissions_error: Permissions error
 
+#list_person_page
+list_person_loading: Loading...
+list_person_snackbar_message: Your list is empty
+list_person_create_contact: Create contact
+list_person_internal_import: Import from contacts
+list_person_external_import: External import
 
-#pages
-#User
-##
-userAccount_title: User Account
-
-
-home_signOut: Sign out
-
+# ----- USER ----- #
 ##agreement_page
 dialog_confirm_exit: 'Are you sure you want to exit? (you will need to recreate your account and the data will be lost)'
 terms_conditions: Terms and conditions
@@ -106,6 +99,7 @@ signIn_google: Sign in with Google
 learn_title: 'Learn : '
 learn_gameButton: Ready to play ?
 
+# ----- GAME ----- #
 #game_page
 game_title: 'Game : '
 game_empty_list: Your list is empty
@@ -147,6 +141,7 @@ game_check_answers_done_button: Done
 game_check_answers_load_image_error_message: Error, could not load image or a problem occured.
 game_check_answers_answer_label: "Answer: "
 
+# ----- ALL CONTACTS ----- #
 #all_contacts_page
 all_contacts_title: All Contacts
 
@@ -154,13 +149,7 @@ all_contacts_title: All Contacts
 import_contacts_title: Import from all contacts
 import_contacts_button_label: Import
 
-#list_person_page
-list_person_loading: Loading...
-list_person_snackbar_message: Your list is empty
-list_person_create_contact: Create contact
-list_person_internal_import: Import from contacts
-list_person_external_import: External import
-
+# ----- IMPORT ----- #
 #creation_import_contacts
 creation_import_title: Create contact
 creation_import_warning: "Are you sure you want to quit the import? All the left contacts won't be added."
@@ -181,6 +170,34 @@ select_import_phone: Import from phone
 select_import_csv_error: Wrong csv file format
 select_import_csv_error_message: 'The column delimiter should be \";\" and the columns : Firstname, Lastname, Job, Description'
 select_import_csv: Import from CSV
+
+##vcard_import
+only_vcf: 'Only vCard file (.vcf) are allowed'
+import_vcard: Import from vCard
+
+# ----- PERSON ----- #
+#person_form_page
+add_person: Add a new person
+provide_image: Please provide an image
+firstname_validator: Enter the first name
+lastname_validator: Enter the last name
+from_gallery: From gallery
+take_photo: Take a photo
+
+#person_view
+learn_error: 'Oops... something went wrong! Please try again.'
+learn_emptyList: 'Your list is empty'
+person_delete: This person will be deleted
+error_image_load: 'Error, could not load image or a problem occured.'
+
+##BOTH
+firstname: First Name
+lastname: Last Name
+job: Job (optional)
+description: Description (optional)
+
+
+
 
 
 

@@ -16,10 +16,12 @@ import 'package:swipedetector/swipedetector.dart';
 class PersonDetailsPage extends StatelessWidget {
   ScreenArguments args;
   Person initialP;
+  AppLocalizations appLoc;
 
   @override
   Widget build(BuildContext context) {
     args = ModalRoute.of(context).settings.arguments;
+    appLoc = AppLocalizations.of(context);
     final String userListId = args.idUserList;
     initialP = args.person;
 
@@ -43,9 +45,7 @@ class PersonDetailsPage extends StatelessWidget {
               //Check the size of the person list and manage exceptions
               if (state.person.isEmpty) {
                 elementToRender = Center(
-                    child: Text(
-                        AppLocalizations.of(context)
-                            .translate('learn_emptyList'),
+                    child: Text(appLoc.translate('learn_emptyList'),
                         style: TextStyle(fontSize: 20)));
               } else {
                 List<Person> personsList = state.person;
@@ -59,7 +59,7 @@ class PersonDetailsPage extends StatelessWidget {
               }
               return elementToRender;
             } else {
-              return Text(AppLocalizations.of(context).translate('learn_error'),
+              return Text(appLoc.translate('learn_error'),
                   style: TextStyle(fontSize: 20));
             }
           }));
@@ -74,31 +74,32 @@ class PersonDetailsPage extends StatelessWidget {
               },
             )
           ],
-      child: BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
-        if (state is PersonLoading) {
-          return Center(child: CircularProgressIndicator());
-        } else if (state is PersonLoaded) {
-          //Check the size of the person list and manage exceptions
-          if (state.person.isEmpty) {
-            elementToRender = Center(
-                child: Text(
-                    AppLocalizations.of(context).translate('learn_emptyList'),
-                    style: TextStyle(fontSize: 20)));
-          } else {
-            List<Person> personsList = state.person;
-            personsList.sort((Person a, Person b) =>
-                a.firstname.toLowerCase().compareTo(b.firstname.toLowerCase()));
-            elementToRender = DetailsPage(
-                persons: personsList,
-                userListId: userListId,
-                initialPerson: initialP); //Quiz(person: state.person);
-          }
-          return elementToRender;
-        } else {
-          return Text(AppLocalizations.of(context).translate('learn_error'),
-              style: TextStyle(fontSize: 20));
-        }
-      }));
+          child:
+              BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
+            if (state is PersonLoading) {
+              return Center(child: CircularProgressIndicator());
+            } else if (state is PersonLoaded) {
+              //Check the size of the person list and manage exceptions
+              if (state.person.isEmpty) {
+                elementToRender = Center(
+                    child: Text(appLoc.translate('learn_emptyList'),
+                        style: TextStyle(fontSize: 20)));
+              } else {
+                List<Person> personsList = state.person;
+                personsList.sort((Person a, Person b) => a.firstname
+                    .toLowerCase()
+                    .compareTo(b.firstname.toLowerCase()));
+                elementToRender = DetailsPage(
+                    persons: personsList,
+                    userListId: userListId,
+                    initialPerson: initialP); //Quiz(person: state.person);
+              }
+              return elementToRender;
+            } else {
+              return Text(appLoc.translate('learn_error'),
+                  style: TextStyle(fontSize: 20));
+            }
+          }));
     }
   }
 }
@@ -117,18 +118,21 @@ class DetailsPage extends StatefulWidget {
 }
 
 class _DetailsPageState extends State<DetailsPage> {
+  AppLocalizations appLoc;
   TextEditingController nameController = new TextEditingController();
   Image _image;
   String idUserList;
   Person person;
   bool activeBtn = true;
   bool showAnswer = false;
-  final TextStyle _personstyle = TextStyle(
-      fontSize: 18.0, fontWeight: FontWeight.w500, color: Colors.white);
+
+  // final TextStyle _personstyle = TextStyle(
+  //     fontSize: 18.0, fontWeight: FontWeight.w500, color: Colors.white);
 
   int _currentIndex;
-  final Map<int, dynamic> _answers = {};
-  final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+
+  // final Map<int, dynamic> _answers = {};
+  // final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
   @protected
   void initState() {
@@ -143,18 +147,18 @@ class _DetailsPageState extends State<DetailsPage> {
       builder: (context) {
         return AlertDialog(
           title: Text(
-            'Delete',
+            appLoc.translate('delete'),
             style: TextStyle(color: Colors.red),
           ),
-          content: Text('This person will be deleted'),
+          content: Text(appLoc.translate('person_delete')),
           actions: <Widget>[
             FlatButton(
-                child: Text('Cancel'),
+                child: Text(appLoc.translate('cancel')),
                 onPressed: () => {
                       Navigator.of(context).pop(false),
                     }),
             FlatButton(
-              child: Text('Ok'),
+              child: Text(appLoc.translate('ok')),
               onPressed: () => {
                 // Pop the dialog
                 Navigator.of(context).pop(true),
@@ -177,6 +181,7 @@ class _DetailsPageState extends State<DetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    appLoc = AppLocalizations.of(context);
     final halfMediaWidth = MediaQuery.of(context).size.width / 2.0;
     person = widget.persons[_currentIndex];
     idUserList = widget.userListId;
@@ -220,8 +225,7 @@ class _DetailsPageState extends State<DetailsPage> {
                       margin: EdgeInsets.only(top: 10),
                       child: Center(
                         child: _image == null
-                            ? Text(
-                                'Error, could not load image or a problem occured.')
+                            ? Text(appLoc.translate('error_image_load'))
                             : Container(
                                 child: ExtendedImage.network(
                                     widget.persons[_currentIndex].image_url,
@@ -241,17 +245,16 @@ class _DetailsPageState extends State<DetailsPage> {
                               alignment: Alignment.center,
                               width: halfMediaWidth,
                               child: MyText(
-                                label: 'First name',
+                                label: appLoc.translate('firstname'),
                                 text: widget.persons[_currentIndex].firstname,
                               )),
                           Container(
                               alignment: Alignment.center,
                               width: halfMediaWidth,
                               child: MyText(
-                                label: 'Last name',
+                                label: appLoc.translate('lastname'),
                                 text: widget.persons[_currentIndex].lastname,
-                              )
-                          ),
+                              )),
                         ],
                       ),
                     ),
@@ -262,7 +265,7 @@ class _DetailsPageState extends State<DetailsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           IconButton(
-                            iconSize:45,
+                            iconSize: 45,
                             icon: Icon(Icons.chevron_left),
                             onPressed: () {
                               setState(() {
@@ -279,11 +282,11 @@ class _DetailsPageState extends State<DetailsPage> {
                               alignment: Alignment.center,
                               // width: halfMediaWidth,
                               child: MyText(
-                                label: 'Job',
+                                label: appLoc.translate('job'),
                                 text: widget.persons[_currentIndex].job,
                               )),
                           IconButton(
-                            iconSize:45,
+                            iconSize: 45,
                             icon: Icon(Icons.chevron_right),
                             onPressed: () {
                               setState(() {
@@ -302,7 +305,7 @@ class _DetailsPageState extends State<DetailsPage> {
                         padding: EdgeInsets.fromLTRB(55, 16, 55, 16),
                         alignment: Alignment.center,
                         child: MyText(
-                          label: 'Description',
+                          label: appLoc.translate('description'),
                           text: widget.persons[_currentIndex].description,
                         )),
                   ],
@@ -359,10 +362,8 @@ class MyText extends StatelessWidget {
             // Child text spans will inherit styles from parent
             style: TextStyle(
               fontSize: 15.0,
-              // fontFamily: 'Open Sans',
               color: Colors.black,
             ),
-
             children: <TextSpan>[
               TextSpan(
                   text: '\n$text',

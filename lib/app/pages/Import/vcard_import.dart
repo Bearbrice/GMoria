@@ -119,6 +119,10 @@ class _VCardPageState extends State<VCardPage> {
                                   backgroundColor: Colors.red,
                                   textColor: Colors.white,
                                   fontSize: 16.0),
+                              //If fails it automatically pops so we need to push the page
+                              Navigator.pushNamed(
+                                  context, '/importSelectionScreen',
+                                  arguments: userList),
                             }
                           else
                             {

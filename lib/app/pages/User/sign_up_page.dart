@@ -24,7 +24,7 @@ class _SignUpPageState extends State<SignUpPage> {
   bool showError = false;
   bool showAlreadyExists = false;
 
-  AppLocalizations appContext;
+  AppLocalizations appLoc;
 
   Widget _backButton() {
     return InkWell(
@@ -39,7 +39,7 @@ class _SignUpPageState extends State<SignUpPage> {
               padding: EdgeInsets.only(left: 0, top: 10, bottom: 10),
               child: Icon(Icons.keyboard_arrow_left, color: Colors.white),
             ),
-            Text('Back',
+            Text(appLoc.translate("back"),
                 style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
@@ -72,18 +72,16 @@ class _SignUpPageState extends State<SignUpPage> {
                 .then((value) => {
                       if (value.toString() == 'email-already-in-use')
                         {
-                          // print('PRINT->' + value),
                           setState(() {
                             showAlreadyExists = true;
                           }),
-                          // print('ALREADY EXISTS')
                         }
                       else
                         {
-                          // print(value),
                           setState(() {
                             showAlreadyExists = false;
                           }),
+
                           // The user is sign up and login, pop the page
                           Navigator.pushNamed(context, '/introPage'),
                         }
@@ -92,7 +90,6 @@ class _SignUpPageState extends State<SignUpPage> {
         } else {
           setState(() {
             showError = true;
-            // print('Agree:' + isSwitched.toString());
           });
           print(
               'The privacy policy and terms and conditions have not been accepted');
@@ -106,7 +103,6 @@ class _SignUpPageState extends State<SignUpPage> {
             borderRadius: BorderRadius.all(Radius.circular(5)),
             boxShadow: <BoxShadow>[
               BoxShadow(
-                  // color: Color(0xffdf8e33).withAlpha(100),
                   color: Colors.lightBlueAccent,
                   offset: Offset(2, 4),
                   blurRadius: 8,
@@ -114,7 +110,7 @@ class _SignUpPageState extends State<SignUpPage> {
             ],
             color: Colors.white),
         child: Text(
-          'Register now',
+          appLoc.translate("register_now"),
           style: TextStyle(fontSize: 20, color: Colors.black),
         ),
       ),
@@ -134,14 +130,14 @@ class _SignUpPageState extends State<SignUpPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Already have an account ?',
+              appLoc.translate("already_have"),
               style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
             ),
             SizedBox(
               width: 5,
             ),
             Text(
-              'Login',
+              appLoc.translate("login"),
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 13,
@@ -159,14 +155,13 @@ class _SignUpPageState extends State<SignUpPage> {
         moveToAgreement();
       },
       child: Container(
-        // margin: EdgeInsets.symmetric(vertical: 20),
         padding: EdgeInsets.all(5),
         alignment: Alignment.bottomCenter,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Privacy policy & Terms and conditions',
+              appLoc.translate("link_privacy_policy_text"),
               style: TextStyle(
                   color: Colors.indigo[800],
                   fontSize: 15,
@@ -183,16 +178,14 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget _signInForm() {
     return Form(
       key: _formKey,
-      // child: SingleChildScrollView(
       child: Column(
-        // return Column(
         children: [
           SizedBox(
             height: 20,
           ),
           MyTextField(
             controller: emailController,
-            labelText: appContext.translate('signIn_email'),
+            labelText: appLoc.translate('signIn_email'),
             obscure: false,
             validator: (email) =>
                 EmailValidator.validate(email) ? null : "Invalid email address",
@@ -202,7 +195,7 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
           MyTextField(
             controller: passwordController,
-            labelText: appContext.translate('signIn_password'),
+            labelText: appLoc.translate('signIn_password'),
             obscure: true,
             validator: (String value) {
               if (value.isEmpty) {
@@ -219,11 +212,11 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
           MyTextField(
             controller: password2Controller,
-            labelText: 'Confirm password',
+            labelText: appLoc.translate('confirm_pwd'),
             obscure: true,
             validator: (String value) {
               if (passwordController.text != password2Controller.text) {
-                return 'The confirmed password does not match the first one';
+                return appLoc.translate('error_match_pwd');
               }
               return null;
             },
@@ -231,7 +224,6 @@ class _SignUpPageState extends State<SignUpPage> {
           SizedBox(
             height: 10,
           ),
-          // Text('You must acccept'),
           _linkToTerms(),
           SwitchListTile(
             value: isSwitched,
@@ -243,12 +235,8 @@ class _SignUpPageState extends State<SignUpPage> {
               });
             },
             activeColor: Colors.lightGreenAccent,
-            // secondary: new Icon(Icons.find_in_page_sharp),
-            title: new Text(
-                'I have read and accept the privacy policy, the terms and conditions'),
-            // subtitle: new Text('and I agree with the policy'),
+            title: new Text(appLoc.translate('read_privacy')),
           ),
-
           !showError
               ? Container()
               : Center(
@@ -261,7 +249,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       color: Colors.blue[200],
                     ),
                     child: Text(
-                      'You must accept the privacy policy, terms and conditions',
+                      appLoc.translate('must_accept'),
                       style: new TextStyle(
                         color: Colors.red,
                         height: 1,
@@ -282,7 +270,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       color: Colors.blue[200],
                     ),
                     child: Text(
-                      'User already exists, sign in, go to forgotten password or use another email',
+                      appLoc.translate('already_exists'),
                       style: new TextStyle(
                         color: Colors.red,
                         height: 1,
@@ -321,7 +309,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Widget _subtitle() {
     return Text(
-      'Register',
+      appLoc.translate('register'),
       style: TextStyle(
           shadows: [Shadow(color: Colors.white, offset: Offset(0, -5))],
           color: Colors.transparent,
@@ -352,7 +340,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    appContext = AppLocalizations.of(context);
+    appLoc = AppLocalizations.of(context);
 
     return Scaffold(
       body: Stack(

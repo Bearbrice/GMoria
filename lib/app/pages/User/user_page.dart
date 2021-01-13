@@ -22,8 +22,8 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
-  // bool isSwitched = false;
   final TextEditingController passwordController = TextEditingController();
+  AppLocalizations appLoc;
 
   Widget _title() {
     return RichText(
@@ -48,7 +48,6 @@ class _UserPageState extends State<UserPage> {
   Widget _logoutButton() {
     return InkWell(
       onTap: () {
-        // Navigator.pushNamed(context, '/signUp', arguments: false);
         context.read<AuthenticationService>().signOut();
         Navigator.pop(context);
       },
@@ -60,7 +59,6 @@ class _UserPageState extends State<UserPage> {
               borderRadius: BorderRadius.all(Radius.circular(5)),
               boxShadow: <BoxShadow>[
                 BoxShadow(
-                    // color: Color(0xffdf8e33).withAlpha(100),
                     color: Colors.lightBlueAccent,
                     offset: Offset(2, 4),
                     blurRadius: 8,
@@ -74,17 +72,12 @@ class _UserPageState extends State<UserPage> {
                   child: Icon(Icons.logout, size: 20),
                 ),
                 TextSpan(
-                  text: ' Logout',
+                  text: ' ' + appLoc.translate('logout'),
                   style: TextStyle(fontSize: 20, color: Colors.black),
                 ),
               ],
             ),
-          )
-
-          // Text(
-          //
-          // ),
-          ),
+          )),
     );
   }
 
@@ -94,14 +87,13 @@ class _UserPageState extends State<UserPage> {
         Navigator.pushNamed(context, '/terms', arguments: true);
       },
       child: Container(
-        // margin: EdgeInsets.symmetric(vertical: 20),
         padding: EdgeInsets.all(5),
         alignment: Alignment.bottomCenter,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Privacy policy & Terms and conditions',
+              appLoc.translate('link_privacy_policy_text'),
               style: TextStyle(
                   color: Colors.indigo[800],
                   fontSize: 15,
@@ -115,25 +107,12 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  // /// Update the switch if the terms are accepted
-  // void updateIsSwitch(bool accepted) {
-  //   setState(() => {isSwitched = accepted, showError = false});
-  // }
-
   Widget _deleteAccountButton(List<UserList> userLists) {
     return InkWell(
       onTap: () {
-        // Navigator.pushNamed(context, '/signUp', arguments: false);
         deleteAccountDialog(userLists);
-
-        // showDialog(
-        //     context: context,
-        //     builder: (_) {
-        //       return MyDialog();
-        //     });
       },
       child: Container(
-        // width: MediaQuery.of(context).size.width,
         padding: EdgeInsets.symmetric(vertical: 13, horizontal: 10),
         alignment: Alignment.center,
         decoration: BoxDecoration(
@@ -141,7 +120,7 @@ class _UserPageState extends State<UserPage> {
           border: Border.all(color: Colors.white70, width: 2),
         ),
         child: Text(
-          'Delete account',
+          appLoc.translate('delete_account'),
           style: TextStyle(fontSize: 20, color: Colors.white),
         ),
       ),
@@ -154,7 +133,6 @@ class _UserPageState extends State<UserPage> {
         changeEmailDialog();
       },
       child: Container(
-        // width: MediaQuery.of(context).size.width,
         padding: EdgeInsets.symmetric(vertical: 13, horizontal: 10),
         alignment: Alignment.center,
         decoration: BoxDecoration(
@@ -162,7 +140,7 @@ class _UserPageState extends State<UserPage> {
           border: Border.all(color: Colors.white70, width: 2),
         ),
         child: Text(
-          'Change email',
+          appLoc.translate('change_email'),
           style: TextStyle(fontSize: 20, color: Colors.white),
         ),
       ),
@@ -171,7 +149,7 @@ class _UserPageState extends State<UserPage> {
 
   Widget _subtitle() {
     return Text(
-      'Your account information',
+      appLoc.translate('account_info'),
       style: TextStyle(
           shadows: [Shadow(color: Colors.white, offset: Offset(0, -5))],
           color: Colors.transparent,
@@ -207,20 +185,18 @@ class _UserPageState extends State<UserPage> {
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-          Text('Email'),
-          // style: TextStyle(color: Colors.white, fontSize: 17)),
-
+          Text(appLoc.translate('signIn_email')),
           Text('$email', style: TextStyle(color: Colors.white, fontSize: 17)),
           SizedBox(
             height: 20,
           ),
-          Text('Connected with'),
+          Text(appLoc.translate('connected_with')),
           Text(formatProvider(),
               style: TextStyle(color: Colors.white, fontSize: 17)),
           SizedBox(
             height: 20,
           ),
-          Text('Creation date'),
+          Text(appLoc.translate('creation_date')),
           Text('$ct', style: TextStyle(color: Colors.white, fontSize: 17)),
         ]));
   }
@@ -250,7 +226,6 @@ class _UserPageState extends State<UserPage> {
         errorMessage = await context
             .read<AuthenticationService>()
             .reAuthenticateUser(passwordController.text.trim());
-        // print('MSG RCVD' + message.toString());
         passwordController.text = "";
       }
       return errorMessage;
@@ -266,7 +241,7 @@ class _UserPageState extends State<UserPage> {
 
         return StatefulBuilder(builder: (context, setState) {
           return AlertDialog(
-            title: Text('Delete account'),
+            title: Text(appLoc.translate('delete_account')),
             content: Form(
               key: _formKey,
               child: Column(
@@ -275,7 +250,7 @@ class _UserPageState extends State<UserPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Text(
-                    'Warning: your account and all the data will be lost if you confirm this action',
+                    appLoc.translate('warning_delete'),
                     style:
                         TextStyle(fontSize: 15, color: Colors.deepOrange[900]),
                   ),
@@ -289,27 +264,23 @@ class _UserPageState extends State<UserPage> {
                       });
                     },
                     activeColor: Colors.lightGreenAccent,
-                    // secondary: new Icon(Icons.find_in_page_sharp),
-                    title: new Text(
-                        'I have read the warning and confirm I want to delete my account',
+                    title: new Text(appLoc.translate('read_accept_delete'),
                         style: TextStyle(fontSize: 14)),
-                    // subtitle: new Text('and I agree with the policy'),
                   ),
                   !showError
                       ? Container()
-                      : Text(
-                          'Error: you must confirm you have read the warning',
+                      : Text(appLoc.translate('error_not_read'),
                           style: TextStyle(color: Colors.red, fontSize: 12),
                           textAlign: TextAlign.center),
                   provider == 'password'
                       ? MyTextFormField(
                           controller: passwordController,
                           isPassword: true,
-                          hintText: "Password",
+                          hintText: appLoc.translate('signIn_password'),
                           maxLines: 1,
                           validator: (String value) {
                             if (value.isEmpty) {
-                              return 'You must provide a password';
+                              return appLoc.translate('must_provide_pwd');
                             }
                             return null;
                           },
@@ -325,11 +296,11 @@ class _UserPageState extends State<UserPage> {
             ),
             actions: <Widget>[
               FlatButton(
-                child: Text('Abort'),
+                child: Text(appLoc.translate('abort')),
                 onPressed: () => Navigator.of(context).pop(false),
               ),
               FlatButton(
-                child: Text('Yes, delete'),
+                child: Text(appLoc.translate('yes_delete')),
                 onPressed: () async => {
                   if (isSwitched == true)
                     {
@@ -362,7 +333,7 @@ class _UserPageState extends State<UserPage> {
                           Navigator.pop(context),
 
                           Fluttertoast.showToast(
-                              msg: "Account and all data successfully deleted",
+                              msg: appLoc.translate('toast_confirmation'),
                               toastLength: Toast.LENGTH_SHORT,
                               gravity: ToastGravity.BOTTOM,
                               timeInSecForIosWeb: 1,
@@ -377,12 +348,9 @@ class _UserPageState extends State<UserPage> {
                           }),
                           print('Error triggered / set state ' + message),
                           if (message == 'wrong-password')
-                            {message = 'Wrong password'},
+                            {message = appLoc.translate('wrong_password')},
                           if (message == 'too-many-requests')
-                            {
-                              message =
-                                  'Unexpected error, most probably because too many requests have been sent. Try again later or contact administrator'
-                            },
+                            {message = appLoc.translate('error_unexpected')},
                         }
                     }
                   else
@@ -408,8 +376,7 @@ class _UserPageState extends State<UserPage> {
     return showDialog<String>(
       context: context,
       child: AlertDialog(
-        title: Text('Change your email'),
-        // contentPadding: const EdgeInsets.all(16.0),
+        title: Text(appLoc.translate('change_your_email')),
         content: Form(
             key: _formKey,
             child: Column(
@@ -417,7 +384,7 @@ class _UserPageState extends State<UserPage> {
               //position
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Text('Current email:'),
+                Text(appLoc.translate('current_email')),
                 Text('$current',
                     style: TextStyle(
                       color: Colors.blue,
@@ -426,14 +393,14 @@ class _UserPageState extends State<UserPage> {
                 TextFormField(
                   controller: emailController,
                   autofocus: true,
-                  decoration:
-                      InputDecoration(labelText: 'Enter your new email:'),
+                  decoration: InputDecoration(
+                      labelText: appLoc.translate('enter_new_email')),
                   validator: (email) {
                     if (email == current) {
-                      return 'Same email as current email';
+                      return appLoc.translate('same_email');
                     }
                     if (!EmailValidator.validate(email)) {
-                      return "Invalid email address";
+                      return appLoc.translate('invalid_email');
                     }
                     return null;
                   },
@@ -442,12 +409,12 @@ class _UserPageState extends State<UserPage> {
             )),
         actions: <Widget>[
           FlatButton(
-              child: const Text('Cancel'),
+              child: Text(appLoc.translate('cancel')),
               onPressed: () {
                 Navigator.pop(context);
               }),
           FlatButton(
-              child: const Text('Change'),
+              child: Text(appLoc.translate('change')),
               onPressed: () async {
                 if (_formKey.currentState.validate()) {
                   print('FORM VALIDATED!!');
@@ -460,7 +427,6 @@ class _UserPageState extends State<UserPage> {
 
                   Navigator.pop(context);
                 }
-                // listController.text = "";
               })
         ],
       ),
@@ -477,16 +443,17 @@ class _UserPageState extends State<UserPage> {
 
     final List<UserList> userLists = ModalRoute.of(context).settings.arguments;
 
+    appLoc = AppLocalizations.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).translate('title')),
+        title: Text(appLoc.translate('title')),
       ),
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 20),
           height: MediaQuery.of(context).size.height,
           decoration: BoxDecoration(
-              // borderRadius: BorderRadius.all(Radius.circular(2)),
               boxShadow: <BoxShadow>[
                 BoxShadow(
                     color: Colors.grey.shade200,
@@ -495,8 +462,8 @@ class _UserPageState extends State<UserPage> {
                     spreadRadius: 2)
               ],
               gradient: LinearGradient(
-                  begin: Alignment.topCenter, end: Alignment.bottomCenter,
-                  // colors: [Colors.blue[50], Colors.blue[300]])),
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
                   colors: [Colors.cyan[300], Colors.blueAccent])),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -525,7 +492,6 @@ class _UserPageState extends State<UserPage> {
               provider == 'password'
                   ? Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      // mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                           _changeEmailButton(),

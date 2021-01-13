@@ -148,6 +148,7 @@ class AuthenticationService {
 
     try {
       await _firebaseAuth.currentUser.delete();
+      await GoogleSignIn().signOut();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'requires-recent-login') {
         print(

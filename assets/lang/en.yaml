@@ -1,10 +1,27 @@
 #Global
 title: GMoria
+
+#Re-usable
 yes_exit: Yes, exit
+yes_delete: Yes, delete
 no: No
+cancel: Cancel
+
 lists: Lists
 learn: Learn
 game: Game
+
+login: Login
+link_privacy_policy_text: Privacy policy & Terms and conditions
+register: Register
+logout: Logout
+
+signIn_email: Email
+signIn_password: Password
+abort: Abort
+invalid_email: Invalid email address
+must_provide_pwd: You must provide a password
+register_now: Register now
 
 
 
@@ -12,9 +29,8 @@ game: Game
 #User
 ##
 userAccount_title: User Account
-signIn_email: Email
-signIn_password: Password
-signIn_button: Sign in
+
+
 home_signOut: Sign out
 
 ##agreement_page
@@ -29,6 +45,40 @@ intro_learn: Take time to learn the people you want to memorize
 intro_game: Test your knowledge and get a score on your lists to track your improvements
 
 ##sign_up_page
+back: Back
+already_have: Already have an account ?
+confirm_pwd: Confirm password
+error_match_pwd: The confirmed password does not match the first one
+read_privacy: I have read and accept the privacy policy, the terms and conditions
+must_accept: You must accept the privacy policy, terms and conditions
+already_exists: User already exists, sign in, go to forgotten password or use another email
+
+##user_page
+delete_account: Delete account
+change_email: Change email
+account_info: Your account information
+connected_with: Connected with
+creation_date: Creation date
+warning_delete: 'Warning: your account and all the data will be lost if you confirm this action'
+read_accept_delete: I have read the warning and confirm I want to delete my account
+error_not_read: 'Error: you must confirm you have read the warning'
+
+toast_confirmation: Account and its data successfully deleted
+wrong_password: Wrong password
+error_unexpected: 'Unexpected error, most probably because too many requests have been sent. Try again later or contact administrator'
+change_your_email: Change your email
+current_email: 'Current email:'
+enter_new_email: 'Enter your new email:'
+same_email: Same email as current email
+
+change: Change
+
+##welcome_page
+google_agree: By sign in with google you agree to our
+error_signin: No user found for that email or wrong password provided
+signIn_button: Sign in
+signIn_google: Sign in with Google
+
 
 
 #Learn

@@ -6,10 +6,6 @@ import 'package:intro_views_flutter/intro_views_flutter.dart';
 class IntroPage extends StatelessWidget {
   AppLocalizations appLoc;
 
-  setAppLoc(context) {
-    appLoc = AppLocalizations.of(context);
-  }
-
   //making list of pages needed to pass in IntroViewsFlutter constructor.
   listPages() {
     return [
@@ -18,8 +14,8 @@ class IntroPage extends StatelessWidget {
           bubble: Icon(Icons.list_alt),
           body: Text(appLoc.translate("intro_list")),
           title: Text(appLoc.translate("lists")),
-          titleTextStyle: TextStyle(fontFamily: 'MyFont', color: Colors.white),
-          bodyTextStyle: TextStyle(fontFamily: 'MyFont', color: Colors.white),
+          titleTextStyle: TextStyle(color: Colors.white),
+          bodyTextStyle: TextStyle(color: Colors.white),
           mainImage: Image.asset(
             'assets/picture/List.jpeg',
             height: 285.0,
@@ -37,8 +33,8 @@ class IntroPage extends StatelessWidget {
           width: 285.0,
           alignment: Alignment.center,
         ),
-        titleTextStyle: TextStyle(fontFamily: 'MyFont', color: Colors.white),
-        bodyTextStyle: TextStyle(fontFamily: 'MyFont', color: Colors.white),
+        titleTextStyle: TextStyle(color: Colors.white),
+        bodyTextStyle: TextStyle(color: Colors.white),
       ),
       PageViewModel(
         pageColor: const Color(0xFF607D8B),
@@ -51,28 +47,25 @@ class IntroPage extends StatelessWidget {
           width: 285.0,
           alignment: Alignment.center,
         ),
-        titleTextStyle: TextStyle(fontFamily: 'MyFont', color: Colors.white),
-        bodyTextStyle: TextStyle(fontFamily: 'MyFont', color: Colors.white),
+        titleTextStyle: TextStyle(color: Colors.white),
+        bodyTextStyle: TextStyle(color: Colors.white),
       ),
     ];
   }
 
   @override
   Widget build(BuildContext context) {
-    setAppLoc(context);
+    appLoc = AppLocalizations.of(context);
 
     return Scaffold(
-      body:
-          // Builder(
-          //
-          // builder: (context) =>
-          IntroViewsFlutter(
+      body: IntroViewsFlutter(
         listPages(),
         showNextButton: true,
         showBackButton: true,
         onTapDoneButton: () {
           //Pop to agreeement
           Navigator.pop(context);
+
           //As agreeement has already been accepted pop the page agreement page as well
           Navigator.pop(context);
         },
@@ -82,7 +75,5 @@ class IntroPage extends StatelessWidget {
         ),
       ),
     ); //IntroViewsFlutter
-    // ), //Builder
-    // ); //Material App
   }
 }

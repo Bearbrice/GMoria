@@ -20,7 +20,7 @@ class _WelcomePageState extends State<WelcomePage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  var AppContext;
+  AppLocalizations appLoc;
 
   bool error = false;
   String errorMessage = "";
@@ -30,8 +30,6 @@ class _WelcomePageState extends State<WelcomePage> {
   Widget _linkToTerms() {
     return InkWell(
       onTap: () {
-        // Navigator.pop(context);
-
         Navigator.pushNamed(context, '/terms', arguments: true);
       },
       child: Container(
@@ -42,7 +40,7 @@ class _WelcomePageState extends State<WelcomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'By sign in with google you agree to our',
+              appLoc.translate('google_agree'),
               style: TextStyle(
                   color: Colors.indigo[900],
                   fontSize: 12,
@@ -50,7 +48,7 @@ class _WelcomePageState extends State<WelcomePage> {
               textAlign: TextAlign.center,
             ),
             Text(
-              'Privacy policy, terms and conditions',
+              appLoc.translate('link_privacy_policy_text'),
               style: TextStyle(
                   color: Colors.indigo[800],
                   fontSize: 15,
@@ -78,8 +76,7 @@ class _WelcomePageState extends State<WelcomePage> {
                       {
                         setState(() {
                           error = true;
-                          errorMessage =
-                              'No user found for that email or wrong password provided';
+                          errorMessage = appLoc.translate('error_signin');
                         }),
                       }
                   });
@@ -93,7 +90,6 @@ class _WelcomePageState extends State<WelcomePage> {
             borderRadius: BorderRadius.all(Radius.circular(5)),
             boxShadow: <BoxShadow>[
               BoxShadow(
-                  // color: Color(0xffdf8e33).withAlpha(100),
                   color: Colors.lightBlueAccent,
                   offset: Offset(2, 4),
                   blurRadius: 8,
@@ -101,8 +97,7 @@ class _WelcomePageState extends State<WelcomePage> {
             ],
             color: Colors.white),
         child: Text(
-          'Sign in',
-          // style: TextStyle(fontSize: 20, color: Color(0xfff7892b)),
+          appLoc.translate('signIn_button'),
           style: TextStyle(fontSize: 20, color: Colors.black),
         ),
       ),
@@ -112,14 +107,8 @@ class _WelcomePageState extends State<WelcomePage> {
   Widget _googleButton() {
     return InkWell(
       child: Container(
-
-          // width: deviceSize
-          // .width/2,
-          // height: deviceSize.height/18,
           width: MediaQuery.of(context).size.width / 1.5,
           padding: EdgeInsets.symmetric(vertical: 10),
-
-          // margin: EdgeInsets.only(top: 25),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5), color: Colors.black),
           child: Center(
@@ -137,7 +126,7 @@ class _WelcomePageState extends State<WelcomePage> {
                 ),
               ),
               Text(
-                'Sign in with Google',
+                appLoc.translate('signIn_google'),
                 style: TextStyle(
                     fontSize: 16.0,
                     fontWeight: FontWeight.bold,
@@ -155,7 +144,6 @@ class _WelcomePageState extends State<WelcomePage> {
                       context,
                       MaterialPageRoute(builder: (context) => Agreement()),
                     )
-                  // {Navigator.pushNamed(context, '/terms', arguments: false)}
                 });
       },
     );
@@ -168,19 +156,20 @@ class _WelcomePageState extends State<WelcomePage> {
         children: [
           MyTextField(
             controller: emailController,
-            labelText: AppContext.translate('signIn_email'),
+            labelText: appLoc.translate('signIn_email'),
             obscure: false,
             isEmail: true,
-            validator: (email) =>
-                EmailValidator.validate(email) ? null : "Invalid email address",
+            validator: (email) => EmailValidator.validate(email)
+                ? null
+                : appLoc.translate('invalid_email'),
           ),
           MyTextField(
             controller: passwordController,
-            labelText: AppContext.translate('signIn_password'),
+            labelText: appLoc.translate('signIn_password'),
             obscure: true,
             validator: (String value) {
               if (value.isEmpty) {
-                return 'You must provide a password';
+                return appLoc.translate('must_provide_pwd');
               }
               return null;
             },
@@ -213,7 +202,7 @@ class _WelcomePageState extends State<WelcomePage> {
           border: Border.all(color: Colors.white, width: 2),
         ),
         child: Text(
-          'Register now',
+          appLoc.translate('register_now'),
           style: TextStyle(fontSize: 20, color: Colors.white),
         ),
       ),
@@ -242,7 +231,7 @@ class _WelcomePageState extends State<WelcomePage> {
 
   @override
   Widget build(BuildContext context) {
-    AppContext = AppLocalizations.of(context);
+    appLoc = AppLocalizations.of(context);
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -269,16 +258,11 @@ class _WelcomePageState extends State<WelcomePage> {
               SizedBox(
                 height: 80,
               ),
-
               _signInForm(),
-              // SizedBox(
-              //   height: 10,
-              // ),
               SizedBox(
                 height: 10,
               ),
               _signInButton(),
-              // _submitButton(),
               SizedBox(
                 height: 20,
               ),

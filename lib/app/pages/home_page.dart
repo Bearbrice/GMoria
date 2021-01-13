@@ -263,12 +263,13 @@ class _WidgetListElementState extends State<WidgetListElement> {
             builder: (sheetContext) => BottomSheet(
               builder: (_) => GameOptions(
                 userList: item,
+                number: item.persons.length,
               ),
               onClosing: () {},
             ),
           );
         }
-      } else {
+      }  else {
         Navigator.pushNamed(context, '/learn', arguments: item);
       }
     }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gmoria/app/utils/InitialGameArguments.dart';
+import 'package:gmoria/app/utils/app_localizations.dart';
 import 'package:gmoria/domain/models/UserList.dart';
 
 class GameOptions extends StatefulWidget {
@@ -14,14 +15,12 @@ class GameOptions extends StatefulWidget {
 
 class _QuizOptionsDialogState extends State<GameOptions> {
   int _noOfQuestions;
-  String _difficulty;
   bool processing;
 
   @override
   void initState() {
     super.initState();
     _noOfQuestions = widget.number;
-    _difficulty = "easy";
     processing = false;
   }
 
@@ -37,7 +36,7 @@ class _QuizOptionsDialogState extends State<GameOptions> {
             child: Text(widget.userList.listName, style: Theme.of(context).textTheme.title.copyWith(),),
           ),
           SizedBox(height: 10.0),
-          Text("Select Total Number of Questions"),
+          Text(AppLocalizations.of(context).translate('game_options_instructions_label')),
           SizedBox(
             width: double.infinity,
             child: Wrap(
@@ -66,7 +65,7 @@ class _QuizOptionsDialogState extends State<GameOptions> {
                   onPressed: () => _selectNumberOfQuestions((widget.number/2).round()),
                 ),
                 ActionChip(
-                  label: Text("All"),
+                  label: Text(AppLocalizations.of(context).translate('game_options_all_option')),
                   labelStyle: TextStyle(color: Colors.white),
                   backgroundColor: _noOfQuestions == widget.number ? Colors.blue : Colors.grey.shade600,
                   onPressed: () => _selectNumberOfQuestions(widget.number),
@@ -76,7 +75,7 @@ class _QuizOptionsDialogState extends State<GameOptions> {
           ),
           SizedBox(height: 20.0),
           processing ? CircularProgressIndicator() : RaisedButton(
-            child: Text("Start Quiz"),
+            child: Text(AppLocalizations.of(context).translate('game_options_start_quiz_button')),
             onPressed: _startQuiz,
           ),
           SizedBox(height: 20.0),

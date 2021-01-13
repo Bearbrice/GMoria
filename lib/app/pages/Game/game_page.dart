@@ -6,7 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gmoria/app/utils/GameArguments.dart';
 import 'package:gmoria/app/utils/InitialGameArguments.dart';
@@ -47,7 +46,7 @@ class GamePage extends StatelessWidget {
             if (state.person.isEmpty) {
               elementToRender = Center(
                   child: Text(
-                      AppLocalizations.of(context).translate('learn_emptyList'),
+                      AppLocalizations.of(context).translate('game_empty_list'),
                       style: TextStyle(fontSize: 20)));
             } else {
               //TODO : Filter list
@@ -86,7 +85,7 @@ class GamePage extends StatelessWidget {
               ),
             );
           } else {
-            return Text(AppLocalizations.of(context).translate('learn_error'),
+            return Text(AppLocalizations.of(context).translate('game_error'),
                 style: TextStyle(fontSize: 20));
           }
         }));
@@ -149,7 +148,7 @@ class _QuizPageState extends State<QuizPage> {
                           SizedBox(width: 16.0),
                           Container(
                             child: Text(
-                              "Who is this person ? ",
+                              AppLocalizations.of(context).translate('game_question'),
                               softWrap: true,
                               style: MediaQuery.of(context).size.width > 800
                                   ? _personstyle.copyWith(fontSize: 30.0)
@@ -163,7 +162,7 @@ class _QuizPageState extends State<QuizPage> {
                         child: Center(
                           child: _image == null
                               ? Text(
-                                  'Error, could not load image or a problem occured.')
+                              AppLocalizations.of(context).translate('game_image_load_error'))
                               : Container(
                                   child:
                                       ExtendedImage.network(person.image_url),
@@ -181,7 +180,7 @@ class _QuizPageState extends State<QuizPage> {
                               decoration: new InputDecoration(
                                   focusColor: Colors.blue,
                                   border: OutlineInputBorder(),
-                                  labelText: 'Firstname & Lastname'))),
+                                  labelText: AppLocalizations.of(context).translate('game_label_input_answer')))),
                       Container(
                         child: Column(
                           children: [
@@ -210,8 +209,8 @@ class _QuizPageState extends State<QuizPage> {
                                     : null,
                                 child: Text(
                                   _currentIndex == (widget.persons.length - 1)
-                                      ? "Submit"
-                                      : "Next",
+                                      ? AppLocalizations.of(context).translate('game_submit_button')
+                                      : AppLocalizations.of(context).translate('game_next_button'),
                                   style: MediaQuery.of(context).size.width > 800
                                       ? TextStyle(
                                           fontSize: 30.0, color: Colors.white)
@@ -236,7 +235,7 @@ class _QuizPageState extends State<QuizPage> {
     _answers[_currentIndex] = nameController.text;
     if (_answers[_currentIndex] == "") {
       Fluttertoast.showToast(
-          msg: "You must enter an answer to continue !",
+          msg: AppLocalizations.of(context).translate('game_empty_answer_message'),
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
@@ -260,8 +259,8 @@ class _QuizPageState extends State<QuizPage> {
                 widget.persons[_currentIndex].firstname.toLowerCase() +
                     " " +
                     widget.persons[_currentIndex].lastname.toLowerCase()
-            ? "Correct Answer !"
-            : "Bad Answer !",
+            ? AppLocalizations.of(context).translate('game_good_answer_message')
+            : AppLocalizations.of(context).translate('game_bad_answer_message'),
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -311,17 +310,17 @@ class _QuizPageState extends State<QuizPage> {
         builder: (_) {
           return AlertDialog(
             content: Text(
-                "Are you sure you want to quit the quiz? All your progress will be lost."),
-            title: Text("Warning!"),
+                AppLocalizations.of(context).translate('game_exit_before_end_message')),
+            title: Text(AppLocalizations.of(context).translate('game_alert_box_exit_title')),
             actions: <Widget>[
               FlatButton(
-                child: Text("Yes"),
+                child: Text(AppLocalizations.of(context).translate('game_alert_box_yes_answer')),
                 onPressed: () {
                   Navigator.popUntil(context, ModalRoute.withName('/'));
                 },
               ),
               FlatButton(
-                child: Text("No"),
+                child: Text(AppLocalizations.of(context).translate('game_alert_box_no_answer')),
                 onPressed: () {
                   Navigator.pop(context, false);
                 },

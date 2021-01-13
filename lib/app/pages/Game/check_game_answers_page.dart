@@ -2,6 +2,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:gmoria/app/utils/GameArguments.dart';
+import 'package:gmoria/app/utils/app_localizations.dart';
 import 'package:gmoria/domain/models/Person.dart';
 
 class CheckAnswersPage extends StatelessWidget {
@@ -19,7 +20,7 @@ class CheckAnswersPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Check Answers'),
+        title: Text(AppLocalizations.of(context).translate('game_check_answers_title')),
         elevation: 0,
       ),
       body: Stack(
@@ -46,9 +47,9 @@ class CheckAnswersPage extends StatelessWidget {
   Widget _buildItem(BuildContext context, int index) {
     if(index == persons.length) {
       return RaisedButton(
-        child: Text("Done"),
+        child: Text(AppLocalizations.of(context).translate('game_check_answers_done_button')),
         onPressed: (){
-          Navigator.popUntil(context,ModalRoute.withName('/'));
+          Navigator.pop(context);
         },
       );
     }
@@ -63,7 +64,7 @@ class CheckAnswersPage extends StatelessWidget {
           children: <Widget>[
             _image == null
                 ? Text(
-                'Error, could not load image or a problem occured.')
+                AppLocalizations.of(context).translate('game_check_answers_load_image_error_message'))
                 : Container(
               child:
               ExtendedImage.network(person.image_url),
@@ -79,7 +80,7 @@ class CheckAnswersPage extends StatelessWidget {
             SizedBox(height: 5.0),
             correct ? Container(): Text.rich(TextSpan(
                 children: [
-                  TextSpan(text: "Answer: "),
+                  TextSpan(text: AppLocalizations.of(context).translate('game_check_answers_answer_label')),
                   TextSpan(text: person.firstname + " " + person.lastname , style: TextStyle(
                       fontWeight: FontWeight.w500
                   ))

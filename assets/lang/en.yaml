@@ -106,8 +106,46 @@ signIn_google: Sign in with Google
 learn_title: 'Learn : '
 learn_gameButton: Ready to play ?
 
-#Game
-game_title: 'Game :'
+#game_page
+game_title: 'Game : '
+game_empty_list: Your list is empty
+game_error: There was a problem with the launch of the game
+game_question: Who is this person ?
+game_image_load_error: Error, could not load image or a problem occured.
+game_label_input_answer: Firstname & Lastname
+game_submit_button: Submit
+game_next_button: Next
+game_empty_answer_message: You must enter an answer to continue !
+game_good_answer_message: Correct Answer !
+game_bad_answer_message: Bad Answer !
+game_exit_before_end_message: Are you sure you want to quit the quiz? All your progress will be lost.
+game_alert_box_exit_title: Warning !
+game_alert_box_yes_answer: Yes
+game_alert_box_no_answer: No
+
+#game_options
+game_options_instructions_label: Select Total Number of Questions
+game_options_all_option: All
+game_options_start_quiz_button: Start Quiz
+
+#finish_game_page
+finish_game_correct_piechart_label: Correct
+finish_game_bad_piechart_label: Bad
+finish_game_title: Result
+finish_game_total_questions_label: Total Questions
+finish_game_score_label: Score
+finish_game_correct_answers_label: Correct Answers
+finish_game_bad_answers_label: Bad Answers
+finish_game_show_answers_button: Check Answers
+finish_game_home_button: Home
+finish_game_error_message: Oups ! There was an error with the quiz
+finish_game_restart_button: Restart
+
+#check_game_answers_page
+game_check_answers_title: Check Answers
+game_check_answers_done_button: Done
+game_check_answers_load_image_error_message: Error, could not load image or a problem occured.
+game_check_answers_answer_label: "Answer: "
 
 #all_contacts_page
 all_contacts_title: All Contacts

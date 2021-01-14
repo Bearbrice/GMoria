@@ -36,20 +36,6 @@ class AppLocalizations {
     return true;
   }
 
-  ///JSON
-  // Future<bool> load() async {
-  //     // Load the language JSON file from the "lang" folder
-  //     String jsonString =
-  //         await rootBundle.loadString('assets/lang/${locale.languageCode}.json');
-  //     Map<String, dynamic> jsonMap = json.decode(jsonString);
-  //
-  //     _localizedStrings = jsonMap.map((key, value) {
-  //       return MapEntry(key, value.toString());
-  //     });
-  //
-  //     return true;
-  //   }
-
   // This method will be called from every widget which needs a localized text
   String translate(String key) {
     return _localizedStrings[key];

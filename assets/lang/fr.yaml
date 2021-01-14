@@ -2,36 +2,36 @@
 title: GMoria
 
 #Re-usable
-yes_exit: Yes, exit
-yes_delete: Yes, delete
-no: No
-yes: Yes
-save: Save
+yes_exit: Oui, quitter
+yes_delete: Oui, supprimer
+no: Non
+yes: Oui
+save: Sauvegarder
 ok: Ok
-cancel: Cancel
-add: Add
+cancel: Fermer
+add: Ajouter
 
-lists: Lists
-learn: Learn
-game: Game
+lists: Listes
+learn: Apprendre
+game: Jeu
 
-search: Search
-delete: Delete
+search: Recherche
+delete: Supprimer
 
-login: Login
-link_privacy_policy_text: Privacy policy & Terms and conditions
-register: Register
-logout: Logout
+login: Se connecter
+link_privacy_policy_text: Politique de confidentialité et conditions d'utilisation
+register: S'inscrire
+logout: Se déconnecter
 
 signIn_email: Email
-signIn_password: Password
-abort: Abort
-invalid_email: Invalid email address
-must_provide_pwd: You must provide a password
-register_now: Register now
+signIn_password: Mot de passe
+abort: Annuler
+invalid_email: Email invalide
+must_provide_pwd: Vous devez fournir un mot de passe
+register_now: S'inscrire maintenant
 
-empty_list: There are no people to display yet
-loading: 'Loading !'
+empty_list: Il n'y a pas encore de personnes à afficher
+loading: 'Chargement !'
 
 #Delete dialogs
 delete_dialog_title: Delete
@@ -49,66 +49,66 @@ list_person_internal_import: Import from people
 list_person_external_import: External import
 
 #home_page
-list_name: List name
-name_example: eg. Football team
-list_name_exists: List name already exists !
-problem_try_again: A problem occurred, please try again.
-my_account: My account
-begin_list: Create a list to begin
-my_lists: My lists
-my_people: My people
-list_delete: The list selected will be deleted
-list_empty: The list is empty
-edit: Edit
-best_score: 'Best score: '
+list_name: Nom de la liste
+name_example: ex. Equipe de football
+list_name_exists: Ce nom de liste existe déjà !
+problem_try_again: Un problème est survenu, veuillez réessayer.
+my_account: Mon compte
+begin_list: Créez une liste pour commencer
+my_lists: Mes listes
+my_people: Mes personnes
+list_delete: La liste sélectionnée sera supprimée
+list_empty: La liste est vide
+edit: Modifier
+best_score: 'Meilleur score: '
 percent: '%'
 
 # ----- USER ----- #
 ##agreement_page
-dialog_confirm_exit: 'Are you sure you want to exit? (you will need to recreate your account and the data will be lost)'
-terms_conditions: Terms and conditions
-privacy_policy:  Privacy Policy
-agree: AGREE
+dialog_confirm_exit: "Etes-vous sûr de vouloir sortir ? (vous devrez recréer votre compte et les données seront perdues)".
+terms_conditions: Conditions générales
+privacy_policy:  Politique de protection de la vie privée
+agree: ACCEPTER
 
 ##intro_page
-intro_list: Create your own lists and swipe on the list to do quick actions
-intro_learn: Take time to learn the people you want to memorize
-intro_game: Test your knowledge and get a score on your lists to track your improvements
+intro_list: Créez vos propres listes et glissez sur la liste pour faire des actions rapides
+intro_learn: Prenez le temps d'apprendre les personnes que vous voulez mémoriser
+intro_game: Testez vos connaissances et obtenez un score sur vos listes pour suivre vos progrès
 
 ##sign_up_page
-back: Back
-already_have: Already have an account ?
-confirm_pwd: Confirm password
-error_match_pwd: The confirmed password does not match the first one
-read_privacy: I have read and accept the privacy policy, the terms and conditions
-must_accept: You must accept the privacy policy, terms and conditions
-already_exists: User already exists, sign in, go to forgotten password or use another email
+back: Retour
+already_have: Vous avez déjà un compte ?
+confirm_pwd: Confirmer le mot de passe
+error_match_pwd: Le mot de passe confirmé ne correspond pas au premier
+read_privacy: J'ai lu et j'accepte la politique de confidentialité, les termes et conditions
+must_accept: Vous devez accepter la politique de confidentialité et les conditions générales
+already_exists: L'utilisateur existe déjà, connectez-vous ou utilisez un autre email
 
 ##user_page
-delete_account: Delete account
-change_email: Change email
-account_info: Your account information
-connected_with: Connected with
-creation_date: Creation date
-warning_delete: 'Warning: your account and all the data will be lost if you confirm this action'
-read_accept_delete: I have read the warning and confirm I want to delete my account
-error_not_read: 'Error: you must confirm you have read the warning'
+delete_account: Supprimer le compte
+change_email: Changer d'email
+account_info: Informations sur votre compte
+connected_with: Connecté avec
+creation_date: Date de création
+warning_delete: 'Attention : votre compte et toutes les données seront perdus si vous confirmez cette action'
+read_accept_delete: J'ai lu l'avertissement et je confirme que je veux supprimer mon compte
+error_not_read: 'Erreur : vous devez confirmer que vous avez lu l''avertissement'
 
-toast_confirmation: Account and its data successfully deleted
-wrong_password: Wrong password
-error_unexpected: 'Unexpected error, most probably because too many requests have been sent. Try again later or contact administrator'
-change_your_email: Change your email
-current_email: 'Current email:'
-enter_new_email: 'Enter your new email:'
-same_email: Same email as current email
+toast_confirmation: Le compte et ses données ont été supprimés avec succès
+wrong_password: Mauvais mot de passe
+error_unexpected: 'Erreur inattendue, très probablement parce que trop de demandes ont été envoyées. Réessayez plus tard ou contactez l''administrateur.'
+change_your_email: Changez votre adresse e-mail
+current_email: 'Email actuel :'
+enter_new_email: 'Entrez votre nouvel e-mail :'
+same_email: Même e-mail que l'e-mail actuel
 
-change: Change
+change: Changer
 
 ##welcome_page
-google_agree: By sign in with google you agree to our
-error_signin: No user found for that email or wrong password provided
-signIn_button: Sign in
-signIn_google: Sign in with Google
+google_agree: En vous connectant à google, vous acceptez notre
+error_signin: Aucun utilisateur trouvé pour cet e-mail ou mot de passe erroné fourni
+signIn_button: Se connecter
+signIn_google: Se connecter avec Google
 
 #learn_page
 learn_title: 'Learn : '
@@ -187,28 +187,28 @@ select_import_csv_error_message: 'The column delimiter should be \";\" and the c
 select_import_csv: Import from CSV
 
 ##vcard_import
-only_vcf: 'Only vCard file (.vcf) are allowed'
-import_vcard: Import from vCard
+only_vcf: 'Seuls les fichiers vCard (.vcf) sont autorisés'
+import_vcard: 'Importation depuis une vCard (.vcf)'
 
 # ----- PERSON ----- #
 #person_form_page
-add_person: Add a new person
-provide_image: Please provide an image
-firstname_validator: Enter the first name
-lastname_validator: Enter the last name
-from_gallery: Gallery
-take_photo: Camera
-validator_length: Cannot be upper than 30 characters
+add_person: Ajouter une nouvelle personne
+provide_image: Veuillez fournir une image
+firstname_validator: Entrez le prénom
+lastname_validator: Entrez le nom de famille
+from_gallery: Galerie
+take_photo: Appareil photo
+validator_length: Ne peut pas dépasser 30 caractères
 
 
 #person_view
-learn_error: 'Oops... something went wrong! Please try again.'
-learn_emptyList: Your list is empty
-person_delete: This person will be deleted
-error_image_load: 'Error, could not load image or a problem occurred.'
+learn_error: 'Oops... quelque chose a mal tourné ! Veuillez réessayer.'
+learn_emptyList: Votre liste est vide
+person_delete: Cette personne sera supprimée
+error_image_load: 'Erreur, impossible de charger l''image ou problème survenu.'
 
 ##BOTH
-firstname: First Name
-lastname: Last Name
-job: Job (optional)
-description: Description (optional)
+firstname: Prénom
+lastname: Nom de famille
+job: Emploi (facultatif)
+description: Description (facultatif)

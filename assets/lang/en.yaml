@@ -82,7 +82,7 @@ confirm_pwd: Confirm password
 error_match_pwd: The confirmed password does not match the first one
 read_privacy: I have read and accept the privacy policy, the terms and conditions
 must_accept: You must accept the privacy policy, terms and conditions
-already_exists: User already exists, sign in, go to forgotten password or use another email
+already_exists: User already exists, sign in or use another email
 
 ##user_page
 delete_account: Delete account
@@ -188,7 +188,7 @@ select_import_csv: Import from CSV
 
 ##vcard_import
 only_vcf: 'Only vCard file (.vcf) are allowed'
-import_vcard: Import from vCard
+import_vcard: 'Import from vCard'
 
 # ----- PERSON ----- #
 #person_form_page

@@ -448,7 +448,7 @@ class VerticalListItem extends StatelessWidget {
 
   static Color _getAvatarColor(int bestScore) {
     if (bestScore == 0) {
-      return Colors.blue;
+      return Colors.lightBlue[400];
     }
     if (bestScore < 50) {
       return Colors.red;
@@ -459,7 +459,7 @@ class VerticalListItem extends StatelessWidget {
     if (bestScore <= 100) {
       return Colors.green;
     }
-    return Colors.blue;
+    return Colors.lightBlue[400];
   }
 
   @override

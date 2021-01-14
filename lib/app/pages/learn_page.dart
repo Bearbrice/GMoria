@@ -17,7 +17,7 @@ class LearnPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final UserList userList = ModalRoute.of(context).settings.arguments;
-    final cardHeight = 400.0;
+    final cardHeight = 465.0;
     final cardWidth = 400.0;
 
     return Scaffold(

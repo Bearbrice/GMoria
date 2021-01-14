@@ -125,14 +125,8 @@ class _DetailsPageState extends State<DetailsPage> {
   Person person;
   bool activeBtn = true;
   bool showAnswer = false;
-
-  // final TextStyle _personstyle = TextStyle(
-  //     fontSize: 18.0, fontWeight: FontWeight.w500, color: Colors.white);
-
   int _currentIndex;
 
-  // final Map<int, dynamic> _answers = {};
-  // final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
   @protected
   void initState() {
@@ -324,11 +318,6 @@ class _DetailsPageState extends State<DetailsPage> {
                             context, '/personForm',
                             arguments: new ScreenArguments(
                                 widget.persons[_currentIndex], idUserList));
-
-                        // setState(() {
-                        //   print("INDEXXX + ${index} +   ${_currentIndex}");
-                        //   _currentIndex = widget.persons.indexWhere((element) => element.id == index);
-                        // });
                       },
                       child: Icon(Icons.edit)),
                   SizedBox(height: 8.0),
@@ -336,7 +325,15 @@ class _DetailsPageState extends State<DetailsPage> {
                     mini: true,
                     backgroundColor: Colors.red,
                     heroTag: null,
-                    onPressed: () => deleteDialog(context),
+                    onPressed: () =>
+                    idUserList == "allContacts" ||
+                    widget.persons[_currentIndex].lists.length==1 ? deleteDialog(context): {
+                      // Pop the page
+                      Navigator.of(context).pop(true),
+                      // Delete the person
+                      BlocProvider.of<PersonBloc>(context).add(
+                          DeletePerson(widget.persons[_currentIndex], idUserList))
+                    },
                     child: Icon(Icons.delete),
                   ),
                 ])));

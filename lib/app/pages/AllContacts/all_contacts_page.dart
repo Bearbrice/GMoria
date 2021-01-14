@@ -204,19 +204,6 @@ class _WidgetListElementState extends State<WidgetListElement> {
             : (actionType) {
           return deleteDialog();
         },
-
-        onDismissed: (actionType) {
-          _showSnackBar(
-              context,
-              actionType == SlideActionType.primary
-                  ? 'Dismiss Archive'
-                  : 'Dismiss Delete');
-          setState(() {
-            peopleToShow.remove(item);
-            currentAllPeople.remove(item);
-            widget.list.remove(item);
-          });
-        },
       ),
       actionPane: SlidableScrollActionPane(),
       actionExtentRatio: 0.25,
@@ -233,22 +220,6 @@ class _WidgetListElementState extends State<WidgetListElement> {
                 onTap: () => deleteDialog());
           }),
     );
-  }
-
-  static Color _getAvatarColor(int index) {
-    return Colors.blue;
-    switch (index % 4) {
-      case 0:
-        return Colors.red;
-      case 1:
-        return Colors.green;
-      case 2:
-        return Colors.blue;
-      case 3:
-        return Colors.indigoAccent;
-      default:
-        return null;
-    }
   }
 
   void _showSnackBar(BuildContext context, String text) {

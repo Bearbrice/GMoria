@@ -117,44 +117,44 @@ learn_gameButton: Ready to play ?
 # ----- GAME ----- #
 #game_page
 game_title: 'Game : '
-game_empty_list: Your list is empty
-game_error: There was a problem with the launch of the game
-game_question: Who is this person ?
-game_image_load_error: Error, could not load image or a problem occured.
-game_label_input_answer: Firstname & Lastname
-game_submit_button: Submit
-game_next_button: Next
-game_empty_answer_message: You must enter an answer to continue !
-game_good_answer_message: Correct Answer !
-game_bad_answer_message: Bad Answer !
-game_exit_before_end_message: Are you sure you want to quit the quiz? All your progress will be lost.
-game_alert_box_exit_title: Warning !
-game_alert_box_yes_answer: Yes
-game_alert_box_no_answer: No
+game_empty_list: Votre liste est vide
+game_error: Il y a eu un problème avec le lancement du jeu
+game_question: Qui est cette personne ?
+game_image_load_error: 'Erreur, impossible de charger l''image ou problème survenu.'
+game_label_input_answer: Prénom & Nom
+game_submit_button: Soumettre
+game_next_button: Suivant
+game_empty_answer_message: Vous devez entrer une réponse pour continuer !
+game_good_answer_message: Réponse correcte !
+game_bad_answer_message: Mauvaise réponse !
+game_exit_before_end_message: Êtes-vous sûr de vouloir arrêter le quiz ? Tous vos progrès seront perdus.
+game_alert_box_exit_title: Attention !
+game_alert_box_yes_answer: Oui
+game_alert_box_no_answer: Non
 
 #game_options
-game_options_instructions_label: Select Total Number of Questions
-game_options_all_option: All
-game_options_start_quiz_button: Start Quiz
+game_options_instructions_label: Sélectionnez le nombre total de questions
+game_options_all_option: Tout
+game_options_start_quiz_button: Commencer le quiz
 
 #finish_game_page
-finish_game_correct_piechart_label: Correct
-finish_game_bad_piechart_label: Bad
-finish_game_title: Result
-finish_game_total_questions_label: Total Questions
+finish_game_correct_piechart_label: Juste
+finish_game_bad_piechart_label: Faux
+finish_game_title: Résultat
+finish_game_total_questions_label: Nombre questions
 finish_game_score_label: Score
-finish_game_correct_answers_label: Correct Answers
-finish_game_bad_answers_label: Bad Answers
-finish_game_show_answers_button: Check Answers
-finish_game_home_button: Home
-finish_game_error_message: Oups ! There was an error with the quiz
-finish_game_restart_button: Restart
+finish_game_correct_answers_label: Réponses correctes
+finish_game_bad_answers_label: Mauvaises réponses
+finish_game_show_answers_button: Vérifier les réponses
+finish_game_home_button: Accueil
+finish_game_error_message: Oups ! Il y a eu une erreur avec le quiz
+finish_game_restart_button: Redémarrer
 
 #check_game_answers_page
-game_check_answers_title: Check Answers
-game_check_answers_done_button: Done
-game_check_answers_load_image_error_message: Error, could not load image or a problem occured.
-game_check_answers_answer_label: "Answer: "
+game_check_answers_title: Vérification réponses
+game_check_answers_done_button: Fait
+game_check_answers_load_image_error_message: 'Erreur, impossible de charger l''image ou problème survenu.'
+game_check_answers_answer_label: "Réponse : "
 
 # ----- ALL CONTACTS ----- #
 #all_contacts_page

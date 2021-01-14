@@ -49,14 +49,12 @@ class GamePage extends StatelessWidget {
                       AppLocalizations.of(context).translate('game_empty_list'),
                       style: TextStyle(fontSize: 20)));
             } else {
-              //TODO : Filter list
               List<Person> persons;
               if (onlyMistakes) {
                 persons = new List<Person>();
                 for (int i = 0; i < state.person.length; i++) {
                   if (!state.person[i].is_known) persons.add(state.person[i]);
                 }
-                //persons = state.person.where((element) => !element.is_known);
               } else {
                 List<Person> tempList = state.person;
                 tempList.shuffle();
@@ -68,7 +66,7 @@ class GamePage extends StatelessWidget {
               persons.shuffle();
               elementToRender = QuizPage(
                   persons: persons,
-                  userList: userList); //Quiz(person: state.person);
+                  userList: userList);
             }
             return Scaffold(
               backgroundColor: Colors.white,
@@ -297,10 +295,6 @@ class _QuizPageState extends State<QuizPage> {
             arguments:
                 new GameArguments(widget.persons, _answers, widget.userList));
       });
-
-      // Navigator.of(context).pushReplacement(MaterialPageRoute(
-      //     builder: (_) => QuizFinishedPage(
-      //         persons: widget.persons, answers: _answers)));
     }
   }
 

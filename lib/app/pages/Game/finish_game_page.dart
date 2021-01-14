@@ -209,31 +209,8 @@ class GameFinishedPage extends StatelessWidget {
                                 color: Colors.white,
                                 child: Text(AppLocalizations.of(context).translate('finish_game_home_button')),
                                 onPressed: () {
-                                  int cpt = 0;
-                                  print("NOMBRE DE PERSONNEESSS ${personWhoChanged.length} ************************************");
-                                  // personWhoChanged.forEach((element) {
                                   BlocProvider.of<UserListBloc>(context)
                                       .add(UpdateScore(personWhoChanged));
-
-                                    // element.lists.forEach((listId) {
-                                    //    BlocProvider.of<UserListBloc>(context)
-                                    //       .add(UpdateScore(listId,!element.is_known));
-                                    // });
-                                  // });
-                                  List<Person> personsDB = state.person;
-                                  // personsDB.forEach((element) {
-                                  //   element.is_known ? cpt++:null ;
-                                  // });
-                                  // bestScore = (cpt / userList.persons.length * 100)
-                                  //         .round();
-                                  // UserList updatedUserList = new UserList(
-                                  //     userList.listName,
-                                  //     id: userList.id,
-                                  //     bestScore: bestScore,
-                                  //     creation_date: userList.creation_date,
-                                  //     persons: userList.persons);
-                                  // BlocProvider.of<UserListBloc>(context)
-                                  //     .add(UpdateUserList(updatedUserList));
                                   Navigator.popUntil(
                                       context, ModalRoute.withName('/'));
                                 },

@@ -152,13 +152,13 @@ class _MyHomePageState extends State<MyHomePage> {
             },
             items: [
               BottomNavigationBarItem(
-                icon: new Icon(Icons.home),
+                icon: new Icon(Icons.format_list_bulleted_outlined),
                 backgroundColor: Colors.white,
-                label: "Home",
+                label: "My lists",
               ),
               BottomNavigationBarItem(
                 icon: new Icon(Icons.people_alt),
-                label: "My contacts",
+                label: "My people",
               ),
             ],
           ),

@@ -31,7 +31,7 @@ class _ListPageState extends State<ListPage> {
   Widget build(BuildContext context) {
     final _scaffoldKey = GlobalKey<ScaffoldState>();
     //setState(() {
-      userList = ModalRoute.of(context).settings.arguments;
+    userList = ModalRoute.of(context).settings.arguments;
     //});
 
     void _showSnackBar(BuildContext context, String text) {
@@ -42,7 +42,10 @@ class _ListPageState extends State<ListPage> {
     /// Prevent learn and game to launch if the list is empty
     handleEmpty(action, size) {
       if (size == 0) {
-        return _showSnackBar(context, AppLocalizations.of(context).translate("list_person_snackbar_message"));
+        return _showSnackBar(
+            context,
+            AppLocalizations.of(context)
+                .translate("list_person_snackbar_message"));
       }
 
       if (action == 'Game') {
@@ -70,7 +73,8 @@ class _ListPageState extends State<ListPage> {
 
     childButtons.add(UnicornButton(
       hasLabel: true,
-      labelText: AppLocalizations.of(context).translate("list_person_create_contact"),
+      labelText:
+          AppLocalizations.of(context).translate("list_person_create_contact"),
       currentButton: FloatingActionButton(
         mini: true,
         backgroundColor: Colors.blue,
@@ -85,7 +89,8 @@ class _ListPageState extends State<ListPage> {
 
     childButtons.add(UnicornButton(
         hasLabel: true,
-        labelText: AppLocalizations.of(context).translate("list_person_internal_import"),
+        labelText: AppLocalizations.of(context)
+            .translate("list_person_internal_import"),
         currentButton: FloatingActionButton(
           heroTag: "phone",
           backgroundColor: Colors.blue,
@@ -99,14 +104,15 @@ class _ListPageState extends State<ListPage> {
 
     childButtons.add(UnicornButton(
       hasLabel: true,
-      labelText: AppLocalizations.of(context).translate("list_person_external_import"),
+      labelText:
+          AppLocalizations.of(context).translate("list_person_external_import"),
       currentButton: FloatingActionButton(
         mini: true,
         backgroundColor: Colors.blue,
         heroTag: "external",
         onPressed: () {
           Navigator.pushNamed(context, '/importSelectionScreen',
-              arguments:  userList);
+              arguments: userList);
         },
         child: Icon(Icons.smartphone),
       ),
@@ -115,28 +121,31 @@ class _ListPageState extends State<ListPage> {
     return BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
       if (state is PersonLoaded) {
         size = state.person
-           .where((element) => element.lists.contains(userList.id)).length;
+            .where((element) => element.lists.contains(userList.id))
+            .length;
       }
 
       return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
           title: Text(
-                userList.listName,
+            userList.listName,
             style: TextStyle(color: Colors.white),
           ),
         ),
         body: Center(
             child: BlocProvider<PersonBloc>(
-          create: (context) {
-            return PersonBloc(
-              personRepository: DataPersonRepository(),
-            )..add(LoadUserListPersons(userList.id));
-          },
-          child:MyUserPeople(defineSize : (int size) {
-                this.size = size;
-          },userListId: userList.id)                     //MyUserPeople(userList.id),
-        )),
+                create: (context) {
+                  return PersonBloc(
+                    personRepository: DataPersonRepository(),
+                  )..add(LoadUserListPersons(userList.id));
+                },
+                child: MyUserPeople(
+                    defineSize: (int size) {
+                      this.size = size;
+                    },
+                    userListId: userList.id) //MyUserPeople(userList.id),
+                )),
         bottomNavigationBar: BottomAppBar(
           shape: CircularNotchedRectangle(),
           notchMargin: -10,
@@ -190,13 +199,15 @@ class _ListPageState extends State<ListPage> {
 
 class MyUserPeople extends StatelessWidget {
   MyUserPeople({this.defineSize, this.userListId});
+
   final SizeCallback defineSize;
   final String userListId;
 
   Widget build(BuildContext context) {
     return BlocBuilder<PersonBloc, PersonState>(builder: (context, state) {
       if (state is PersonLoading) {
-        return Text(AppLocalizations.of(context).translate("list_person_loading"));
+        return Text(
+            AppLocalizations.of(context).translate("list_person_loading"));
       } else if (state is UserListPersonLoaded) {
         defineSize(state.person.length);
         if (state.person.isNotEmpty) {
@@ -205,8 +216,8 @@ class MyUserPeople extends StatelessWidget {
         } else {
           //If the list is empty
           return Center(
-              child: Text(AppLocalizations.of(context).translate("empty_list"))
-          );
+              child:
+                  Text(AppLocalizations.of(context).translate("empty_list")));
         }
       } else {
         return Text(AppLocalizations.of(context).translate("unknown_error"));
@@ -237,23 +248,25 @@ class _WidgetListElementState extends State<WidgetListElement> {
     super.initState();
   }
 
-  setPeopleToShow(){
+  setPeopleToShow() {
     // Sort the list of person by first names and lastnames
     widget.list.sort((a, b) {
       String firstnameLastnameA = a.firstname + a.lastname;
       String firstnameLastnameB = b.firstname + b.lastname;
-      return firstnameLastnameA.toLowerCase().compareTo(firstnameLastnameB.toLowerCase());
+      return firstnameLastnameA
+          .toLowerCase()
+          .compareTo(firstnameLastnameB.toLowerCase());
     });
     peopleToShow = widget.list;
     currentAllPeople = widget.list;
   }
 
-  bool compareLists(List<Person> list1, List<Person> list2){
-    if(list1.length!=list2.length){
+  bool compareLists(List<Person> list1, List<Person> list2) {
+    if (list1.length != list2.length) {
       return false;
     }
-    for(Person p in list1){
-      if(!list2.contains(p)){
+    for (Person p in list1) {
+      if (!list2.contains(p)) {
         return false;
       }
     }
@@ -261,7 +274,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
   }
 
   Widget _buildList(BuildContext context, Axis direction) {
-    if(!compareLists(currentAllPeople, widget.list)){
+    if (!compareLists(currentAllPeople, widget.list)) {
       setPeopleToShow();
     }
     return ListView.builder(
@@ -270,46 +283,48 @@ class _WidgetListElementState extends State<WidgetListElement> {
       itemBuilder: (context, index) {
         final Axis slidableDirection =
             direction == Axis.horizontal ? Axis.vertical : Axis.horizontal;
-        if(index==0){
+        if (index == 0) {
           return _searchBar(context, index, slidableDirection);
-        }else{
-          return _getSlidableWithDelegates(context, index-1, slidableDirection);
+        } else {
+          return _getSlidableWithDelegates(
+              context, index - 1, slidableDirection);
         }
       },
-      itemCount: peopleToShow.length+1,
+      itemCount: peopleToShow.length + 1,
     );
   }
 
-  _searchBar(BuildContext context, int index, Axis slidableDirection){
+  _searchBar(BuildContext context, int index, Axis slidableDirection) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: TextField(
-        decoration: InputDecoration(
-          prefixIcon: Icon(Icons.search),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.lightBlue, width: 2.0),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.lightBlue, width: 2.0),
-          ),
-          fillColor: Colors.white,
-          filled: true,
-          hintText: AppLocalizations.of(context).translate("search")
-        ),
-        onChanged: (text){
-          text = text.toLowerCase();
-          setState(() {
-            peopleToShow = widget.list.where((person){
-              var firstname = person.firstname.toLowerCase();
-              var lastname = person.lastname.toLowerCase();
-              var firstnameLastname = firstname+" "+lastname;
-              var lastnameFirstname = lastname+" "+firstname;
-              return firstname.contains(text) || lastname.contains(text) || firstnameLastname.contains(text) || lastnameFirstname.contains(text);
-            }).toList();
-          });
-        },
-      )
-    );
+        padding: const EdgeInsets.all(8.0),
+        child: TextField(
+          decoration: InputDecoration(
+              prefixIcon: Icon(Icons.search),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.lightBlue, width: 2.0),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.lightBlue, width: 2.0),
+              ),
+              fillColor: Colors.white,
+              filled: true,
+              hintText: AppLocalizations.of(context).translate("search")),
+          onChanged: (text) {
+            text = text.toLowerCase();
+            setState(() {
+              peopleToShow = widget.list.where((person) {
+                var firstname = person.firstname.toLowerCase();
+                var lastname = person.lastname.toLowerCase();
+                var firstnameLastname = firstname + " " + lastname;
+                var lastnameFirstname = lastname + " " + firstname;
+                return firstname.contains(text) ||
+                    lastname.contains(text) ||
+                    firstnameLastname.contains(text) ||
+                    lastnameFirstname.contains(text);
+              }).toList();
+            });
+          },
+        ));
   }
 
   Widget _getSlidableWithDelegates(
@@ -321,8 +336,12 @@ class _WidgetListElementState extends State<WidgetListElement> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text(AppLocalizations.of(context).translate('delete_dialog_title'), style: TextStyle(color: Colors.red),),
-            content: Text(AppLocalizations.of(context).translate('delete_dialog_permanently')),
+            title: Text(
+              AppLocalizations.of(context).translate('delete_dialog_title'),
+              style: TextStyle(color: Colors.red),
+            ),
+            content: Text(AppLocalizations.of(context)
+                .translate('delete_dialog_permanently')),
             actions: <Widget>[
               FlatButton(
                   child: Text(AppLocalizations.of(context).translate('cancel')),
@@ -360,19 +379,6 @@ class _WidgetListElementState extends State<WidgetListElement> {
             : (actionType) {
                 return deleteDialog();
               },
-
-        onDismissed: (actionType) {
-          _showSnackBar(
-              context,
-              actionType == SlideActionType.primary
-                  ? 'Dismiss Archive'
-                  : 'Dismiss Delete');
-          setState(() {
-            peopleToShow.removeAt(index);
-            currentAllPeople.remove(item);
-            widget.list.remove(item);
-          });
-        },
       ),
       actionPane: SlidableScrollActionPane(),
       actionExtentRatio: 0.25,
@@ -388,35 +394,17 @@ class _WidgetListElementState extends State<WidgetListElement> {
                     ? Colors.red.withOpacity(animation.value)
                     : Colors.red,
                 icon: Icons.delete,
-                onTap: () => item.lists.length == 1 ? deleteDialog() : {
-                    peopleToShow.remove(item),
-                    currentAllPeople.remove(item),
-                    widget.list.remove(item),
-                    BlocProvider.of<PersonBloc>(context).add(DeletePerson(item, widget.idUserList))
-                }
-            );
+                onTap: () => item.lists.length == 1
+                    ? deleteDialog()
+                    : {
+                        peopleToShow.remove(item),
+                        currentAllPeople.remove(item),
+                        widget.list.remove(item),
+                        BlocProvider.of<PersonBloc>(context)
+                            .add(DeletePerson(item, widget.idUserList))
+                      });
           }),
     );
-  }
-
-  static Color _getAvatarColor(int index) {
-    return Colors.blue;
-    switch (index % 4) {
-      case 0:
-        return Colors.red;
-      case 1:
-        return Colors.green;
-      case 2:
-        return Colors.blue;
-      case 3:
-        return Colors.indigoAccent;
-      default:
-        return null;
-    }
-  }
-
-  void _showSnackBar(BuildContext context, String text) {
-    Scaffold.of(context).showSnackBar(SnackBar(content: Text(text)));
   }
 
   @override

@@ -94,22 +94,28 @@ class DataPersonRepository implements PersonRepository {
 
   @override
   Future<void> addNewPerson(Person person, String idUserList) async {
+    List<dynamic> numberOfPeople;
+    int score = 0;
     person.fk_user_id = user.uid;
     return personCollection
         .add(person.toEntity().toDocument())
-        .then((value) => {
+        .then((value) async => {
+              await listsCollection.doc(idUserList).get().then((element) => { numberOfPeople = element.get("persons") as List<dynamic>, score= element.get("bestscore")}),
               listsCollection.doc(idUserList).update({
                 'persons': FieldValue.arrayUnion([value.id]),
-                'bestscore' : 0
+                'bestscore' : (((score * numberOfPeople.length) / (numberOfPeople.length+1))).round() ,
               })
             });
   }
 
   @override
-  Future<void> deletePerson(Person person, String idUserList) {
+  Future<void> deletePerson(Person person, String idUserList) async {
+    int score = 0;
+    List<dynamic> numberOfPeople;
+    await listsCollection.doc(idUserList).get().then((element) => { numberOfPeople = element.get("persons") as List<dynamic>, score= element.get("bestscore")});
     listsCollection.doc(idUserList).update({
       'persons': FieldValue.arrayRemove([person.id]),
-      'bestscore': 0
+      'bestscore': numberOfPeople.length <=1 ? 0 : person.is_known ? (((((score/100) * numberOfPeople.length).round() -1) / (numberOfPeople.length-1))*100).round() : (((((score/100) * numberOfPeople.length).round()) / (numberOfPeople.length-1))*100).round() ,
     });
 
     if (person.lists.map((p) => p as String).toList().length == 1) {
@@ -125,12 +131,15 @@ class DataPersonRepository implements PersonRepository {
   }
 
   @override
-  Future<void> forceDeletePerson(Person person) {
+  Future<void> forceDeletePerson(Person person) async {
+    int score = 0;
+    List<dynamic> numberOfPeople;
     //Remove person from lists
-    person.lists.forEach((listId) {
+    person.lists.forEach((listId) async {
+      await listsCollection.doc(listId).get().then((element) => { numberOfPeople = element.get("persons") as List<dynamic>, score= element.get("bestscore")});
       listsCollection.doc(listId).update({
         'persons': FieldValue.arrayRemove([person.id]),
-        'bestscore': 0
+        'bestscore': numberOfPeople.length <= 1 ? 0 : person.is_known ? (((((score/100) * numberOfPeople.length).round() -1) / (numberOfPeople.length-1))*100).round() : (((((score/100) * numberOfPeople.length).round()) / (numberOfPeople.length-1))*100).round() ,
       });
     });
 
@@ -157,15 +166,21 @@ class DataPersonRepository implements PersonRepository {
 
   @override
   Future<void> addExistingPersonsToList(List<Person> persons, UserList userList) {
+    int score = userList.bestScore;
+    int numberOfPeople = userList.persons.length;
+    int totalOfPeopleToAdd = persons.length;
+    int numberKnownPeople = persons.where((element) => element.is_known== true).toList().length;
+
     persons.forEach((person) {
       personCollection.doc(person.id).update({
         'lists': FieldValue.arrayUnion([userList.id])
       });
       userList.persons.add(person.id);
     });
+
     return listsCollection.doc(userList.id).update({
       'persons': userList.persons,
-      'bestscore': 0
+      'bestscore': (((((score/100)*numberOfPeople).round()+numberKnownPeople) / (totalOfPeopleToAdd + numberOfPeople))*100).round()
     });
   }
 }

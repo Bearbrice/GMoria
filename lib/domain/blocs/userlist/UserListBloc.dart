@@ -36,6 +36,8 @@ class UserListBloc extends Bloc<UserListEvent, UserListState> {
       yield* _mapUserListByIdUpdatedToState(event);
     }else if (event is DeleteAllDataFromUser) {
       yield* _mapDeleteAllDataFromUserToState(event);
+    }else if (event is UpdateScore) {
+      yield* _mapUserListUpdateScoreToState(event);
     }
   }
 
@@ -52,6 +54,10 @@ class UserListBloc extends Bloc<UserListEvent, UserListState> {
 
   Stream<UserListState> _mapUpdateUserListToState(UpdateUserList event) async* {
     _userListRepository.updateUserList(event.userList);
+  }
+
+  Stream<UserListState> _mapUserListUpdateScoreToState(UpdateScore event) async* {
+    _userListRepository.updateScore(event.people);
   }
 
   Stream<UserListState> _mapDeleteUserListToState(DeleteUserList event) async* {

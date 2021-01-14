@@ -16,6 +16,7 @@ import 'package:pie_chart/pie_chart.dart';
 
 class GameFinishedPage extends StatelessWidget {
   List<Person> persons;
+  List<Person> personWhoChanged = new List();
   Map<int, dynamic> answers;
   UserList userList;
   GameArguments args;
@@ -40,6 +41,9 @@ class GameFinishedPage extends StatelessWidget {
               " " +
               this.persons[index].lastname.toLowerCase() ==
           value.toLowerCase()) {
+        if(!this.persons[index].is_known){
+          personWhoChanged.add(this.persons[index]);
+        }
         correct++;
         personToUpdate = new Person(
             this.persons[index].firstname,
@@ -53,6 +57,9 @@ class GameFinishedPage extends StatelessWidget {
             lists: this.persons[index].lists,
             fk_user_id: this.persons[index].fk_user_id);
       } else {
+        if(this.persons[index].is_known){
+          personWhoChanged.add(this.persons[index]);
+        }
         bad++;
         personToUpdate = new Person(
             this.persons[index].firstname,
@@ -87,6 +94,8 @@ class GameFinishedPage extends StatelessWidget {
 
     return WillPopScope(
         onWillPop: () {
+          BlocProvider.of<UserListBloc>(context)
+              .add(UpdateScore(personWhoChanged));
           Navigator.popUntil(context, ModalRoute.withName('/'));
         },
         child: Scaffold(
@@ -201,18 +210,30 @@ class GameFinishedPage extends StatelessWidget {
                                 child: Text(AppLocalizations.of(context).translate('finish_game_home_button')),
                                 onPressed: () {
                                   int cpt = 0;
-                                  List<Person> personsDB = state.person;
-                                  personsDB.forEach((element) {element.is_known ? cpt++:null ;});
-                                  bestScore = (cpt / userList.persons.length * 100)
-                                          .round();
-                                  UserList updatedUserList = new UserList(
-                                      userList.listName,
-                                      id: userList.id,
-                                      bestScore: bestScore,
-                                      creation_date: userList.creation_date,
-                                      persons: userList.persons);
+                                  print("NOMBRE DE PERSONNEESSS ${personWhoChanged.length} ************************************");
+                                  // personWhoChanged.forEach((element) {
                                   BlocProvider.of<UserListBloc>(context)
-                                      .add(UpdateUserList(updatedUserList));
+                                      .add(UpdateScore(personWhoChanged));
+
+                                    // element.lists.forEach((listId) {
+                                    //    BlocProvider.of<UserListBloc>(context)
+                                    //       .add(UpdateScore(listId,!element.is_known));
+                                    // });
+                                  // });
+                                  List<Person> personsDB = state.person;
+                                  // personsDB.forEach((element) {
+                                  //   element.is_known ? cpt++:null ;
+                                  // });
+                                  // bestScore = (cpt / userList.persons.length * 100)
+                                  //         .round();
+                                  // UserList updatedUserList = new UserList(
+                                  //     userList.listName,
+                                  //     id: userList.id,
+                                  //     bestScore: bestScore,
+                                  //     creation_date: userList.creation_date,
+                                  //     persons: userList.persons);
+                                  // BlocProvider.of<UserListBloc>(context)
+                                  //     .add(UpdateUserList(updatedUserList));
                                   Navigator.popUntil(
                                       context, ModalRoute.withName('/'));
                                 },
@@ -235,6 +256,8 @@ class GameFinishedPage extends StatelessWidget {
                             color: Colors.white,
                             child: Text(AppLocalizations.of(context).translate('finish_game_restart_button')),
                             onPressed: () {
+                              BlocProvider.of<UserListBloc>(context)
+                                  .add(UpdateScore(personWhoChanged));
                               Navigator.popAndPushNamed(context, '/game',
                                   arguments: InitialGameArguments(
                                       userList, true, userList.persons.length));

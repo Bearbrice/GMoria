@@ -6,12 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_document_picker/flutter_document_picker.dart';
 import 'package:gmoria/app/pages/Import/vcard_import.dart';
 import 'package:gmoria/app/utils/ImportArguments.dart';
+import 'package:gmoria/app/utils/LoadingDialog.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
 import 'package:gmoria/domain/models/Person.dart';
 import 'package:gmoria/domain/models/UserList.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ImportSelectionPage extends StatelessWidget {
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
+
   @override
   Widget build(BuildContext context) {
     UserList userList = ModalRoute.of(context).settings.arguments;
@@ -34,11 +37,14 @@ class ImportSelectionPage extends StatelessWidget {
               minWidth: 240,
               child: RaisedButton.icon(
                   onPressed: () async {
+                    LoadingDialogs.showLoadingDialog(context, _keyLoader);
                     final PermissionStatus permissionStatus =
                         await _getPermission();
                     if (permissionStatus == PermissionStatus.granted) {
                       final Iterable<Contact> contactsList =
                           await ContactsService.getContacts();
+                      Navigator.of(_keyLoader.currentContext,rootNavigator: true).pop();
+
                       List<Person> persons = new List();
                       for (Contact contact in contactsList) {
                         Person person = new Person(contact.givenName,

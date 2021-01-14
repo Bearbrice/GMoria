@@ -1,3 +1,4 @@
+import 'package:gmoria/domain/models/Person.dart';
 import 'package:gmoria/domain/models/UserList.dart';
 
 abstract class UserListRepository {
@@ -6,6 +7,8 @@ abstract class UserListRepository {
   Future<void> deleteUserList(UserList userList);
 
   Future<void> deleteAllDataFromUser(List<UserList> userLists);
+
+  Future<void> updateScore(List<Person> people);
 
   Future<void> updateUserList(UserList userList);
 

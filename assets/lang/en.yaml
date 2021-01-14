@@ -23,6 +23,8 @@ link_privacy_policy_text: Privacy policy & Terms and conditions
 register: Register
 logout: Logout
 
+loading_dialog_label:  Please Wait....
+
 signIn_email: Email
 signIn_password: Password
 abort: Abort
@@ -183,7 +185,7 @@ select_import_title: External import
 select_import_permissions_error: Please enable contacts access permission in system settings
 select_import_phone: Import from phone
 select_import_csv_error: Wrong csv file format
-select_import_csv_error_message: 'The column delimiter should be \";\" and the columns : Firstname, Lastname, Job, Description'
+select_import_csv_error_message: 'The column delimiter should be ";" and the columns : Firstname, Lastname, Job, Description'
 select_import_csv: Import from CSV
 
 ##vcard_import

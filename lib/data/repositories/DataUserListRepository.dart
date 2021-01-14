@@ -80,9 +80,8 @@ class DataUserListRepository implements UserListRepository {
   }
 
   @override
-  Future<void> deleteAllDataFromUser(List<UserList> userLists) async{
-    for (UserList ul in userLists)
-    {
+  Future<void> deleteAllDataFromUser(List<UserList> userLists) async {
+    for (UserList ul in userLists) {
       await deleteUserList(ul);
     }
   }
@@ -93,6 +92,42 @@ class DataUserListRepository implements UserListRepository {
         .doc(userList.id)
         .update(userList.toEntity().toDocument());
   }
+
+  @override
+  Future<void> updateScore(List<Person> people) async {
+    List<Person> persons = new List();
+    people.forEach((element) {persons.add(element);});
+
+
+    for(var person in persons) {
+      print("UPDATE START person *************************************");
+      for(var listId in person.lists){
+        print("UPDATE START listid *************************************");
+        int score = 0;
+        int numberOfPeople;
+        int bestScore = 0;
+
+        await userListCollection.doc(listId).get().then((element) => {
+          numberOfPeople = (element.get("persons") as List<dynamic>).length, score = element.get("bestscore")
+        });
+
+        if(!person.is_known){
+          bestScore = ((((((score/100)*numberOfPeople).round())+1) / numberOfPeople)*100).round();
+
+        }else{
+          bestScore = ((((((score/100)*numberOfPeople).round())-1) / numberOfPeople)*100).round();
+        }
+
+        await userListCollection.doc(listId).update({
+          'bestscore': bestScore
+        });
+        print("UPDATE FINISH listid *************************************");
+      }
+      print("UPDATE FINISH person *************************************");
+    }
+  }
+
+
 
   @override
   Stream<UserList> getUserListById(String userListId) {

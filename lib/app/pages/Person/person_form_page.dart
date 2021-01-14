@@ -186,7 +186,6 @@ class _TestFormState extends State<TestForm> {
                     alignment: Alignment.topCenter,
                     width: halfMediaWidth,
                     child: MyTextFormField(
-                      maxLength: 30,
                       initialValue: person.firstname,
                       hintText: appLoc.translate('firstname'),
                       validator: (String value) {
@@ -207,7 +206,6 @@ class _TestFormState extends State<TestForm> {
                     alignment: Alignment.topCenter,
                     width: halfMediaWidth,
                     child: MyTextFormField(
-                      maxLength: 30,
                       hintText: appLoc.translate('lastname'),
                       initialValue: person.lastname,
                       validator: (String value) {
@@ -228,7 +226,6 @@ class _TestFormState extends State<TestForm> {
               ),
             ),
             MyTextFormField(
-              maxLength: 30,
               hintText: appLoc.translate('job'),
               initialValue: person.job,
               isEmail: false,

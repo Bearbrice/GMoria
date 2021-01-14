@@ -205,7 +205,6 @@ class _TestFormState extends State<TestForm> {
                     alignment: Alignment.topCenter,
                     width: halfMediaWidth,
                     child: MyTextFormField(
-                      maxLength: 30,
                       controller: _firstnameEditingController,
                       hintText:
                           AppLocalizations.of(context).translate("firstname"),
@@ -229,7 +228,6 @@ class _TestFormState extends State<TestForm> {
                     alignment: Alignment.topCenter,
                     width: halfMediaWidth,
                     child: MyTextFormField(
-                      maxLength: 30,
                       hintText:
                           AppLocalizations.of(context).translate("lastname"),
                       controller: _lastnameEditingController,
@@ -253,7 +251,6 @@ class _TestFormState extends State<TestForm> {
               ),
             ),
             MyTextFormField(
-              maxLength: 30,
               hintText: AppLocalizations.of(context).translate("job"),
               controller: _jobEditingController,
               isEmail: false,

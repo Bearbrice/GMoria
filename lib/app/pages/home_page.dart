@@ -106,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
             animType: AnimType.SCALE,
             body: Center(
                 child: Column(children: [
-              Text('Color meaning',
+              Text(appLoc.translate("color_meaning"),
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -115,7 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Icons.circle,
                       color: Colors.lightBlue,
                     ),
-                    Text("List never played or best score is 0%",
+                    Text(appLoc.translate("zero"),
                         style: TextStyle(fontSize: 15))
                   ]),
               Row(
@@ -125,7 +125,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       Icons.circle,
                       color: Colors.red,
                     ),
-                    Text("Best score > 25%", style: TextStyle(fontSize: 15))
+                    Text(appLoc.translate("twenty_five"),
+                        style: TextStyle(fontSize: 15))
                   ]),
               Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -134,7 +135,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       Icons.circle,
                       color: Colors.orange,
                     ),
-                    Text("Best score > 50%", style: TextStyle(fontSize: 15))
+                    Text(appLoc.translate("fifty"),
+                        style: TextStyle(fontSize: 15))
                   ]),
               Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -143,12 +145,13 @@ class _MyHomePageState extends State<MyHomePage> {
                       Icons.circle,
                       color: Colors.green,
                     ),
-                    Text("Best score > 75%", style: TextStyle(fontSize: 15))
+                    Text(appLoc.translate("seventy_five"),
+                        style: TextStyle(fontSize: 15))
                   ]),
               SizedBox(height: 10),
-              Text('Quick actions',
+              Text(appLoc.translate("quick_actions"),
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              Text('Use swipe to acess quick actions !',
+              Text(appLoc.translate("swipe_to_use"),
                   style: TextStyle(fontSize: 15)),
               Image.asset(
                 "assets/picture/slide-demo.gif",
@@ -156,9 +159,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 width: 200.0,
               ),
             ])),
-            title: 'Dialog Title',
-            desc: 'Dialog description here.............',
-            // btnCancelOnPress: () {},
             btnOkOnPress: () {},
             headerAnimationLoop: false)
           ..show();

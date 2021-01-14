@@ -62,6 +62,13 @@ list_empty: La liste est vide
 edit: Modifier
 best_score: 'Meilleur score: '
 percent: '%'
+color_meaning: Signification des couleurs
+zero: Liste jamais jouée ou le score est de 0%
+twenty_five: 0% < Meilleur score < 50%
+fifty:  50% < Meilleur score < 75%
+seventy_five: Meilleur score > 75%
+quick_actions: Actions rapides
+swipe_to_use: '"Swipe" à gauche ou à droite sur les listes pour accéder aux actions rapides'
 
 # ----- USER ----- #
 ##agreement_page

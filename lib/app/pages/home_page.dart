@@ -20,6 +20,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  AppLocalizations appLoc;
   int _currentIndex;
 
   @override
@@ -32,6 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    appLoc = AppLocalizations.of(context);
     return BlocBuilder<UserListBloc, UserListState>(builder: (context, state) {
       TextEditingController listController = new TextEditingController();
       _showDialog() async {
@@ -46,22 +48,23 @@ class _MyHomePageState extends State<MyHomePage> {
                     controller: listController,
                     autofocus: true,
                     decoration: new InputDecoration(
-                        labelText: 'List name', hintText: 'eg. Football team'),
+                        labelText: appLoc.translate('list_name'),
+                        hintText: appLoc.translate('name_example')),
                   ),
                 )
               ],
             ),
             actions: <Widget>[
               new FlatButton(
-                  child: const Text('Cancel'),
+                  child: Text(appLoc.translate('cancel')),
                   onPressed: () {
                     Navigator.pop(context);
                   }),
               new FlatButton(
-                  child: const Text('Add'),
+                  child: Text(appLoc.translate('add')),
                   onPressed: () {
                     if (state is UserListLoading) {
-                      return Text("Loading !");
+                      return Text(appLoc.translate('loading'));
                     } else if (state is UserListLoaded) {
                       if (state.userList
                               .where((element) =>
@@ -78,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         listController.text = "";
                       } else {
                         Fluttertoast.showToast(
-                            msg: "List name already exists !",
+                            msg: appLoc.translate('list_name_exists'),
                             toastLength: Toast.LENGTH_SHORT,
                             gravity: ToastGravity.CENTER,
                             timeInSecForIosWeb: 1,
@@ -87,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             fontSize: 16.0);
                       }
                     } else {
-                      return Text("Problem :D");
+                      return Text(appLoc.translate('problem_try_again'));
                     }
                   })
             ],
@@ -97,17 +100,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
       return Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context).translate("title")),
+          title: Text(appLoc.translate("title")),
           actions: <Widget>[
             IconButton(
               icon: const Icon(Icons.settings),
-              tooltip: 'My account',
+              tooltip: appLoc.translate('my_account'),
               onPressed: () {
                 if (state is UserListLoaded) {
                   Navigator.pushNamed(context, '/userPage',
                       arguments: state.userList);
-                }
-                else{
+                } else {
                   Navigator.pushNamed(context, '/userPage');
                 }
               },
@@ -118,18 +120,17 @@ class _MyHomePageState extends State<MyHomePage> {
             ? Center(
                 child: (() {
                   if (state is UserListLoading) {
-                    return Text("Loading !");
+                    return Text(appLoc.translate('loading'));
                   } else if (state is UserListLoaded) {
                     if (state.userList.isEmpty) {
                       return Center(
-                          child: Text("Create a list to begin",
+                          child: Text(appLoc.translate('begin_list'),
                               style: TextStyle(fontSize: 20)));
                     }
-                    //return Text(state.userList.toString());
                     final userLists = state.userList;
                     return WidgetListElement(list: userLists);
                   } else {
-                    return Text("Problem :D");
+                    return Text(appLoc.translate('problem_try_again'));
                   }
                 }()),
               )
@@ -154,11 +155,11 @@ class _MyHomePageState extends State<MyHomePage> {
               BottomNavigationBarItem(
                 icon: new Icon(Icons.format_list_bulleted_outlined),
                 backgroundColor: Colors.white,
-                label: "My lists",
+                label: appLoc.translate('my_lists'),
               ),
               BottomNavigationBarItem(
                 icon: new Icon(Icons.people_alt),
-                label: "My people",
+                label: appLoc.translate('my_people'),
               ),
             ],
           ),
@@ -169,7 +170,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 backgroundColor: Colors.blue,
                 onPressed: _showDialog,
                 child: Icon(Icons.add),
-                // backgroundColor: Colors.indigo,
                 heroTag: null,
               )
             : null,
@@ -190,6 +190,7 @@ class WidgetListElement extends StatefulWidget {
 class _WidgetListElementState extends State<WidgetListElement> {
   SlidableController slidableController;
   List<UserList> userlists;
+  AppLocalizations appLoc;
 
   @protected
   void initState() {
@@ -225,18 +226,19 @@ class _WidgetListElementState extends State<WidgetListElement> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Delete', style: TextStyle(color: Colors.red)),
-            content: Text('The list selected will be deleted'),
+            title: Text(appLoc.translate('delete'),
+                style: TextStyle(color: Colors.red)),
+            content: Text(appLoc.translate('list_delete')),
             actions: <Widget>[
               FlatButton(
-                child: Text('Cancel'),
+                child: Text(appLoc.translate('cancel')),
                 onPressed: () => Navigator.of(context).pop(false),
               ),
               FlatButton(
-                child: Text('Ok'),
+                child: Text(appLoc.translate('ok')),
                 onPressed: () => {
                   Navigator.of(context).pop(true),
-                  print("NOM : " + item.listName),
+                  print("List name : " + item.listName),
                   BlocProvider.of<UserListBloc>(context)
                       .add(DeleteUserList(item)),
                 },
@@ -250,7 +252,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
     /// Prevent learn and game to launch if the list is empty
     handleEmpty(action) {
       if (item.persons.isEmpty) {
-        return _showSnackBar(context, 'The list is empty');
+        return _showSnackBar(context, appLoc.translate('list_empty'));
       }
 
       if (action == 'Game') {
@@ -269,7 +271,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
             ),
           );
         }
-      }  else {
+      } else {
         Navigator.pushNamed(context, '/learn', arguments: item);
       }
     }
@@ -289,22 +291,23 @@ class _WidgetListElementState extends State<WidgetListElement> {
                     controller: listController,
                     autofocus: true,
                     decoration: new InputDecoration(
-                        labelText: 'List name', hintText: list.listName),
+                        labelText: appLoc.translate('list_name'),
+                        hintText: list.listName),
                   ),
                 )
               ],
             ),
             actions: <Widget>[
               new FlatButton(
-                  child: const Text('Cancel'),
+                  child: Text(appLoc.translate('cancel')),
                   onPressed: () {
                     Navigator.pop(context);
                   }),
               new FlatButton(
-                  child: const Text('Edit'),
+                  child: Text(appLoc.translate('edit')),
                   onPressed: () {
                     if (state is UserListLoading) {
-                      return Text("Loading !");
+                      return Text(appLoc.translate('loading'));
                     } else if (state is UserListLoaded) {
                       if (state.userList
                               .where((element) =>
@@ -326,7 +329,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
                         listController.text = "";
                       } else {
                         Fluttertoast.showToast(
-                            msg: "List name already exists !",
+                            msg: appLoc.translate('list_name_exists'),
                             toastLength: Toast.LENGTH_SHORT,
                             gravity: ToastGravity.CENTER,
                             timeInSecForIosWeb: 1,
@@ -335,7 +338,7 @@ class _WidgetListElementState extends State<WidgetListElement> {
                             fontSize: 16.0);
                       }
                     } else {
-                      return Text("Problem :D");
+                      return Text(appLoc.translate('problem_try_again'));
                     }
                   })
             ],
@@ -361,16 +364,16 @@ class _WidgetListElementState extends State<WidgetListElement> {
                   return deleteDialog();
                 },
 
-          onDismissed: (actionType) {
-            _showSnackBar(
-                context,
-                actionType == SlideActionType.primary
-                    ? 'Dismiss Archive'
-                    : 'Dismiss Delete');
-            setState(() {
-              userlists.removeAt(index);
-            });
-          },
+          // onDismissed: (actionType) {
+          //   _showSnackBar(
+          //       context,
+          //       actionType == SlideActionType.primary
+          //           ? 'Dismiss Archive'
+          //           : 'Dismiss Delete');
+          //   setState(() {
+          //     userlists.removeAt(index);
+          //   });
+          // },
         ),
         actionPane: SlidableScrollActionPane(),
         actionExtentRatio: 0.25,
@@ -382,14 +385,14 @@ class _WidgetListElementState extends State<WidgetListElement> {
             builder: (context, index, animation, renderingMode) {
               if (index == 0) {
                 return IconSlideAction(
-                  caption: 'Game',
+                  caption: appLoc.translate('game'),
                   color: Colors.indigo,
                   icon: Icons.videogame_asset,
                   onTap: () => handleEmpty('Game'),
                 );
               } else {
                 return IconSlideAction(
-                  caption: 'Learn',
+                  caption: appLoc.translate('learn'),
                   color: Colors.green,
                   icon: Icons.school,
                   onTap: () => handleEmpty('Learn'),
@@ -401,14 +404,14 @@ class _WidgetListElementState extends State<WidgetListElement> {
             builder: (context, index, animation, renderingMode) {
               if (index == 0) {
                 return IconSlideAction(
-                  caption: 'Edit',
+                  caption: appLoc.translate('edit'),
                   color: Colors.blue,
                   icon: Icons.edit,
                   onTap: () => editDialog(item),
                 );
               } else {
                 return IconSlideAction(
-                    caption: 'Delete',
+                    caption: appLoc.translate('delete'),
                     color: Colors.red,
                     icon: Icons.delete,
                     onTap: () => deleteDialog());
@@ -418,28 +421,13 @@ class _WidgetListElementState extends State<WidgetListElement> {
     });
   }
 
-  static Color _getAvatarColor(int index) {
-    return Colors.red;
-    switch (index % 4) {
-      case 0:
-        return Colors.red;
-      case 1:
-        return Colors.green;
-      case 2:
-        return Colors.blue;
-      case 3:
-        return Colors.indigoAccent;
-      default:
-        return null;
-    }
-  }
-
   void _showSnackBar(BuildContext context, String text) {
     Scaffold.of(context).showSnackBar(SnackBar(content: Text(text)));
   }
 
   @override
   Widget build(BuildContext context) {
+    appLoc = AppLocalizations.of(context);
     userlists = widget.list;
     return OrientationBuilder(
       builder: (context, orientation) => _buildList(
@@ -456,8 +444,27 @@ class VerticalListItem extends StatelessWidget {
 
   final UserList item;
 
+  AppLocalizations appLoc;
+
+  static Color _getAvatarColor(int bestScore) {
+    if (bestScore == 0) {
+      return Colors.blue;
+    }
+    if (bestScore < 50) {
+      return Colors.red;
+    }
+    if (bestScore < 75) {
+      return Colors.orange;
+    }
+    if (bestScore <= 100) {
+      return Colors.green;
+    }
+    return Colors.blue;
+  }
+
   @override
   Widget build(BuildContext context) {
+    appLoc = appLoc = AppLocalizations.of(context);
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, '/list', arguments: item),
       child: Container(
@@ -471,13 +478,15 @@ class VerticalListItem extends StatelessWidget {
                 children: <Widget>[
                   ListTile(
                     leading: CircleAvatar(
-                      backgroundColor: Colors.red,
+                      backgroundColor: _getAvatarColor(item.bestScore),
                       child: Text('${item.persons.length}'),
                       foregroundColor: Colors.white,
                     ),
                     title: Text(item.listName),
                     subtitle: item.bestScore > 0
-                        ? Text("Best score : ${item.bestScore}%")
+                        ? Text(appLoc.translate('best_score') +
+                            item.bestScore.toString() +
+                            appLoc.translate('percent'))
                         : Text(""),
                   )
                 ],
@@ -504,7 +513,6 @@ class HorizontalListItem extends StatelessWidget {
           Expanded(
             child: CircleAvatar(
               backgroundColor: Colors.blue,
-              //child: Text('${item.index}'),
               foregroundColor: Colors.white,
             ),
           ),

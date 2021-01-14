@@ -11,6 +11,7 @@ class MyTextFormField extends StatelessWidget {
   final bool isLong;
   final int maxLines;
   final TextInputType textInputType;
+  final int maxLength;
 
   MyTextFormField(
       {this.initialValue,
@@ -22,7 +23,8 @@ class MyTextFormField extends StatelessWidget {
         this.isEmail = false,
         this.isLong = false,
         this.maxLines,
-        this.textInputType = TextInputType.text});
+        this.textInputType = TextInputType.text,
+      this.maxLength});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +42,7 @@ class MyTextFormField extends StatelessWidget {
           filled: true,
           fillColor: Colors.grey[200],
         ),
-
+        maxLength: maxLength,
         minLines: isLong ? 3 : 1,
         controller: controller,
         obscureText: isPassword ? true : false,

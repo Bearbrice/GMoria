@@ -111,11 +111,11 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/lang/fr.json
-    - assets/lang/en.json
+    # - assets/lang/fr.json
+    # - assets/lang/en.json
     - assets/lang/fr.yaml
     - assets/lang/en.yaml
-    - assets/picture/unknown.jpg
+    # - assets/picture/unknown.jpg
     - assets/picture/google.jpg
     - assets/picture/Game.jpeg
     - assets/picture/Learn.jpeg

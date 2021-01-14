@@ -186,9 +186,13 @@ class _TestFormState extends State<TestForm> {
                     alignment: Alignment.topCenter,
                     width: halfMediaWidth,
                     child: MyTextFormField(
+                      maxLength: 30,
                       initialValue: person.firstname,
                       hintText: appLoc.translate('firstname'),
                       validator: (String value) {
+                        if (value.length > 30) {
+                          return appLoc.translate("validator_length");
+                        }
                         if (value.isEmpty) {
                           return appLoc.translate('firstname_validator');
                         }
@@ -203,9 +207,13 @@ class _TestFormState extends State<TestForm> {
                     alignment: Alignment.topCenter,
                     width: halfMediaWidth,
                     child: MyTextFormField(
+                      maxLength: 30,
                       hintText: appLoc.translate('lastname'),
                       initialValue: person.lastname,
                       validator: (String value) {
+                        if (value.length > 30) {
+                          return appLoc.translate("validator_length");
+                        }
                         if (value.isEmpty) {
                           return appLoc.translate('lastname_validator');
                         }
@@ -220,9 +228,16 @@ class _TestFormState extends State<TestForm> {
               ),
             ),
             MyTextFormField(
+              maxLength: 30,
               hintText: appLoc.translate('job'),
               initialValue: person.job,
               isEmail: false,
+              validator: (String value) {
+                if (value.length > 30) {
+                  return appLoc.translate("validator_length");
+                }
+                return null;
+              },
               onSaved: (String value) {
                 model.job = value;
               },

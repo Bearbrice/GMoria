@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,6 @@ import 'package:gmoria/domain/models/UserList.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
-
 
 class CreationImportContact extends StatelessWidget {
   List<Person> persons;
@@ -37,15 +37,20 @@ class CreationImportContact extends StatelessWidget {
               context: context,
               builder: (_) {
                 return AlertDialog(
-                  content: Text(AppLocalizations.of(context).translate("creation_import_warning")),
+                  content: Text(AppLocalizations.of(context)
+                      .translate("creation_import_warning")),
                   title: Text(
-                    AppLocalizations.of(context).translate("creation_import_warning_title"),
-                    style: TextStyle(color: Colors.red),),
+                    AppLocalizations.of(context)
+                        .translate("creation_import_warning_title"),
+                    style: TextStyle(color: Colors.red),
+                  ),
                   actions: <Widget>[
                     FlatButton(
-                      child: Text(AppLocalizations.of(context).translate("yes")),
+                      child:
+                          Text(AppLocalizations.of(context).translate("yes")),
                       onPressed: () {
-                        Navigator.popUntil(context, ModalRoute.withName('/list'));
+                        Navigator.popUntil(
+                            context, ModalRoute.withName('/list'));
                       },
                     ),
                     FlatButton(
@@ -60,7 +65,8 @@ class CreationImportContact extends StatelessWidget {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: Text(AppLocalizations.of(context).translate("creation_import_title")),
+            title: Text(AppLocalizations.of(context)
+                .translate("creation_import_title")),
           ),
           body: TestForm(userList: userList, persons: persons),
         ),
@@ -72,7 +78,6 @@ class CreationImportContact extends StatelessWidget {
 class TestForm extends StatefulWidget {
   final List<Person> persons;
   final UserList userList;
-
 
   TestForm({Key key, this.persons, this.userList}) : super(key: key);
 
@@ -117,7 +122,6 @@ class _TestFormState extends State<TestForm> {
           minimumAspectRatio: 1.0,
         ));
 
-
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
@@ -129,7 +133,6 @@ class _TestFormState extends State<TestForm> {
       }
     });
   }
-
 
   getImageURL() async {
     Reference storageReference = FirebaseStorage.instance.ref().child(
@@ -156,7 +159,8 @@ class _TestFormState extends State<TestForm> {
     _firstnameEditingController.text = widget.persons[_currentIndex].firstname;
     _lastnameEditingController.text = widget.persons[_currentIndex].lastname;
     _jobEditingController.text = widget.persons[_currentIndex].job;
-    _descriptionEditingController.text = widget.persons[_currentIndex].description;
+    _descriptionEditingController.text =
+        widget.persons[_currentIndex].description;
 
     return Form(
       key: _formKey,
@@ -169,30 +173,28 @@ class _TestFormState extends State<TestForm> {
                 },
                 child: _image == null
                     ? Container(
-                    margin: EdgeInsets.only(top: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      border: Border.all(color: Colors.black26),
-                      borderRadius:
-                      BorderRadius.all(Radius.circular(5.0)),
-                    ),
-                    child: Icon(
-                      Icons.add_photo_alternate_outlined,
-                      color: Colors.blue,
-                      size: 200.0,
-                      semanticLabel:
-                      'Text to announce in accessibility modes', //TODO ?????????????
-                    ))
+                        margin: EdgeInsets.only(top: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          border: Border.all(color: Colors.black26),
+                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                        ),
+                        child: Icon(
+                          Icons.add_photo_alternate_outlined,
+                          color: Colors.blue,
+                          size: 200.0,
+                        ))
                     : Image.file(_image, width: 280, height: 280)),
             Container(
                 child: Center(
                     child: _image == null
                         ? Text(
-                      AppLocalizations.of(context).translate("creation_import_image_error"),
-                      style: TextStyle(
-                        color: Colors.red[900],
-                      ),
-                    )
+                            AppLocalizations.of(context)
+                                .translate("creation_import_image_error"),
+                            style: TextStyle(
+                              color: Colors.red[900],
+                            ),
+                          )
                         : null)),
             Container(
               alignment: Alignment.topCenter,
@@ -203,11 +205,18 @@ class _TestFormState extends State<TestForm> {
                     alignment: Alignment.topCenter,
                     width: halfMediaWidth,
                     child: MyTextFormField(
+                      maxLength: 30,
                       controller: _firstnameEditingController,
-                      hintText: AppLocalizations.of(context).translate("firstname"),
+                      hintText:
+                          AppLocalizations.of(context).translate("firstname"),
                       validator: (String value) {
+                        if (value.length > 30) {
+                          return AppLocalizations.of(context)
+                              .translate("validator_length");
+                        }
                         if (value.isEmpty) {
-                          return AppLocalizations.of(context).translate("firstname_validator");
+                          return AppLocalizations.of(context)
+                              .translate("firstname_validator");
                         }
                         return null;
                       },
@@ -220,11 +229,18 @@ class _TestFormState extends State<TestForm> {
                     alignment: Alignment.topCenter,
                     width: halfMediaWidth,
                     child: MyTextFormField(
-                      hintText: AppLocalizations.of(context).translate("lastname"),
+                      maxLength: 30,
+                      hintText:
+                          AppLocalizations.of(context).translate("lastname"),
                       controller: _lastnameEditingController,
                       validator: (String value) {
+                        if (value.length > 30) {
+                          return AppLocalizations.of(context)
+                              .translate("validator_length");
+                        }
                         if (value.isEmpty) {
-                          return AppLocalizations.of(context).translate("lastname_validator");
+                          return AppLocalizations.of(context)
+                              .translate("lastname_validator");
                         }
                         return null;
                       },
@@ -237,9 +253,17 @@ class _TestFormState extends State<TestForm> {
               ),
             ),
             MyTextFormField(
+              maxLength: 30,
               hintText: AppLocalizations.of(context).translate("job"),
               controller: _jobEditingController,
               isEmail: false,
+              validator: (String value) {
+                if (value.length > 30) {
+                  return AppLocalizations.of(context)
+                      .translate("validator_length");
+                }
+                return null;
+              },
               onSaved: (String value) {
                 model.job = value;
               },
@@ -261,10 +285,12 @@ class _TestFormState extends State<TestForm> {
                   IconButton(
                     icon: Icon(Icons.add_photo_alternate_outlined),
                     iconSize: 40,
-                    tooltip: AppLocalizations.of(context).translate("creation_import_from_gallery"),
+                    tooltip: AppLocalizations.of(context)
+                        .translate("creation_import_from_gallery"),
                     onPressed: getG,
                   ),
-                  Text(AppLocalizations.of(context).translate("creation_import_from_gallery"))
+                  Text(AppLocalizations.of(context)
+                      .translate("creation_import_from_gallery"))
                 ],
               ),
               SizedBox(
@@ -277,10 +303,12 @@ class _TestFormState extends State<TestForm> {
                   IconButton(
                     iconSize: 40,
                     icon: Icon(Icons.add_a_photo_outlined),
-                    tooltip: AppLocalizations.of(context).translate("creation_import_from_camera"),
+                    tooltip: AppLocalizations.of(context)
+                        .translate("creation_import_from_camera"),
                     onPressed: getC,
                   ),
-                  Text(AppLocalizations.of(context).translate("creation_import_from_camera"))
+                  Text(AppLocalizations.of(context)
+                      .translate("creation_import_from_camera"))
                 ],
               ),
             ]),
@@ -292,26 +320,27 @@ class _TestFormState extends State<TestForm> {
                     Fluttertoast.showToast(
                         textColor: Colors.white,
                         backgroundColor: Colors.red,
-                        msg: AppLocalizations.of(context).translate("creation_import_image_error"));
+                        msg: AppLocalizations.of(context)
+                            .translate("creation_import_image_error"));
                     imageError = true;
                     return;
                   }
                   _formKey.currentState.save();
 
-                    String imageURL = await getImageURL();
-                    Person p = new Person(model.firstname, model.lastname,
-                        model.job, model.description, imageURL,
-                        lists: [userList.id]);
-                    BlocProvider.of<PersonBloc>(context)
-                        .add(AddPerson(p, userList.id));
-                    if(_currentIndex<widget.persons.length -1){
-                      setState(() {
-                        _currentIndex++;
-                        _image = null;
-                      });
-                    }else{
-                      Navigator.popUntil(context,ModalRoute.withName('/list'));
-                    }
+                  String imageURL = await getImageURL();
+                  Person p = new Person(model.firstname, model.lastname,
+                      model.job, model.description, imageURL,
+                      lists: [userList.id]);
+                  BlocProvider.of<PersonBloc>(context)
+                      .add(AddPerson(p, userList.id));
+                  if (_currentIndex < widget.persons.length - 1) {
+                    setState(() {
+                      _currentIndex++;
+                      _image = null;
+                    });
+                  } else {
+                    Navigator.popUntil(context, ModalRoute.withName('/list'));
+                  }
                 }
               },
               child: Text(
@@ -325,56 +354,5 @@ class _TestFormState extends State<TestForm> {
         ),
       ),
     );
-
-
   }
 }
-
-// class MyTextFormField extends StatelessWidget {
-//   final String hintText;
-//   final String initialValue;
-//   final Function validator;
-//   final TextEditingController controller;
-//   final Function onSaved;
-//   final bool isPassword;
-//   final bool isEmail;
-//   final bool isLong;
-//   final int maxLines;
-//   final TextInputType textInputType;
-//
-//   MyTextFormField(
-//       {this.initialValue,
-//         this.controller,
-//         this.hintText,
-//         this.validator,
-//         this.onSaved,
-//         this.isPassword = false,
-//         this.isEmail = false,
-//         this.isLong = false,
-//         this.maxLines,
-//         this.textInputType = TextInputType.text});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: EdgeInsets.all(8.0),
-//       child: TextFormField(
-//         decoration: InputDecoration(
-//           hintText: hintText,
-//           contentPadding: EdgeInsets.all(15.0),
-//           border: InputBorder.none,
-//           filled: true,
-//           fillColor: Colors.grey[200],
-//         ),
-//         minLines: isLong ? 3 : 1,
-//         controller: controller,
-//         obscureText: isPassword ? true : false,
-//         validator: validator,
-//         maxLines: maxLines,
-//         onSaved: onSaved,
-//         initialValue: initialValue,
-//         keyboardType: isEmail ? TextInputType.emailAddress : textInputType,
-//       ),
-//     );
-//   }
-// }

@@ -9,6 +9,7 @@ yes: Yes
 save: Save
 ok: Ok
 cancel: Cancel
+add: Add
 
 lists: Lists
 learn: Learn
@@ -30,12 +31,11 @@ must_provide_pwd: You must provide a password
 register_now: Register now
 
 empty_list: There are no people to display yet
+loading: 'Loading !'
 
 #Delete dialogs
 delete_dialog_title: Delete
 delete_dialog_permanently: The person will be permanently deleted
-
-
 
 #Errors
 unknown_error: Oops... something went wrong! Please try again.
@@ -47,6 +47,21 @@ list_person_snackbar_message: Your list is empty
 list_person_create_contact: Create person
 list_person_internal_import: Import from people
 list_person_external_import: External import
+
+#home_page
+list_name: List name
+name_example: eg. Football team
+list_name_exists: List name already exists !
+problem_try_again: A problem occurred, please try again.
+my_account: My account
+begin_list: Create a list to begin
+my_lists: My lists
+my_people: My people
+list_delete: The list selected will be deleted
+list_empty: The list is empty
+edit: Edit
+best_score: 'Best score: '
+percent: '%'
 
 # ----- USER ----- #
 ##agreement_page
@@ -183,6 +198,8 @@ firstname_validator: Enter the first name
 lastname_validator: Enter the last name
 from_gallery: Gallery
 take_photo: Camera
+validator_length: Cannot be upper than 30 characters
+
 
 #person_view
 learn_error: 'Oops... something went wrong! Please try again.'

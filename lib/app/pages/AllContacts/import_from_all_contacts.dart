@@ -21,7 +21,7 @@ class ImportFromAllContacts extends StatelessWidget {
           } else if(state is PersonLoaded){
             Map<Person, bool> personsList = new Map<Person, bool>();
             state.person.sort((a, b) {
-              return a.firstname.compareTo(b.firstname);
+              return a.firstname.toLowerCase().compareTo(b.firstname.toLowerCase());
             });
             state.person.forEach((element) {
               if(!userList.persons.contains(element.id)){

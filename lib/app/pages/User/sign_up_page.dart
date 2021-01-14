@@ -1,8 +1,8 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gmoria/app/pages/User/welcome_page.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
+import 'package:gmoria/app/utils/widgets/MyTextField.dart';
 import 'package:gmoria/data/firebase/authentication_service.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +19,9 @@ class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  /// The confirmation password
   final TextEditingController password2Controller = TextEditingController();
+  /// The switch button
   bool isSwitched = false;
   bool showError = false;
   bool showAlreadyExists = false;
@@ -62,7 +64,7 @@ class _SignUpPageState extends State<SignUpPage> {
               return;
             }
 
-            /// Sign up the new user
+            // Sign up the new user
             context
                 .read<AuthenticationService>()
                 .signUp(

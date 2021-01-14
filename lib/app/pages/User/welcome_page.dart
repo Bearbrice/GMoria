@@ -1,6 +1,8 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
+import 'package:gmoria/app/utils/widgets/MyTextField.dart';
+import 'package:gmoria/app/utils/widgets/Title.dart';
 import 'package:gmoria/data/firebase/authentication_service.dart';
 import 'package:provider/provider.dart';
 
@@ -33,7 +35,6 @@ class _WelcomePageState extends State<WelcomePage> {
         Navigator.pushNamed(context, '/terms', arguments: true);
       },
       child: Container(
-        // margin: EdgeInsets.symmetric(vertical: 20),
         padding: EdgeInsets.all(5),
         alignment: Alignment.bottomCenter,
         child: Column(
@@ -209,26 +210,6 @@ class _WelcomePageState extends State<WelcomePage> {
     );
   }
 
-  Widget _title() {
-    return RichText(
-      textAlign: TextAlign.center,
-      text: TextSpan(
-          text: 'G',
-          style: TextStyle(
-              fontSize: 30, fontWeight: FontWeight.w700, color: Colors.white),
-          children: [
-            TextSpan(
-              text: 'M',
-              style: TextStyle(color: Colors.black, fontSize: 30),
-            ),
-            TextSpan(
-              text: 'oria',
-              style: TextStyle(color: Colors.white, fontSize: 30),
-            ),
-          ]),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     appLoc = AppLocalizations.of(context);
@@ -254,7 +235,7 @@ class _WelcomePageState extends State<WelcomePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              _title(),
+              title(),
               SizedBox(
                 height: 80,
               ),
@@ -280,40 +261,3 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 }
 
-/// Reused in sign_up_page.dart
-class MyTextField extends StatelessWidget {
-  final TextEditingController controller;
-  final String labelText;
-  final bool obscure;
-  final Function validator;
-  final bool isEmail;
-
-  MyTextField(
-      {this.controller,
-      this.labelText,
-      this.obscure = false,
-      this.validator,
-      this.isEmail = false});
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      obscureText: obscure,
-      controller: controller,
-      validator: validator,
-      keyboardType: isEmail ? TextInputType.emailAddress : TextInputType.text,
-      cursorColor: Colors.black,
-      style: TextStyle(color: Colors.white),
-      decoration: InputDecoration(
-        labelText: labelText,
-        labelStyle: TextStyle(color: Colors.white),
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
-        ),
-        focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.white70),
-        ),
-      ),
-    );
-  }
-}

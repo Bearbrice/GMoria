@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gmoria/app/utils/ImportArguments.dart';
+
 import 'package:gmoria/app/utils/app_localizations.dart';
+import 'package:gmoria/app/utils/arguments/ImportArguments.dart';
 import 'package:gmoria/domain/models/Person.dart';
 import 'package:gmoria/domain/models/UserList.dart';
 

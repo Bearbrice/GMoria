@@ -11,13 +11,13 @@ class Agreement extends StatelessWidget {
   AppLocalizations appLoc;
   bool readMode;
   bool mandatoryMode = false;
-
   String agreed = "false";
 
   setAppLoc(context) {
     appLoc = AppLocalizations.of(context);
   }
 
+  /// Shows the correct markdown file according to the user's language
   Widget _showMarkdown(ctx) {
     switch (AppLocalizations.of(ctx).locale.toString()) {
       case 'en':
@@ -48,6 +48,7 @@ class Agreement extends StatelessWidget {
     }
   }
 
+  @override
   Widget build(BuildContext context) {
     setAppLoc(context);
 
@@ -61,6 +62,7 @@ class Agreement extends StatelessWidget {
     BuildContext ctx = context;
     bool accepted = false;
 
+    // Configure the left top button 'back'
     return WillPopScope(
       onWillPop: () async {
         if (mandatoryMode) {
@@ -80,6 +82,7 @@ class Agreement extends StatelessWidget {
                       child: Text(appLoc.translate("yes_exit")),
                       onPressed: () {
                         Navigator.of(context).pop(true);
+
                         // Delete user
                         ctx.read<AuthenticationService>().deleteUser();
                       },
@@ -114,9 +117,15 @@ class Agreement extends StatelessWidget {
                               onPressed: () {
                                 accepted = true;
 
-                                Navigator.pushNamed(context, '/introPage');
-
-                                print("POPED->" + accepted.toString());
+                                // Mandatory -> shows on sign up with google
+                                if (mandatoryMode) {
+                                  Navigator.pushNamed(context, '/introPage');
+                                }
+                                // Not mandatory -> shows on the sign up page and return accepted to this page
+                                else {
+                                  Navigator.pop(context, accepted);
+                                  print("POPED->" + accepted.toString());
+                                }
                               },
                               child: Text(appLoc.translate("agree"),
                                   style: TextStyle(color: Colors.white)))
@@ -142,6 +151,8 @@ class MyFutureBuilder extends StatelessWidget {
             return Markdown(
               data: snapshot.data,
               onTapLink: (text, href, title) => {launch(href)},
+
+              //Style the markdown file like it is an html
               styleSheet: MarkdownStyleSheet(
                 textAlign: WrapAlignment.start,
                 h1: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),

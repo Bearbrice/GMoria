@@ -65,7 +65,7 @@ percent: '%'
 
 # ----- USER ----- #
 ##agreement_page
-dialog_confirm_exit: "Etes-vous sûr de vouloir sortir ? (vous devrez recréer votre compte et les données seront perdues)".
+dialog_confirm_exit: 'Etes-vous sûr de vouloir sortir ? (vous devrez recréer votre compte et les données seront perdues)'
 terms_conditions: Conditions générales
 privacy_policy:  Politique de protection de la vie privée
 agree: ACCEPTER

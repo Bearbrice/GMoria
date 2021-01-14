@@ -6,8 +6,8 @@ import 'package:intro_views_flutter/intro_views_flutter.dart';
 class IntroPage extends StatelessWidget {
   AppLocalizations appLoc;
 
-  //making list of pages needed to pass in IntroViewsFlutter constructor.
-  listPages() {
+  /// Making list of pages needed to pass in IntroViewsFlutter constructor.
+  List<PageViewModel> listPages() {
     return [
       PageViewModel(
           pageColor: const Color(0xFF03A9F4),
@@ -63,6 +63,7 @@ class IntroPage extends StatelessWidget {
         showNextButton: true,
         showBackButton: true,
         onTapDoneButton: () {
+
           //Pop to agreeement
           Navigator.pop(context);
 

@@ -3,8 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:gmoria/app/utils/ScreenArguments.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
+import 'package:gmoria/app/utils/arguments/ScreenArguments.dart';
 import 'package:gmoria/domain/blocs/person/PersonBloc.dart';
 import 'package:gmoria/domain/blocs/person/PersonEvent.dart';
 import 'package:gmoria/domain/blocs/person/PersonState.dart';
@@ -29,8 +29,6 @@ class _AllContactsState extends State<AllContacts> {
 }
 
 class MyUserPeople extends StatelessWidget {
-
-  // MyUserPeople({Key key, this.userList}) : super(key: key);
   MyUserPeople({Key key}) : super(key: key);
 
   Widget build(BuildContext context) {
@@ -220,10 +218,6 @@ class _WidgetListElementState extends State<WidgetListElement> {
                 onTap: () => deleteDialog());
           }),
     );
-  }
-
-  void _showSnackBar(BuildContext context, String text) {
-    Scaffold.of(context).showSnackBar(SnackBar(content: Text(text)));
   }
 
   @override

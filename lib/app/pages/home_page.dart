@@ -1,11 +1,12 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gmoria/app/pages/AllContacts/all_contacts_page.dart';
-import 'package:gmoria/app/utils/InitialGameArguments.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
+import 'package:gmoria/app/utils/arguments/InitialGameArguments.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListBloc.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListEvent.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListState.dart';
@@ -98,10 +99,82 @@ class _MyHomePageState extends State<MyHomePage> {
         );
       }
 
+      infoDialog() {
+        AwesomeDialog(
+            context: context,
+            dialogType: DialogType.INFO,
+            animType: AnimType.SCALE,
+            body: Center(
+                child: Column(children: [
+              Text('Color meaning',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      Icons.circle,
+                      color: Colors.lightBlue,
+                    ),
+                    Text("List never played or best score is 0%",
+                        style: TextStyle(fontSize: 15))
+                  ]),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      Icons.circle,
+                      color: Colors.red,
+                    ),
+                    Text("Best score > 25%", style: TextStyle(fontSize: 15))
+                  ]),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      Icons.circle,
+                      color: Colors.orange,
+                    ),
+                    Text("Best score > 50%", style: TextStyle(fontSize: 15))
+                  ]),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      Icons.circle,
+                      color: Colors.green,
+                    ),
+                    Text("Best score > 75%", style: TextStyle(fontSize: 15))
+                  ]),
+              SizedBox(height: 10),
+              Text('Quick actions',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text('Use swipe to acess quick actions !',
+                  style: TextStyle(fontSize: 15)),
+              Image.asset(
+                "assets/picture/slide-demo.gif",
+                height: 200.0,
+                width: 200.0,
+              ),
+            ])),
+            title: 'Dialog Title',
+            desc: 'Dialog description here.............',
+            // btnCancelOnPress: () {},
+            btnOkOnPress: () {},
+            headerAnimationLoop: false)
+          ..show();
+      }
+
       return Scaffold(
         appBar: AppBar(
           title: Text(appLoc.translate("title")),
           actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.info_outline),
+              // tooltip: appLoc.translate('my_account'), //TODO: Change
+              onPressed: () {
+                infoDialog();
+              },
+            ),
             IconButton(
               icon: const Icon(Icons.settings),
               tooltip: appLoc.translate('my_account'),

@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gmoria/app/utils/GameArguments.dart';
-import 'package:gmoria/app/utils/InitialGameArguments.dart';
+
 import 'package:gmoria/app/utils/app_localizations.dart';
+import 'package:gmoria/app/utils/arguments/GameArguments.dart';
+import 'package:gmoria/app/utils/arguments/InitialGameArguments.dart';
 import 'package:gmoria/data/repositories/DataPersonRepository.dart';
 import 'package:gmoria/domain/blocs/person/PersonBloc.dart';
 import 'package:gmoria/domain/blocs/person/PersonEvent.dart';

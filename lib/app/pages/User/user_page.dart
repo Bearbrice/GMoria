@@ -3,8 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:gmoria/app/utils/MyTextFormField.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
+import 'package:gmoria/app/utils/widgets/MyTextFormField.dart';
+import 'package:gmoria/app/utils/widgets/Title.dart';
 import 'package:gmoria/data/firebase/authentication_service.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListBloc.dart';
 import 'package:gmoria/domain/blocs/userlist/UserListEvent.dart';
@@ -24,26 +25,6 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage> {
   final TextEditingController passwordController = TextEditingController();
   AppLocalizations appLoc;
-
-  Widget _title() {
-    return RichText(
-      textAlign: TextAlign.center,
-      text: TextSpan(
-          text: 'G',
-          style: TextStyle(
-              fontSize: 30, fontWeight: FontWeight.w700, color: Colors.white),
-          children: [
-            TextSpan(
-              text: 'M',
-              style: TextStyle(color: Colors.black, fontSize: 30),
-            ),
-            TextSpan(
-              text: 'oria',
-              style: TextStyle(color: Colors.white, fontSize: 30),
-            ),
-          ]),
-    );
-  }
 
   Widget _logoutButton() {
     return InkWell(
@@ -296,9 +277,11 @@ class _UserPageState extends State<UserPage> {
             ),
             actions: <Widget>[
               FlatButton(
-                child: Text(appLoc.translate('abort')),
-                onPressed: () => Navigator.of(context).pop(false),
-              ),
+                  child: Text(appLoc.translate('abort')),
+                  onPressed: () => {
+                        Navigator.of(context).pop(false),
+                        passwordController.text = ""
+                      }),
               FlatButton(
                 child: Text(appLoc.translate('yes_delete')),
                 onPressed: () async => {
@@ -373,64 +356,120 @@ class _UserPageState extends State<UserPage> {
     TextEditingController emailController = new TextEditingController();
     String current = context.read<AuthenticationService>().getUser().email;
 
-    return showDialog<String>(
-      context: context,
-      child: AlertDialog(
-        title: Text(appLoc.translate('change_your_email')),
-        content: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              //position
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(appLoc.translate('current_email')),
-                Text('$current',
-                    style: TextStyle(
-                      color: Colors.blue,
-                      decoration: TextDecoration.underline,
-                    )),
-                TextFormField(
-                  controller: emailController,
-                  autofocus: true,
-                  decoration: InputDecoration(
-                      labelText: appLoc.translate('enter_new_email')),
-                  validator: (email) {
-                    if (email == current) {
-                      return appLoc.translate('same_email');
-                    }
-                    if (!EmailValidator.validate(email)) {
-                      return appLoc.translate('invalid_email');
-                    }
-                    return null;
-                  },
-                ),
+    String messageEmail;
+    bool showPwdError = false;
+
+    Future<String> reAuthenticate() async {
+      String errorMessage = '';
+      if (_formKey.currentState.validate()) {
+        errorMessage = await context
+            .read<AuthenticationService>()
+            .reAuthenticateUser(passwordController.text.trim());
+        passwordController.text = "";
+      }
+      return errorMessage;
+    }
+
+    // return showDialog<String>(
+    //   context: context,
+    return showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+              title: Text(appLoc.translate('change_your_email')),
+              content: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    //position
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(appLoc.translate('current_email')),
+                      Text('$current',
+                          style: TextStyle(
+                            color: Colors.blue,
+                            decoration: TextDecoration.underline,
+                          )),
+                      TextFormField(
+                        controller: emailController,
+                        autofocus: true,
+                        decoration: InputDecoration(
+                            labelText: appLoc.translate('enter_new_email')),
+                        validator: (email) {
+                          if (email == current) {
+                            return appLoc.translate('same_email');
+                          }
+                          if (!EmailValidator.validate(email)) {
+                            return appLoc.translate('invalid_email');
+                          }
+                          return null;
+                        },
+                      ),
+                      TextFormField(
+                        controller: passwordController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                            labelText: appLoc.translate('signIn_password')),
+                        maxLines: 1,
+                        validator: (String value) {
+                          if (value.isEmpty) {
+                            return appLoc.translate('must_provide_pwd');
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 20),
+                      showPwdError
+                          ? Text('Error: $messageEmail',
+                              style: TextStyle(color: Colors.red, fontSize: 12),
+                              textAlign: TextAlign.center)
+                          : Container()
+                    ],
+                  )),
+              actions: <Widget>[
+                FlatButton(
+                    child: Text(appLoc.translate('cancel')),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      passwordController.text = "";
+                    }),
+                FlatButton(
+                    child: Text(appLoc.translate('change')),
+                    onPressed: () async {
+                      if (_formKey.currentState.validate()) {
+                        print('-----Form validated----');
+                        print(emailController.text);
+
+                        messageEmail = await reAuthenticate();
+
+                        print('msg email' + messageEmail);
+
+                        if (messageEmail == 'Success') {
+                          var message = await context
+                              .read<AuthenticationService>()
+                              .updateEmail(emailController.text);
+                          print(message);
+
+                          Navigator.pop(context);
+                        } else {
+                          setState(() {
+                            showPwdError = true;
+                          });
+
+                          if (messageEmail == 'wrong-password') {
+                            messageEmail = appLoc.translate('wrong_password');
+                          }
+                          if (messageEmail == 'too-many-requests') {
+                            messageEmail = appLoc.translate('error_unexpected');
+                          }
+                        }
+                      }
+                    })
               ],
-            )),
-        actions: <Widget>[
-          FlatButton(
-              child: Text(appLoc.translate('cancel')),
-              onPressed: () {
-                Navigator.pop(context);
-              }),
-          FlatButton(
-              child: Text(appLoc.translate('change')),
-              onPressed: () async {
-                if (_formKey.currentState.validate()) {
-                  print('FORM VALIDATED!!');
-                  print(emailController.text);
-
-                  var message = await context
-                      .read<AuthenticationService>()
-                      .updateEmail(emailController.text);
-                  print(message);
-
-                  Navigator.pop(context);
-                }
-              })
-        ],
-      ),
-    );
+            );
+          });
+        });
   }
 
   Widget build(BuildContext context) {
@@ -469,7 +508,7 @@ class _UserPageState extends State<UserPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              _title(),
+              title(),
               SizedBox(
                 height: 20,
               ),

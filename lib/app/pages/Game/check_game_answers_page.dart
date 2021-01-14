@@ -1,8 +1,8 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
-import 'package:gmoria/app/utils/GameArguments.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
+import 'package:gmoria/app/utils/arguments/GameArguments.dart';
 import 'package:gmoria/domain/models/Person.dart';
 
 class CheckAnswersPage extends StatelessWidget {

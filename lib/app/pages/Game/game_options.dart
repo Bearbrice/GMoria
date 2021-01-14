@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gmoria/app/utils/InitialGameArguments.dart';
 import 'package:gmoria/app/utils/app_localizations.dart';
+import 'package:gmoria/app/utils/arguments/InitialGameArguments.dart';
 import 'package:gmoria/domain/models/UserList.dart';
 
 class GameOptions extends StatefulWidget {

@@ -1,33 +1,214 @@
 #Global
 title: GMoria
 
-#User
-signIn_email: Email
-signIn_password: Mot de passe
-signIn_button: Se connecter
-home_signOut: Se déconnecter
-
-#Learn
-learn_title: 'Mémoriser : '
-learn_error: Oops... quelque chose ne s'est pas passé comme prévu! Veuillez réessayer.
-learn_emptyList: Votre liste est vide
-learn_gameButton: Prêt à jouer ?
-
-list_title: 'Liste : '
+#Re-usable
+yes_exit: Yes, exit
+yes_delete: Yes, delete
+no: No
+yes: Yes
 save: Save
-all_contacts_title: Mes contacts
-delete_dialog_title: Supprimer
-delete_dialog_text_contact_permanently: Ce contact sera supprimé définitivement
-delete_dialog_ok: Continuer
-delete_dialog_cancel: Annuler
-import_contacts_title: Importer depuis mes contacts
-import_contacts_button_label: Importer
+ok: Ok
+cancel: Cancel
+add: Add
 
-#Erros
-unknown_error: Oups... quelque chose ne s'est pas passé comme prévu! Veuillez réessayer.
+lists: Lists
+learn: Learn
+game: Game
 
-#Game
-game_title: 'Jouer : '
+search: Search
+delete: Delete
 
-#Import
-import_title: 'Choisi un import'
+login: Login
+link_privacy_policy_text: Privacy policy & Terms and conditions
+register: Register
+logout: Logout
+
+signIn_email: Email
+signIn_password: Password
+abort: Abort
+invalid_email: Invalid email address
+must_provide_pwd: You must provide a password
+register_now: Register now
+
+empty_list: There are no people to display yet
+loading: 'Loading !'
+
+#Delete dialogs
+delete_dialog_title: Delete
+delete_dialog_permanently: The person will be permanently deleted
+
+#Errors
+unknown_error: Oops... something went wrong! Please try again.
+permissions_error: Permissions error
+
+#list_person_page
+list_person_loading: Loading...
+list_person_snackbar_message: Your list is empty
+list_person_create_contact: Create person
+list_person_internal_import: Import from people
+list_person_external_import: External import
+
+#home_page
+list_name: List name
+name_example: eg. Football team
+list_name_exists: List name already exists !
+problem_try_again: A problem occurred, please try again.
+my_account: My account
+begin_list: Create a list to begin
+my_lists: My lists
+my_people: My people
+list_delete: The list selected will be deleted
+list_empty: The list is empty
+edit: Edit
+best_score: 'Best score: '
+percent: '%'
+
+# ----- USER ----- #
+##agreement_page
+dialog_confirm_exit: 'Are you sure you want to exit? (you will need to recreate your account and the data will be lost)'
+terms_conditions: Terms and conditions
+privacy_policy:  Privacy Policy
+agree: AGREE
+
+##intro_page
+intro_list: Create your own lists and swipe on the list to do quick actions
+intro_learn: Take time to learn the people you want to memorize
+intro_game: Test your knowledge and get a score on your lists to track your improvements
+
+##sign_up_page
+back: Back
+already_have: Already have an account ?
+confirm_pwd: Confirm password
+error_match_pwd: The confirmed password does not match the first one
+read_privacy: I have read and accept the privacy policy, the terms and conditions
+must_accept: You must accept the privacy policy, terms and conditions
+already_exists: User already exists, sign in, go to forgotten password or use another email
+
+##user_page
+delete_account: Delete account
+change_email: Change email
+account_info: Your account information
+connected_with: Connected with
+creation_date: Creation date
+warning_delete: 'Warning: your account and all the data will be lost if you confirm this action'
+read_accept_delete: I have read the warning and confirm I want to delete my account
+error_not_read: 'Error: you must confirm you have read the warning'
+
+toast_confirmation: Account and its data successfully deleted
+wrong_password: Wrong password
+error_unexpected: 'Unexpected error, most probably because too many requests have been sent. Try again later or contact administrator'
+change_your_email: Change your email
+current_email: 'Current email:'
+enter_new_email: 'Enter your new email:'
+same_email: Same email as current email
+
+change: Change
+
+##welcome_page
+google_agree: By sign in with google you agree to our
+error_signin: No user found for that email or wrong password provided
+signIn_button: Sign in
+signIn_google: Sign in with Google
+
+#learn_page
+learn_title: 'Learn : '
+learn_gameButton: Ready to play ?
+
+# ----- GAME ----- #
+#game_page
+game_title: 'Game : '
+game_empty_list: Your list is empty
+game_error: There was a problem with the launch of the game
+game_question: Who is this person ?
+game_image_load_error: Error, could not load image or a problem occured.
+game_label_input_answer: Firstname & Lastname
+game_submit_button: Submit
+game_next_button: Next
+game_empty_answer_message: You must enter an answer to continue !
+game_good_answer_message: Correct Answer !
+game_bad_answer_message: Bad Answer !
+game_exit_before_end_message: Are you sure you want to quit the quiz? All your progress will be lost.
+game_alert_box_exit_title: Warning !
+game_alert_box_yes_answer: Yes
+game_alert_box_no_answer: No
+
+#game_options
+game_options_instructions_label: Select Total Number of Questions
+game_options_all_option: All
+game_options_start_quiz_button: Start Quiz
+
+#finish_game_page
+finish_game_correct_piechart_label: Correct
+finish_game_bad_piechart_label: Bad
+finish_game_title: Result
+finish_game_total_questions_label: Total Questions
+finish_game_score_label: Score
+finish_game_correct_answers_label: Correct Answers
+finish_game_bad_answers_label: Bad Answers
+finish_game_show_answers_button: Check Answers
+finish_game_home_button: Home
+finish_game_error_message: Oups ! There was an error with the quiz
+finish_game_restart_button: Restart
+
+#check_game_answers_page
+game_check_answers_title: Check Answers
+game_check_answers_done_button: Done
+game_check_answers_load_image_error_message: Error, could not load image or a problem occured.
+game_check_answers_answer_label: "Answer: "
+
+# ----- ALL CONTACTS ----- #
+#all_contacts_page
+all_contacts_title: All People
+
+#import_from_all_contacts
+import_contacts_title: Import from all people
+import_contacts_button_label: Import
+
+# ----- IMPORT ----- #
+#creation_import_contacts
+creation_import_title: Create person
+creation_import_warning: "Are you sure you want to quit the import? All the left people won't be added."
+creation_import_warning_title: Warning !
+creation_import_image_error: Please provide an image !
+creation_import_from_gallery: Gallery
+creation_import_from_camera: Camera
+creation_import_: Camera
+
+#import_selection_contact
+import_selection_title: External import
+import_selection_name_not_found: No name found !
+
+#select_import_page
+select_import_title: External import
+select_import_permissions_error: Please enable contacts access permission in system settings
+select_import_phone: Import from phone
+select_import_csv_error: Wrong csv file format
+select_import_csv_error_message: 'The column delimiter should be \";\" and the columns : Firstname, Lastname, Job, Description'
+select_import_csv: Import from CSV
+
+##vcard_import
+only_vcf: 'Only vCard file (.vcf) are allowed'
+import_vcard: Import from vCard
+
+# ----- PERSON ----- #
+#person_form_page
+add_person: Add a new person
+provide_image: Please provide an image
+firstname_validator: Enter the first name
+lastname_validator: Enter the last name
+from_gallery: Gallery
+take_photo: Camera
+validator_length: Cannot be upper than 30 characters
+
+
+#person_view
+learn_error: 'Oops... something went wrong! Please try again.'
+learn_emptyList: Your list is empty
+person_delete: This person will be deleted
+error_image_load: 'Error, could not load image or a problem occurred.'
+
+##BOTH
+firstname: First Name
+lastname: Last Name
+job: Job (optional)
+description: Description (optional)

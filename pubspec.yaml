@@ -70,7 +70,6 @@ dependencies:
   permission_handler: ^5.0.1+1
 
   flutter_document_picker: ^4.0.0
-  simple_vcard_parser: ^0.1.6
   vcard_parser: ^0.1.6
 
   #Firebase
@@ -111,8 +110,6 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    # - assets/lang/fr.json
-    # - assets/lang/en.json
     - assets/lang/fr.yaml
     - assets/lang/en.yaml
     # - assets/picture/unknown.jpg
@@ -124,8 +121,6 @@ flutter:
     - assets/text/TermsConditions.md
     - assets/text/PrivacyPolicy_FR.md
     - assets/text/TermsConditions_FR.md
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

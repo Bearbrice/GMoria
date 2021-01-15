@@ -296,9 +296,11 @@ class _TestFormState extends State<TestForm> {
                   _formKey.currentState.save();
                   print(this.model.firstname);
 
+
                   if (editMode) {
                     String imageURL;
                     if (_image != null) {
+                      //Delete existing image
                       Reference photoRef = FirebaseStorage.instance
                           .ref()
                           .storage

@@ -36,8 +36,6 @@ class DataPersonRepository implements PersonRepository {
 
   @override
   Stream<List<Person>> getUserListPersons(String idUserList) {
-    //As the whereIn query only allows up to 10 equalities,
-    //the following lines merge the results of multiple queries with max 10 ids
     return personCollection
         .where('lists', arrayContains: idUserList)
         .snapshots()
@@ -46,50 +44,6 @@ class DataPersonRepository implements PersonRepository {
           .map((doc) => Person.fromEntity(PersonEntity.fromSnapshot(doc)))
           .toList();
     });
-
-    // List<Stream> results = [];
-    // if (personsIdList.length >= 10) {
-    //   List<List<String>> listOfLists = new List<List<String>>();
-    //   for (var i = 0; i < personsIdList.length; i += 10) {
-    //     List<String> sub =
-    //     personsIdList.sublist(i, min(personsIdList.length, i + 10));
-    //     print("SUBLIST !!!!!!!!!!!!!!!!!     " + i.toString());
-    //     print(sub);
-    //     print(personsIdList);
-    //     listOfLists.add(sub);
-    //   }
-    //
-    //   listOfLists.forEach((idsList) {
-    //     results.add(
-    //         personCollection
-    //             .where(FieldPath.documentId, whereIn: idsList)
-    //             .snapshots());
-    //   });
-    //   var controller = StreamController<List<Person>>();
-    //   StreamZip(results).asBroadcastStream().listen((snapshots) {
-    //     List<DocumentSnapshot> documents = List<DocumentSnapshot>();
-    //
-    //     snapshots.forEach((snapshot) {
-    //       documents.addAll(snapshot.documents);
-    //     });
-    //
-    //     final persons = documents.map((doc) {
-    //       return Person.fromEntity(PersonEntity.fromSnapshot(doc));
-    //     }).toList();
-    //
-    //     controller.add(persons);
-    //   });
-    //   return controller.stream;
-    // }
-    //
-    // return personCollection
-    //     .where(FieldPath.documentId, whereIn: personsIdList)
-    //     .snapshots()
-    //     .map((snapshot) {
-    //   return snapshot.docs
-    //       .map((doc) => Person.fromEntity(PersonEntity.fromSnapshot(doc)))
-    //       .toList();
-    // });
   }
 
   @override

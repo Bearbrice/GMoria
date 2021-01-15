@@ -31,9 +31,8 @@ class _ListPageState extends State<ListPage> {
   @override
   Widget build(BuildContext context) {
     final _scaffoldKey = GlobalKey<ScaffoldState>();
-    //setState(() {
     userList = ModalRoute.of(context).settings.arguments;
-    //});
+
 
     void _showSnackBar(BuildContext context, String text) {
       final snackBar = SnackBar(content: Text(text));
@@ -218,10 +217,10 @@ class MyUserPeople extends StatelessWidget {
           //If the list is empty
           return Center(
               child:
-                  Text(AppLocalizations.of(context).translate("empty_list")));
+                  Text(AppLocalizations.of(context).translate("empty_list"), style: new TextStyle(fontSize: 20),));
         }
       } else {
-        return Text(AppLocalizations.of(context).translate("unknown_error"));
+        return Text(AppLocalizations.of(context).translate("unknown_error"),);
       }
     });
   }

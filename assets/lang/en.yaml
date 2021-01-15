@@ -59,16 +59,16 @@ my_account: My account
 begin_list: Create a list to begin
 my_lists: My lists
 my_people: My people
-list_delete: The list selected will be deleted
+list_delete: The list selected will be deleted. Some people could be removed permanently if they are not used in any other list.
 list_empty: The list is empty
 edit: Edit
-best_score: 'Best score: '
+best_score: 'Score: '
 percent: '%'
 color_meaning: Color meaning
-zero: List never played or best score is 0%
-twenty_five: 0% < Best score < 50%
-fifty: 50% < Best score < 75%
-seventy_five: Best score > 75%
+zero: List never played or score is 0%
+twenty_five: 0% < Score < 50%
+fifty: 50% < Score < 75%
+seventy_five: Score > 75%
 quick_actions: Quick actions
 swipe_to_use: Swipe to acess quick actions !
 
@@ -181,7 +181,6 @@ creation_import_warning_title: Warning !
 creation_import_image_error: Please provide an image !
 creation_import_from_gallery: Gallery
 creation_import_from_camera: Camera
-creation_import_: Camera
 
 #import_selection_contact
 import_selection_title: External import

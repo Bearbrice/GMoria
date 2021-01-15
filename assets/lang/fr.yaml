@@ -34,19 +34,19 @@ empty_list: Il n'y a pas encore de personnes à afficher
 loading: 'Chargement !'
 
 #Delete dialogs
-delete_dialog_title: Delete
-delete_dialog_permanently: The person will be permanently deleted
+delete_dialog_title: Supprimer
+delete_dialog_permanently: Cette personne sera définitivement supprimée
 
 #Errors
-unknown_error: Oops... something went wrong! Please try again.
-permissions_error: Permissions error
+unknown_error: Oops... un erreur est survenue ! Veuillez réessayer.
+permissions_error: Erreur de permissions
 
 #list_person_page
-list_person_loading: Loading...
-list_person_snackbar_message: Your list is empty
-list_person_create_contact: Create person
-list_person_internal_import: Import from people
-list_person_external_import: External import
+list_person_loading: Chargement...
+list_person_snackbar_message: Votre liste est vide.
+list_person_create_contact: Créer une personne
+list_person_internal_import: Importer depuis mes contacts
+list_person_external_import: Import externe
 
 #home_page
 list_name: Nom de la liste
@@ -60,13 +60,13 @@ my_people: Mes personnes
 list_delete: La liste sélectionnée sera supprimée
 list_empty: La liste est vide
 edit: Modifier
-best_score: 'Meilleur score: '
+best_score: 'Score: '
 percent: '%'
 color_meaning: Signification des couleurs
 zero: Liste jamais jouée ou le score est de 0%
-twenty_five: 0% < Meilleur score < 50%
-fifty:  50% < Meilleur score < 75%
-seventy_five: Meilleur score > 75%
+twenty_five: 0% < Score < 50%
+fifty:  50% < Score < 75%
+seventy_five: Score > 75%
 quick_actions: Actions rapides
 swipe_to_use: '"Swipe" à gauche ou à droite sur les listes pour accéder aux actions rapides'
 
@@ -118,12 +118,12 @@ signIn_button: Se connecter
 signIn_google: Se connecter avec Google
 
 #learn_page
-learn_title: 'Learn : '
-learn_gameButton: Ready to play ?
+learn_title: 'Etudier : '
+learn_gameButton: Prêt ?
 
 # ----- GAME ----- #
 #game_page
-game_title: 'Game : '
+game_title: 'Jeu : '
 game_empty_list: Votre liste est vide
 game_error: Il y a eu un problème avec le lancement du jeu
 game_question: Qui est cette personne ?
@@ -165,33 +165,32 @@ game_check_answers_answer_label: "Réponse : "
 
 # ----- ALL CONTACTS ----- #
 #all_contacts_page
-all_contacts_title: All People
+all_contacts_title: Mes personnes
 
 #import_from_all_contacts
-import_contacts_title: Import from all people
-import_contacts_button_label: Import
+import_contacts_title: Importer depuis mes contacts
+import_contacts_button_label: Importer
 
 # ----- IMPORT ----- #
 #creation_import_contacts
-creation_import_title: Create person
-creation_import_warning: "Are you sure you want to quit the import? All the left people won't be added."
-creation_import_warning_title: Warning !
-creation_import_image_error: Please provide an image !
-creation_import_from_gallery: Gallery
-creation_import_from_camera: Camera
-creation_import_: Camera
+creation_import_title: Créer une personne
+creation_import_warning: "Etes-vous sûr de vouloir quitter l'importation? Toutes les personnes restantes ne seront pas ajoutées."
+creation_import_warning_title: Attention !
+creation_import_image_error: Veuillez fournir une image
+creation_import_from_gallery: Galerie
+creation_import_from_camera: Caméra
 
 #import_selection_contact
-import_selection_title: External import
-import_selection_name_not_found: No name found !
+import_selection_title: Import externe
+import_selection_name_not_found: Aucun nom trouvé !
 
 #select_import_page
-select_import_title: External import
-select_import_permissions_error: Please enable contacts access permission in system settings
-select_import_phone: Import from phone
-select_import_csv_error: Wrong csv file format
-select_import_csv_error_message: 'The column delimiter should be \";\" and the columns : Firstname, Lastname, Job, Description'
-select_import_csv: Import from CSV
+select_import_title: Import externe
+select_import_permissions_error: Veuillez accorder l'accès à vos contacts depuis les réglages de votre téléphone
+select_import_phone: Importer depuis le téléphone
+select_import_csv_error: Mauvais format CSV
+select_import_csv_error_message: 'Le délimiteur de colonnes doit être ";" et les colonnes doivent respecter cette ordre et casse : Firstname, Lastname, Job, Description'
+select_import_csv: Importer depuis un CSV
 
 ##vcard_import
 only_vcf: 'Seuls les fichiers vCard (.vcf) sont autorisés'

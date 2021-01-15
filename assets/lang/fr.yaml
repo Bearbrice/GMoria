@@ -23,6 +23,8 @@ link_privacy_policy_text: Politique de confidentialité et conditions d'utilisat
 register: S'inscrire
 logout: Se déconnecter
 
+loading_dialog_label:  veuillez patienter....
+
 signIn_email: Email
 signIn_password: Mot de passe
 abort: Annuler

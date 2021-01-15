@@ -170,7 +170,7 @@ game_check_answers_answer_label: "Réponse : "
 all_contacts_title: Mes personnes
 
 #import_from_all_contacts
-import_contacts_title: Importer depuis mes contacts
+import_contacts_title: Importer depuis mes personnes
 import_contacts_button_label: Importer
 
 # ----- IMPORT ----- #
